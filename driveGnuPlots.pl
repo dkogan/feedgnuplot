@@ -66,10 +66,10 @@ sub main {
     my $streamIdx = 0;
     select((select(STDOUT), $| = 1)[0]);
     my $xcounter = 0;
-    plotHeader($xcounter, $samples, $numberOfStreams, *PIPE);
     while(<>) {
         chomp;
         my $line = $_;
+        plotHeader($xcounter, $samples, $numberOfStreams, *PIPE) if($streamIdx == 0);
         foreach my $point ($line =~ /([-]?[0-9\.]+)/g)
         {
           my $buf = $buffers[$streamIdx];
@@ -92,7 +92,6 @@ sub main {
           if ($streamIdx == $numberOfStreams) {
             $streamIdx = 0;
             $xcounter++;
-            plotHeader($xcounter, $samples, $numberOfStreams, *PIPE);
           }
         }
     }
