@@ -16,8 +16,8 @@ OEF
 
 sub Arg {
     if ($#ARGV < $_[0]) {
-	print "Expected parameter missing...\n\n";
-	usage;
+        print "Expected parameter missing...\n\n";
+        usage;
     }
     $ARGV[int($_[0])];
 }
@@ -68,7 +68,7 @@ sub main {
     my $xcounter = 0;
     plotHeader($xcounter, $samples, $numberOfStreams, *PIPE);
     while(<>) {
-	chomp;
+        chomp;
         my $line = $_;
         foreach my $point ($line =~ /([-]?[0-9\.]+)/g)
         {
@@ -79,19 +79,19 @@ sub main {
 
           my $cnt = 0;
           for my $elem (reverse @{$buf}) {
-	    #print " ".$elem;
-	    print PIPE ($xcounter-$cnt)." ".$elem."\n";
-	    $cnt++;
+            #print " ".$elem;
+            print PIPE ($xcounter-$cnt)." ".$elem."\n";
+            $cnt++;
           }
           #print "\n";
           print PIPE "e\n";
           if ($cnt>=$samples) {
-	    shift @{$buf};
+            shift @{$buf};
           }
           $streamIdx++;
           if ($streamIdx == $numberOfStreams) {
-	    $streamIdx = 0;
-	    $xcounter++;
+            $streamIdx = 0;
+            $xcounter++;
             plotHeader($xcounter, $samples, $numberOfStreams, *PIPE);
           }
         }
