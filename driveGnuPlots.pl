@@ -1,10 +1,15 @@
 #!/usr/bin/perl -w
 use strict;
 use Getopt::Long;
+use Data::Dumper;
 
+# stream in the data by default
 # point plotting by default
-my %options = ( "lines" => 0);
+my %options = ( "stream" => 1,
+                "lines" => 0);
+
 GetOptions(\%options,
+           "stream!",
            "lines!");
 
 # set up plotting style
@@ -30,14 +35,6 @@ sub Arg {
         usage;
     }
     $ARGV[int($_[0])];
-}
-
-sub plotHeader
-{
-  my ($xcounter, $samples, $numberOfStreams, $pipe) = @_;
-  #print "stream $streamIdx: ";
-  print $pipe "set xrange [".($xcounter-$samples).":".($xcounter+1)."]\n";
-  print $pipe 'plot ' . join(', ' , ('"-" notitle') x $numberOfStreams) . "\n";
 }
 
 sub main {
@@ -69,44 +66,64 @@ sub main {
     print PIPE "set grid\n";
 
     for(my $i=0; $i<$numberOfStreams; $i++) {
-      my @data = [];
-      push @buffers, @data;
+      push @buffers, [];
     }
 
     my $streamIdx = 0;
     select((select(STDOUT), $| = 1)[0]);
-    my $xcounter = 0;
-    while(<>) {
-        chomp;
-        my $line = $_;
-        plotHeader($xcounter, $samples, $numberOfStreams, *PIPE) if($streamIdx == 0);
-        foreach my $point ($line =~ /([-]?[0-9\.]+)/g)
-        {
-          my $buf = $buffers[$streamIdx];
+    my $xlast = 0;
+    while(<>)
+    {
+      chomp;
+      my $line = $_;
+      foreach my $point ($line =~ /([-]?[0-9\.]+)/g) {
+        my $buf = $buffers[$streamIdx];
 
-          # data buffering (up to stream sample size)
-          push @{$buf}, $point;
+        # data buffering (up to stream sample size)
+        push @{$buf}, $point;
+        shift @{$buf} if(@{$buf} > $samples && $options{"stream"});
 
-          my $cnt = 0;
-          for my $elem (reverse @{$buf}) {
-            #print " ".$elem;
-            print PIPE ($xcounter-$cnt)." ".$elem."\n";
-            $cnt++;
-          }
-          #print "\n";
-          print PIPE "e\n";
-          if ($cnt>=$samples) {
-            shift @{$buf};
-          }
-          $streamIdx++;
-          if ($streamIdx == $numberOfStreams) {
-            $streamIdx = 0;
-            $xcounter++;
-          }
+        $streamIdx++;
+        if ($streamIdx == $numberOfStreams) {
+          $streamIdx = 0;
+          plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers) if($options{"stream"});
+          $xlast++;
         }
+      }
     }
-    print PIPE "exit;\n";
-    close PIPE;
+
+    if($options{"stream"})
+    {
+      print PIPE "exit;\n";
+      close PIPE;
+    }
+    else
+    {
+      $samples = @{$buffers[0]};
+      plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers);
+    }
+    sleep 100000;
 }
+
+sub plotStoredData
+{
+  my ($xlast, $samples, $numberOfStreams, $pipe, $buffers) = @_;
+
+  my $x0 = $xlast - $samples + 1;
+  print $pipe "set xrange [$x0:$xlast]\n";
+  print $pipe 'plot ' . join(', ' , ('"-" notitle') x $numberOfStreams) . "\n";
+
+  foreach my $buf (@{$buffers})
+  {
+    # if the buffer isn't yet complete, skip the appropriate number of points
+    my $x = $x0 + $samples - @{$buf};
+    for my $elem (@{$buf}) {
+      print $pipe "$x $elem\n";
+      $x++;
+    }
+    print PIPE "e\n";
+  }
+}
+
 
 main;
