@@ -1,5 +1,15 @@
 #!/usr/bin/perl -w
 use strict;
+use Getopt::Long;
+
+# point plotting by default
+my %options = ( "lines" => 0);
+GetOptions(\%options,
+           "lines!");
+
+# set up plotting style
+my $style = "points";
+$style = "linespoints" if($options{"lines"});
 
 sub usage {
     print "Usage: $0 <options>\n";
@@ -55,7 +65,7 @@ sub main {
     print PIPE "set xtics\n";
     print PIPE "set ytics\n";
     print PIPE "set yrange [". $miny . ":" . $maxy ."]\n";
-    print PIPE "set style data points\n";
+    print PIPE "set style data $style\n";
     print PIPE "set grid\n";
 
     for(my $i=0; $i<$numberOfStreams; $i++) {
