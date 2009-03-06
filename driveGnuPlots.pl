@@ -25,6 +25,9 @@ where mandatory options are (in order):
   Stream_WindowSampleSize               this many samples
   Stream_YRangeMin Stream_YRangeMax     Min and Max y values
 
+also
+  --[no]stream                          Do [not] display the data a point at a time, as it comes in
+  --[no]lines                           Do [not] draw lines to connect consecutive points
 OEF
     exit(1);
 }
