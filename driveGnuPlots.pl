@@ -11,10 +11,14 @@ my %options = ( "stream" => 1,
 GetOptions(\%options,
            "stream!",
            "lines!",
-           "legend:s@",
-           "xlabel:s",
-           "ylabel:s",
-           "title:s");
+           "legend=s@",
+           "xlabel=s",
+           "ylabel=s",
+           "y2label=s",
+           "title=s",
+           "y2min=f",
+           "y2max=f",
+           "y2=i@");
 
 # set up plotting style
 my $style = "points";
@@ -34,21 +38,32 @@ also
   --[no]lines          Do [not] draw lines to connect consecutive points
   --xlabel xxx         Set x-axis label
   --ylabel xxx         Set y-axis label
+  --y2label xxx        Set y2-axis label
   --title  xxx         Set the title of the plot
   --legend xxx         Set the label for a curve plot. Give this option multiple times for multiple curves
+  --y2min xxx          Set the range for the y2 axis. Both or neither of these have to be specified
+  --y2max xxx          Set the range for the y2 axis. Both or neither of these have to be specified
+  --y2    xxx          Plot the data with this index on the y2 axis. These are 0-indexed
 OEF
-    exit(1);
 }
 
 sub Arg {
     if ($#ARGV < $_[0]) {
         print "Expected parameter missing...\n\n";
         usage;
+        die("Error parsing args\n");
     }
     $ARGV[int($_[0])];
 }
 
 sub main {
+    if(  defined $options{"y2min"} && !defined $options{"y2max"} ||
+        !defined $options{"y2min"} &&  defined $options{"y2max"} )
+    {
+      usage;
+      die("Both or neither of y2min,y2max should be specified\n");
+    }
+
     my $argIdx = 0;
     my $numberOfStreams = Arg($argIdx++);
     print "Will display $numberOfStreams Streams...\n";
@@ -72,20 +87,27 @@ sub main {
     select((select(PIPE), $| = 1)[0]);
     print PIPE "set xtics\n";
     print PIPE "set ytics\n";
+    print PIPE "set y2tics\n";
     print PIPE "set yrange [". $miny . ":" . $maxy ."]\n";
+    print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if $options{"y2max"};
     print PIPE "set style data $style\n";
     print PIPE "set grid\n";
 
-    print(PIPE "set xlabel \"" . $options{"xlabel"} . "\"\n") if $options{"xlabel"};
-    print(PIPE "set ylabel \"" . $options{"ylabel"} . "\"\n") if $options{"ylabel"};
-    print(PIPE "set title  \"" . $options{"title" } . "\"\n") if $options{"title"};
+    print(PIPE "set xlabel  \"" . $options{"xlabel" } . "\"\n") if $options{"xlabel"};
+    print(PIPE "set ylabel  \"" . $options{"ylabel" } . "\"\n") if $options{"ylabel"};
+    print(PIPE "set y2label \"" . $options{"y2label"} . "\"\n") if $options{"y2label"};
+    print(PIPE "set title   \"" . $options{"title"  } . "\"\n") if $options{"title"};
 
-    my @legend;
-# for the specified values, set the legend entries to 'legend "title 1"', etc
-    @legend = map({"title \"$_\""} @{$options{"legend"}}) if($options{"legend"});
-# now append "notitle" to all the non-specified legend entries
-    push @legend, ("notitle") x ($numberOfStreams - @legend);
+# For the specified values, set the legend entries to 'title "blah
+# blah"'. Otherwise, "notitle".
+    my @extraopts;
+    @extraopts = map({"title \"$_\""} @{$options{"legend"}}) if($options{"legend"});
+    push @extraopts, ("notitle") x ($numberOfStreams - @extraopts);
 
+# For the values requested to be printed on the y2 axis, set that
+    foreach my $y2idx (@{$options{"y2"}}) { $extraopts[$y2idx] .= " axes x1y2"; }
+
+# This is ugly, but "([]) x $numberOfStreams" was giving me references into a single physical list
     for(my $i=0; $i<$numberOfStreams; $i++) {
       push @buffers, [];
     }
@@ -107,7 +129,7 @@ sub main {
         $streamIdx++;
         if ($streamIdx == $numberOfStreams) {
           $streamIdx = 0;
-          plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers, \@legend) if($options{"stream"});
+          plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers, \@extraopts) if($options{"stream"});
           $xlast++;
         }
       }
@@ -121,18 +143,18 @@ sub main {
     else
     {
       $samples = @{$buffers[0]};
-      plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers, \@legend);
+      plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers, \@extraopts);
     }
     sleep 100000;
 }
 
 sub plotStoredData
 {
-  my ($xlast, $samples, $numberOfStreams, $pipe, $buffers, $legend) = @_;
+  my ($xlast, $samples, $numberOfStreams, $pipe, $buffers, $extraopts) = @_;
 
   my $x0 = $xlast - $samples + 1;
   print $pipe "set xrange [$x0:$xlast]\n";
-  print $pipe 'plot ' . join(', ' , map({ "\"-\" $_"} @$legend) ) . "\n";
+  print $pipe 'plot ' . join(', ' , map({ "\"-\" $_"} @$extraopts) ) . "\n";
 
   foreach my $buf (@{$buffers})
   {
