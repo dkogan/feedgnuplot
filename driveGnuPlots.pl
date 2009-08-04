@@ -108,7 +108,7 @@ sub main {
     push @extraopts, ("notitle") x ($numberOfStreams - @extraopts);
 
 # For the values requested to be printed on the y2 axis, set that
-    foreach my $y2idx (@{$options{"y2"}}) { $extraopts[$y2idx] .= " axes x1y2"; }
+    foreach my $y2idx (@{$options{"y2"}}) { $extraopts[$y2idx] .= " axes x1y2 linewidth 3"; }
 
 # This is ugly, but "([]) x $numberOfStreams" was giving me references into a single physical list
     for(my $i=0; $i<$numberOfStreams; $i++) {
