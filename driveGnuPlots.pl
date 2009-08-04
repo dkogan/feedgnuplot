@@ -6,8 +6,8 @@ use Data::Dumper;
 # stream in the data by default
 # point plotting by default
 my %options = ( "stream" => 1,
-                "lines" => 0);
-
+                "points" => 0,
+                "lines"  => 0,);
 GetOptions(\%options,
            "stream!",
            "lines!",
@@ -21,8 +21,11 @@ GetOptions(\%options,
            "y2=i@");
 
 # set up plotting style
-my $style = "points";
-$style = "linespoints" if($options{"lines"});
+my $style = "";
+if($options{"lines"})  { $style .= "lines";}
+if($options{"points"}) { $style .= "points";}
+
+if(!$style) { $style = "points"; }
 
 sub usage {
     print "Usage: $0 <options>\n";
