@@ -10,7 +10,11 @@ my %options = ( "stream" => 1,
 
 GetOptions(\%options,
            "stream!",
-           "lines!");
+           "lines!",
+           "legend:s@",
+           "xlabel:s",
+           "ylabel:s",
+           "title:s");
 
 # set up plotting style
 my $style = "points";
@@ -26,8 +30,12 @@ where mandatory options are (in order):
   Stream_YRangeMin Stream_YRangeMax     Min and Max y values
 
 also
-  --[no]stream                          Do [not] display the data a point at a time, as it comes in
-  --[no]lines                           Do [not] draw lines to connect consecutive points
+  --[no]stream         Do [not] display the data a point at a time, as it comes in
+  --[no]lines          Do [not] draw lines to connect consecutive points
+  --xlabel xxx         Set x-axis label
+  --ylabel xxx         Set y-axis label
+  --title  xxx         Set the title of the plot
+  --legend xxx         Set the label for a curve plot. Give this option multiple times for multiple curves
 OEF
     exit(1);
 }
@@ -68,6 +76,16 @@ sub main {
     print PIPE "set style data $style\n";
     print PIPE "set grid\n";
 
+    print(PIPE "set xlabel \"" . $options{"xlabel"} . "\"\n") if $options{"xlabel"};
+    print(PIPE "set ylabel \"" . $options{"ylabel"} . "\"\n") if $options{"ylabel"};
+    print(PIPE "set title  \"" . $options{"title" } . "\"\n") if $options{"title"};
+
+    my @legend;
+# for the specified values, set the legend entries to 'legend "title 1"', etc
+    @legend = map({"title \"$_\""} @{$options{"legend"}}) if($options{"legend"});
+# now append "notitle" to all the non-specified legend entries
+    push @legend, ("notitle") x ($numberOfStreams - @legend);
+
     for(my $i=0; $i<$numberOfStreams; $i++) {
       push @buffers, [];
     }
@@ -89,7 +107,7 @@ sub main {
         $streamIdx++;
         if ($streamIdx == $numberOfStreams) {
           $streamIdx = 0;
-          plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers) if($options{"stream"});
+          plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers, \@legend) if($options{"stream"});
           $xlast++;
         }
       }
@@ -103,18 +121,18 @@ sub main {
     else
     {
       $samples = @{$buffers[0]};
-      plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers);
+      plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers, \@legend);
     }
     sleep 100000;
 }
 
 sub plotStoredData
 {
-  my ($xlast, $samples, $numberOfStreams, $pipe, $buffers) = @_;
+  my ($xlast, $samples, $numberOfStreams, $pipe, $buffers, $legend) = @_;
 
   my $x0 = $xlast - $samples + 1;
   print $pipe "set xrange [$x0:$xlast]\n";
-  print $pipe 'plot ' . join(', ' , ('"-" notitle') x $numberOfStreams) . "\n";
+  print $pipe 'plot ' . join(', ' , map({ "\"-\" $_"} @$legend) ) . "\n";
 
   foreach my $buf (@{$buffers})
   {
