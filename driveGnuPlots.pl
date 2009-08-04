@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 use Getopt::Long;
+use Time::HiRes qw( usleep );
 use Data::Dumper;
 
 # stream in the data by default
@@ -18,7 +19,8 @@ GetOptions(\%options,
            "title=s",
            "y2min=f",
            "y2max=f",
-           "y2=i@");
+           "y2=i@",
+           "hardcopy=s");
 
 # set up plotting style
 my $style = "";
@@ -47,6 +49,7 @@ also
   --y2min xxx          Set the range for the y2 axis. Both or neither of these have to be specified
   --y2max xxx          Set the range for the y2 axis. Both or neither of these have to be specified
   --y2    xxx          Plot the data with this index on the y2 axis. These are 0-indexed
+  --hardcopy xxx       If not streaming, output to a file specified here. Format inferred from filename
 OEF
 }
 
@@ -65,6 +68,10 @@ sub main {
     {
       usage;
       die("Both or neither of y2min,y2max should be specified\n");
+    }
+    if( defined $options{"hardcopy"} && $options{"stream"} )
+    {
+      die("If making a hardcopy, we shouldn't be streaming. Doing nothing\n");
     }
 
     my $argIdx = 0;
@@ -88,6 +95,30 @@ sub main {
     open PIPE, "|gnuplot" || die "Can't initialize gnuplot\n";
 
     select((select(PIPE), $| = 1)[0]);
+    my $temphardcopyfile;
+    my $outputfile;
+    my $outputfileType;
+    if( defined $options{"hardcopy"})
+    {
+      $outputfile = $options{"hardcopy"};
+      ($outputfileType) = $outputfile =~ /\.(ps|pdf|png)$/;
+      if(!$outputfileType) { die("Only .ps, .pdf and .png supported\n"); }
+
+      if ($outputfileType eq "png")
+      {
+        print PIPE "set terminal png\n";
+      }
+      else
+      {
+        print PIPE "set terminal postscript solid color landscape 10\n";
+      }
+# write to a temporary file first
+      $temphardcopyfile = $outputfile;
+      $temphardcopyfile =~ s{/}{_}g;
+      $temphardcopyfile = "/tmp/$temphardcopyfile";
+      print PIPE "set output \"$temphardcopyfile\"\n";
+    }
+
     print PIPE "set xtics\n";
     print PIPE "set ytics\n";
     print PIPE "set y2tics\n";
@@ -147,6 +178,26 @@ sub main {
     {
       $samples = @{$buffers[0]};
       plotStoredData($xlast, $samples, $numberOfStreams, *PIPE, \@buffers, \@extraopts);
+
+      if( defined $options{"hardcopy"})
+      {
+        print PIPE "set output\n";
+        # sleep until the plot file exists, and it is closed. Sometimes the output is
+        # still being written at this point
+        usleep(100_000) until -e $temphardcopyfile;
+        usleep(100_000) until(system("fuser -s $temphardcopyfile"));
+
+        if($outputfileType eq "pdf")
+        {
+          system("ps2pdf $temphardcopyfile $outputfile");
+        }
+        else
+        {
+          system("mv $temphardcopyfile $outputfile");
+        }
+        printf "Wrote output to $outputfile\n";
+        return;
+      }
     }
     sleep 100000;
 }
