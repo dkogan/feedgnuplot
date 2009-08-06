@@ -120,7 +120,7 @@ sub main {
     }
 
     print PIPE "set xtics\n";
-    print PIPE "set ytics\n";
+    print PIPE "set ytics nomirror\n";
     print PIPE "set y2tics\n";
     print PIPE "set yrange [". $miny . ":" . $maxy ."]\n";
     print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if $options{"y2max"};
