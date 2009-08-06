@@ -149,11 +149,14 @@ sub main {
     my $streamIdx = 0;
     select((select(STDOUT), $| = 1)[0]);
     my $xlast = 0;
+
+    # regexp for a possibly floating point, possibly scientific notation number
+    my $numRE = qr/([-]?[0-9\.]+(?:e[-]?[0-9]+)?)/;
     while(<>)
     {
       chomp;
       my $line = $_;
-      foreach my $point ($line =~ /([-]?[0-9\.]+)/g) {
+      foreach my $point ($line =~ /$numRE/g) {
         my $buf = $buffers[$streamIdx];
 
         # data buffering (up to stream sample size)
