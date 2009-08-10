@@ -36,7 +36,6 @@ where mandatory options are (in order):
 
   NumberOfStreams                       How many streams to plot
   Stream_WindowSampleSize               this many samples
-  Stream_YRangeMin Stream_YRangeMax     Min and Max y values
 
 also
   --[no]stream         Do [not] display the data a point at a time, as it comes in
@@ -46,6 +45,8 @@ also
   --y2label xxx        Set y2-axis label
   --title  xxx         Set the title of the plot
   --legend xxx         Set the label for a curve plot. Give this option multiple times for multiple curves
+  --ymin  xxx          Set the range for the y axis. Both or neither of these have to be specified
+  --ymax  xxx          Set the range for the y axis. Both or neither of these have to be specified
   --y2min xxx          Set the range for the y2 axis. Both or neither of these have to be specified
   --y2max xxx          Set the range for the y2 axis. Both or neither of these have to be specified
   --y2    xxx          Plot the data with this index on the y2 axis. These are 0-indexed
@@ -63,6 +64,12 @@ sub Arg {
 }
 
 sub main {
+    if(  defined $options{"ymin"} && !defined $options{"ymax"} ||
+        !defined $options{"ymin"} &&  defined $options{"ymax"} )
+    {
+      usage;
+      die("Both or neither of ymin,ymax should be specified\n");
+    }
     if(  defined $options{"y2min"} && !defined $options{"y2max"} ||
         !defined $options{"y2min"} &&  defined $options{"y2max"} )
     {
@@ -81,15 +88,9 @@ sub main {
     my $samples = Arg($argIdx++);
     print "Will use a window of $samples samples\n";
 
-    my $miny = Arg($argIdx++);
-    my $maxy = Arg($argIdx++);
-    print "Will use a range of [$miny, $maxy]\n";
-
     my @buffers;
     shift @ARGV; # number of streams
     shift @ARGV; # sample size
-    shift @ARGV; # miny
-    shift @ARGV; # maxy
     local *PIPE;
 
     open PIPE, "|gnuplot" || die "Can't initialize gnuplot\n";
@@ -122,7 +123,7 @@ sub main {
     print PIPE "set xtics\n";
     print PIPE "set ytics nomirror\n";
     print PIPE "set y2tics\n";
-    print PIPE "set yrange [". $miny . ":" . $maxy ."]\n";
+    print PIPE "set yrange [". $options{"ymin"} . ":" . $options{"ymax"} ."]\n" if $options{"y2max"};
     print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if $options{"y2max"};
     print PIPE "set style data $style\n";
     print PIPE "set grid\n";
