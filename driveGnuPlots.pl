@@ -14,7 +14,11 @@ my @curves = ();
 # point plotting by default
 my %options = ( "stream" => 1,
                 "points" => 0,
-                "lines"  => 0,);
+                "lines"  => 0,
+                "ymin"   => "",
+                "ymax"   => "",
+                "y2min"  => "",
+                "y2max"  => "");
 GetOptions(\%options,
            "stream!",
            "lines!",
@@ -65,18 +69,6 @@ sub main {
     {
       usage;
       return;
-    }
-    if(  defined $options{"ymin"} && !defined $options{"ymax"} ||
-        !defined $options{"ymin"} &&  defined $options{"ymax"} )
-    {
-      usage;
-      die("Both or neither of ymin,ymax should be specified\n");
-    }
-    if(  defined $options{"y2min"} && !defined $options{"y2max"} ||
-        !defined $options{"y2min"} &&  defined $options{"y2max"} )
-    {
-      usage;
-      die("Both or neither of y2min,y2max should be specified\n");
     }
     if( defined $options{"hardcopy"} && $options{"stream"} )
     {
