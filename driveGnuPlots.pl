@@ -83,7 +83,7 @@ sub main {
       usage;
       die("Must specify the size of the moving x-window. Doing nothing\n");
     }
-    my $samples = $options{"xlen"};
+    my $xwindow = $options{"xlen"};
 
     local *PIPE;
     open PIPE, "|gnuplot" || die "Can't initialize gnuplot\n";
@@ -146,47 +146,35 @@ sub main {
       }
     }
 
-    my $xlast = 0;
-
     # regexp for a possibly floating point, possibly scientific notation number
     my $numRE = qr/([-]?[0-9\.]+(?:e[-]?[0-9]+)?)/;
     while(<>)
     {
-      foreach my $curve (@curves)
+      # parse the incoming data lines. The format is
+      # x idx0 dat0 idx1 dat1 ....
+      # where idxX is the index of the curve that datX corresponds to
+      /($numRE)/gc or next;
+      my $x = $1;
+
+      while(/([0-9]+) ($numRE)/gc)
       {
-        my $buf = $curve->{"data"};
+        my $idx   = $1;
+        my $point = $2;
 
-        # get the next datapoint, if there is one
-        my $point;
-        if(/($numRE)/gc)
+        # if this curve index doesn't exist, create curve up-to this index
+        while(!exists $curves[$idx])
         {
-          $point = $1;
-        }
-        # if a point is not defined here, dup the last point we have if
-        # possible
-        elsif(@$buf)
-        {
-          $point = @$buf[$#$buf];
-        }
-        # otherwise we can do nothing with this curve, so we skip it
-        else
-        {
-          next;
+          newCurve("", "");
         }
 
-        # data buffering (up to stream sample size)
-        push @$buf, $point;
-        shift @$buf if(@$buf > $samples && $options{"stream"});
+        push @{$curves[$idx]->{"data"}}, [$x, $point];
       }
 
-      # if any extra data is available, create new curves for it
-      while(/($numRE)/gc)
+      if($options{"stream"})
       {
-        newCurve("", "", $1);
+        cutOld($x - $xwindow);
+        plotStoredData($x - $xwindow, $x);
       }
-
-      plotStoredData($xlast, $samples, *PIPE) if($options{"stream"});
-      $xlast++;
     }
 
     if($options{"stream"})
@@ -196,8 +184,7 @@ sub main {
     }
     else
     {
-      $samples = @{$curves[0]->{"data"}};
-      plotStoredData($xlast, $samples, *PIPE);
+      plotStoredData();
 
       if( defined $options{"hardcopy"})
       {
@@ -222,24 +209,33 @@ sub main {
     sleep 100000;
 }
 
+sub cutOld
+{
+  my ($oldestx) = @_;
+  foreach (@curves)
+  {
+    my $xy = $_->{"data"};
+    while(@$xy && $xy->[0][0] < $oldestx)
+    {
+      shift @$xy;
+    }
+  }
+}
+
 sub plotStoredData
 {
-  my ($xlast, $samples, $pipe) = @_;
-
-  my $x0 = $xlast - $samples + 1;
-  print $pipe "set xrange [$x0:$xlast]\n";
+  my ($xmin, $xmax) = @_;
+  print PIPE "set xrange [$xmin:$xmax]\n" if defined $xmin;
 
   my @extraopts = map {$_->{"extraopts"}} @curves;
-  print $pipe 'plot ' . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
+  print PIPE 'plot ' . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
 
   foreach my $curve (@curves)
   {
     my $buf = $curve->{"data"};
-    # if the buffer isn't yet complete, skip the appropriate number of points
-    my $x = $x0 + $samples - @$buf;
     for my $elem (@$buf) {
-      print $pipe "$x $elem\n";
-      $x++;
+      my ($x, $y) = @$elem;
+      print PIPE "$x $y\n";
     }
     print PIPE "e\n";
   }
@@ -251,18 +247,10 @@ sub newCurve()
   if($title) { $opts = "title \"$title\" $opts" }
   else       { $opts = "notitle $opts" }
 
-  my $data = [];
-  if (defined $newpoint)
-  {
-    my $numpoints = 1;
-    if (@curves) {
-      $numpoints = @{$curves[0]->{"data"}};
-    }
-    $data = [($newpoint) x $numpoints]
-  }
+  $newpoint = [] unless defined $newpoint;
   push ( @curves,
          {"extraopts" => " $opts",
-          "data"      => $data} );
+          "data"      => $newpoint} );
 }
 
 main;
