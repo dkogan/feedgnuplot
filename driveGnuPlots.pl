@@ -5,6 +5,8 @@ use Time::HiRes qw( usleep );
 use IO::Handle;
 use Data::Dumper;
 
+autoflush STDOUT 1;
+
 # list containing the plot data. Each element is a hash describing the extra
 # plotting options for each curve we're plotting, and the actual data to
 # plot for each curve. The length of this list grows as the data comes
@@ -144,7 +146,6 @@ sub main {
       }
     }
 
-    select((select(STDOUT), $| = 1)[0]);
     my $xlast = 0;
 
     # regexp for a possibly floating point, possibly scientific notation number
