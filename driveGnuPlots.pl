@@ -2,6 +2,7 @@
 use strict;
 use Getopt::Long;
 use Time::HiRes qw( usleep );
+use IO::Handle;
 use Data::Dumper;
 
 # list containing the plot data. Each element is a hash describing the extra
@@ -84,7 +85,7 @@ sub main {
 
     local *PIPE;
     open PIPE, "|gnuplot" || die "Can't initialize gnuplot\n";
-    select((select(PIPE), $| = 1)[0]);
+    autoflush PIPE 1;
 
     my $temphardcopyfile;
     my $outputfile;
