@@ -3,6 +3,7 @@ use strict;
 use Getopt::Long;
 use Time::HiRes qw( usleep );
 use IO::Handle;
+use List::MoreUtils qw( first_index );
 use Data::Dumper;
 
 autoflush STDOUT 1;
@@ -215,9 +216,11 @@ sub cutOld
   foreach (@curves)
   {
     my $xy = $_->{"data"};
-    while(@$xy && $xy->[0][0] < $oldestx)
+
+    if( @$xy )
     {
-      shift @$xy;
+      my $firstInWindow = first_index {$_->[0] >= $oldestx} @$xy;
+      splice( @$xy, 0, $firstInWindow ) unless $firstInWindow == -1;
     }
   }
 }
