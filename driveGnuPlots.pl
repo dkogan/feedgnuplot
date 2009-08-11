@@ -230,12 +230,13 @@ sub plotStoredData
   my ($xmin, $xmax) = @_;
   print PIPE "set xrange [$xmin:$xmax]\n" if defined $xmin;
 
-  my @extraopts = map {$_->{"extraopts"}} @curves;
+  my @extraopts = map {$_->{"extraopts"}} grep {@{$_->{"data"}}} @curves;
   print PIPE 'plot ' . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
 
   foreach my $curve (@curves)
   {
     my $buf = $curve->{"data"};
+    next unless @$buf;
     for my $elem (@$buf) {
       my ($x, $y) = @$elem;
       print PIPE "$x $y\n";
