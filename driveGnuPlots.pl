@@ -1,10 +1,12 @@
 #!/usr/bin/perl -w
 use strict;
 use Getopt::Long;
-use Time::HiRes qw( usleep );
+use Time::HiRes qw( usleep gettimeofday tv_interval);
 use IO::Handle;
 use List::MoreUtils qw( first_index );
 use Data::Dumper;
+use threads;
+use Thread::Queue;
 
 autoflush STDOUT 1;
 
@@ -48,44 +50,55 @@ if($options{"points"}) { $style .= "points";}
 
 if(!$style) { $style = "points"; }
 
-sub usage {
-    print "Usage: $0 <options>\n";
-    print <<OEF;
-  --[no]stream         Do [not] display the data a point at a time, as it comes in
-  --[no]lines          Do [not] draw lines to connect consecutive points
-  --xlabel xxx         Set x-axis label
-  --ylabel xxx         Set y-axis label
-  --y2label xxx        Set y2-axis label
-  --title  xxx         Set the title of the plot
-  --legend xxx         Set the label for a curve plot. Give this option multiple times for multiple curves
-  --xlen xxx           Set the size of the x-window to plot
-  --ymin  xxx          Set the range for the y axis. Both or neither of these have to be specified
-  --ymax  xxx          Set the range for the y axis. Both or neither of these have to be specified
-  --y2min xxx          Set the range for the y2 axis. Both or neither of these have to be specified
-  --y2max xxx          Set the range for the y2 axis. Both or neither of these have to be specified
-  --y2    xxx          Plot the data with this index on the y2 axis. These are 0-indexed
-  --hardcopy xxx       If not streaming, output to a file specified here. Format inferred from filename
-OEF
+if( defined $options{"help"} )
+{
+  usage();
+  return;
+}
+if( defined $options{"hardcopy"} && $options{"stream"} )
+{
+  usage();
+  die("If making a hardcopy, we shouldn't be streaming. Doing nothing\n");
+}
+if( !defined $options{"xlen"} )
+{
+  usage();
+  die("Must specify the size of the moving x-window. Doing nothing\n");
+}
+my $xwindow = $options{"xlen"};
+
+
+
+
+# now start the data acquisition and plotting threads
+my $dataQueue = Thread::Queue->new();
+my $addThr    = threads->create(\&mainThread);
+my $plotThr   = threads->create(\&plotThread);
+
+while(<>)
+{
+  $dataQueue->enqueue($_);
 }
 
-sub main {
-    if( defined $options{"help"} )
-    {
-      usage;
-      return;
-    }
-    if( defined $options{"hardcopy"} && $options{"stream"} )
-    {
-      usage;
-      die("If making a hardcopy, we shouldn't be streaming. Doing nothing\n");
-    }
-    if( !defined $options{"xlen"} )
-    {
-      usage;
-      die("Must specify the size of the moving x-window. Doing nothing\n");
-    }
-    my $xwindow = $options{"xlen"};
+$dataQueue->enqueue("Plot now");
+$dataQueue->enqueue(undef);
 
+$addThr->join();
+$plotThr->join();
+
+
+
+
+sub plotThread
+{
+  while(1)
+  {
+    sleep(1);
+    $dataQueue->enqueue("Plot now");
+  }
+}
+
+sub mainThread {
     local *PIPE;
     open PIPE, "|gnuplot" || die "Can't initialize gnuplot\n";
     autoflush PIPE 1;
@@ -149,32 +162,36 @@ sub main {
 
     # regexp for a possibly floating point, possibly scientific notation number
     my $numRE = qr/([-]?[0-9\.]+(?:e[-]?[0-9]+)?)/;
-    while(<>)
+    my $xlast;
+    while( $_ = $dataQueue->dequeue() )
     {
-      # parse the incoming data lines. The format is
-      # x idx0 dat0 idx1 dat1 ....
-      # where idxX is the index of the curve that datX corresponds to
-      /($numRE)/gc or next;
-      my $x = $1;
-
-      while(/([0-9]+) ($numRE)/gc)
+      if(!/Plot now/)
       {
-        my $idx   = $1;
-        my $point = $2;
+        # parse the incoming data lines. The format is
+        # x idx0 dat0 idx1 dat1 ....
+        # where idxX is the index of the curve that datX corresponds to
+        /($numRE)/gc or next;
+        $xlast = $1;
 
-        # if this curve index doesn't exist, create curve up-to this index
-        while(!exists $curves[$idx])
+        while(/([0-9]+) ($numRE)/gc)
         {
-          newCurve("", "");
-        }
+          my $idx   = $1;
+          my $point = $2;
 
-        push @{$curves[$idx]->{"data"}}, [$x, $point];
+          # if this curve index doesn't exist, create curve up-to this index
+          while(!exists $curves[$idx])
+          {
+            newCurve("", "");
+          }
+
+          push @{$curves[$idx]->{"data"}}, [$xlast, $point];
+        }
       }
 
-      if($options{"stream"})
+      elsif($options{"stream"})
       {
-        cutOld($x - $xwindow);
-        plotStoredData($x - $xwindow, $x);
+        cutOld($xlast - $xwindow);
+        plotStoredData($xlast - $xwindow, $xlast);
       }
     }
 
@@ -257,4 +274,23 @@ sub newCurve()
           "data"      => $newpoint} );
 }
 
-main;
+sub usage {
+  print "Usage: $0 <options>\n";
+  print <<OEF;
+  --[no]stream         Do [not] display the data a point at a time, as it comes in
+  --[no]lines          Do [not] draw lines to connect consecutive points
+  --xlabel xxx         Set x-axis label
+  --ylabel xxx         Set y-axis label
+  --y2label xxx        Set y2-axis label
+  --title  xxx         Set the title of the plot
+  --legend xxx         Set the label for a curve plot. Give this option multiple times for multiple curves
+  --xlen xxx           Set the size of the x-window to plot
+  --ymin  xxx          Set the range for the y axis. Both or neither of these have to be specified
+  --ymax  xxx          Set the range for the y axis. Both or neither of these have to be specified
+  --y2min xxx          Set the range for the y2 axis. Both or neither of these have to be specified
+  --y2max xxx          Set the range for the y2 axis. Both or neither of these have to be specified
+  --y2    xxx          Plot the data with this index on the y2 axis. These are 0-indexed
+  --hardcopy xxx       If not streaming, output to a file specified here. Format inferred from filename
+OEF
+}
+
