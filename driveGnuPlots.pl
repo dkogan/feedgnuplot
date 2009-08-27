@@ -72,20 +72,33 @@ my $xwindow = $options{"xlen"};
 
 # now start the data acquisition and plotting threads
 my $dataQueue = Thread::Queue->new();
-my $addThr    = threads->create(\&mainThread);
-my $plotThr   = threads->create(\&plotThread) if(!$options{"stream"});
 
-while(<>)
+
+if($options{"stream"})
 {
-  $dataQueue->enqueue($_);
+  my $addThr    = threads->create(\&mainThread);
+  my $plotThr   = threads->create(\&plotThread);
+
+  while(<>)
+  {
+    $dataQueue->enqueue($_);
+  }
+
+  $dataQueue->enqueue("Plot now");
+  $dataQueue->enqueue(undef);
+
+  $addThr->join();
+  $plotThr->join();
 }
-
-$dataQueue->enqueue("Plot now");
-$dataQueue->enqueue(undef);
-
-$addThr->join();
-$plotThr->join() if(!$options{"stream"});
-
+else
+{
+  while(<>)
+  {
+    $dataQueue->enqueue($_);
+  }
+  $dataQueue->enqueue(undef);
+  mainThread();
+}
 
 
 
@@ -100,7 +113,7 @@ sub plotThread
 
 sub mainThread {
     local *PIPE;
-    open PIPE, "|gnuplot" || die "Can't initialize gnuplot\n";
+    open PIPE, "|gnuplot --persist" || die "Can't initialize gnuplot\n";
     autoflush PIPE 1;
 
     my $temphardcopyfile;
@@ -195,6 +208,7 @@ sub mainThread {
       }
     }
 
+    # read in all of the data
     if($options{"stream"})
     {
       print PIPE "exit;\n";
@@ -224,7 +238,6 @@ sub mainThread {
         return;
       }
     }
-    sleep 100000;
 }
 
 sub cutOld
