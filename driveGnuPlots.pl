@@ -73,7 +73,7 @@ my $xwindow = $options{"xlen"};
 # now start the data acquisition and plotting threads
 my $dataQueue = Thread::Queue->new();
 my $addThr    = threads->create(\&mainThread);
-my $plotThr   = threads->create(\&plotThread);
+my $plotThr   = threads->create(\&plotThread) if(!$options{"stream"});
 
 while(<>)
 {
@@ -84,7 +84,7 @@ $dataQueue->enqueue("Plot now");
 $dataQueue->enqueue(undef);
 
 $addThr->join();
-$plotThr->join();
+$plotThr->join() if(!$options{"stream"});
 
 
 
