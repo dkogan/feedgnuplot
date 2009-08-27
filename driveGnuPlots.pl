@@ -204,7 +204,7 @@ sub mainThread {
         }
       }
 
-      elsif($options{"stream"})
+      elsif($options{"stream"} && defined $xlast)
       {
         cutOld($xlast - $xwindow);
         plotStoredData($xlast - $xwindow, $xlast);
