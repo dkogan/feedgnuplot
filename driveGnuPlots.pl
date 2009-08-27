@@ -113,7 +113,10 @@ sub plotThread
 
 sub mainThread {
     local *PIPE;
-    open PIPE, "|gnuplot --persist" || die "Can't initialize gnuplot\n";
+    my $dopersist = "";
+    $dopersist = "--persist" if(!$options{"stream"});
+
+    open PIPE, "|gnuplot $dopersist" || die "Can't initialize gnuplot\n";
     autoflush PIPE 1;
 
     my $temphardcopyfile;
@@ -237,6 +240,11 @@ sub mainThread {
         printf "Wrote output to $outputfile\n";
         return;
       }
+
+      # we persist gnuplot, so we shouldn't need this sleep. However, once
+      # gnuplot exist, but the persistent window sticks around, you can no
+      # longer interactively zoom the plot. So we still sleep
+      sleep(100000);
     }
 }
 
