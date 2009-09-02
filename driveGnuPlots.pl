@@ -57,8 +57,7 @@ if( defined $options{"help"} )
 }
 if( defined $options{"hardcopy"} && $options{"stream"} )
 {
-  usage();
-  die("If making a hardcopy, we shouldn't be streaming. Doing nothing\n");
+  $options{"stream"} = undef;
 }
 if( !defined $options{"xlen"} )
 {
