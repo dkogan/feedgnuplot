@@ -143,10 +143,13 @@ sub mainThread {
     }
 
     print PIPE "set xtics\n";
-    print PIPE "set ytics nomirror\n";
-    print PIPE "set y2tics\n";
+    if($options{"y2"})
+    {
+      print PIPE "set ytics nomirror\n";
+      print PIPE "set y2tics\n";
+      print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if $options{"y2max"};
+    }
     print PIPE "set yrange [". $options{"ymin"} . ":" . $options{"ymax"} ."]\n" if $options{"y2max"};
-    print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if $options{"y2max"};
     print PIPE "set style data $style\n";
     print PIPE "set grid\n";
 
