@@ -55,26 +55,23 @@ if( defined $options{"help"} )
   usage();
   return;
 }
-if( defined $options{"hardcopy"} && $options{"stream"} )
-{
-  $options{"stream"} = undef;
-}
-if( !defined $options{"xlen"} )
-{
-  usage();
-  die("Must specify the size of the moving x-window. Doing nothing\n");
-}
-my $xwindow = $options{"xlen"};
-
-
-
 
 # now start the data acquisition and plotting threads
 my $dataQueue = Thread::Queue->new();
 
-
 if($options{"stream"})
 {
+  if( defined $options{"hardcopy"})
+  {
+    $options{"stream"} = undef;
+  }
+  if( !defined $options{"xlen"} )
+  {
+    usage();
+    die("Must specify the size of the moving x-window. Doing nothing\n");
+  }
+  my $xwindow = $options{"xlen"};
+
   my $addThr    = threads->create(\&mainThread);
   my $plotThr   = threads->create(\&plotThread);
 
