@@ -58,6 +58,7 @@ if( defined $options{"help"} )
 
 # now start the data acquisition and plotting threads
 my $dataQueue = Thread::Queue->new();
+my $xwindow;
 
 if($options{"stream"})
 {
@@ -70,7 +71,7 @@ if($options{"stream"})
     usage();
     die("Must specify the size of the moving x-window. Doing nothing\n");
   }
-  my $xwindow = $options{"xlen"};
+  $xwindow = $options{"xlen"};
 
   my $addThr    = threads->create(\&mainThread);
   my $plotThr   = threads->create(\&plotThread);
