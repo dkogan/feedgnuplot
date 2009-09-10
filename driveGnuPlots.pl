@@ -10,11 +10,10 @@ use Thread::Queue;
 
 autoflush STDOUT 1;
 
-# list containing the plot data. Each element is a hash describing the extra
-# plotting options for each curve we're plotting, and the actual data to
-# plot for each curve. The length of this list grows as the data comes
-# in
-my @curves = ();
+# list containing the plot data. Each element is a reference to a list,
+# representing the data for one curve. The first "point" is a string of plot
+# options
+my @curves      = ();
 
 # stream in the data by default
 # point plotting by default
@@ -57,7 +56,7 @@ if( defined $options{"help"} )
 }
 
 # now start the data acquisition and plotting threads
-my $dataQueue = Thread::Queue->new();
+my $dataQueue;
 my $xwindow;
 
 if($options{"stream"})
@@ -73,6 +72,7 @@ if($options{"stream"})
   }
   $xwindow = $options{"xlen"};
 
+  $dataQueue = Thread::Queue->new();
   my $addThr    = threads->create(\&mainThread);
   my $plotThr   = threads->create(\&plotThread);
 
@@ -89,11 +89,6 @@ if($options{"stream"})
 }
 else
 {
-  while(<>)
-  {
-    $dataQueue->enqueue($_);
-  }
-  $dataQueue->enqueue(undef);
   mainThread();
 }
 
@@ -140,6 +135,7 @@ sub mainThread {
       print PIPE "set output \"$temphardcopyfile\"\n";
     }
 
+    print PIPE "set terminal x11\n";
     print PIPE "set xtics\n";
     if($options{"y2"})
     {
@@ -168,7 +164,7 @@ sub mainThread {
       my $str = " axes x1y2 linewidth 3";
       if(exists $curves[$y2idx])
       {
-        $curves[$y2idx]{"extraopts"} .= $str;
+        $curves[$y2idx][0] .= $str;
       }
       else
       {
@@ -179,17 +175,18 @@ sub mainThread {
     # regexp for a possibly floating point, possibly scientific notation number
     my $numRE = qr/([-]?[0-9\.]+(?:e[-]?[0-9]+)?)/;
     my $xlast;
-    while( $_ = $dataQueue->dequeue() )
+
+    while( $_ = ($dataQueue && $dataQueue->dequeue()) || <> )
     {
-      if(!/Plot now/)
+      if($_ ne "Plot now")
       {
         # parse the incoming data lines. The format is
         # x idx0 dat0 idx1 dat1 ....
         # where idxX is the index of the curve that datX corresponds to
-        /($numRE)/gc or next;
+        /$numRE/gco or next;
         $xlast = $1;
 
-        while(/([0-9]+) ($numRE)/gc)
+        while(/([0-9]+) $numRE/gco)
         {
           my $idx   = $1;
           my $point = $2;
@@ -200,7 +197,7 @@ sub mainThread {
             newCurve("", "");
           }
 
-          push @{$curves[$idx]->{"data"}}, [$xlast, $point];
+          push @{$curves[$idx]}, [$xlast, $point];
         }
       }
 
@@ -251,14 +248,13 @@ sub mainThread {
 sub cutOld
 {
   my ($oldestx) = @_;
-  foreach (@curves)
-  {
-    my $xy = $_->{"data"};
 
-    if( @$xy )
+  foreach my $xy (@curves)
+  {
+    if( @$xy > 1 )
     {
-      my $firstInWindow = first_index {$_->[0] >= $oldestx} @$xy;
-      splice( @$xy, 0, $firstInWindow ) unless $firstInWindow == -1;
+      my $firstInWindow = first_index {$_->[0] >= $oldestx} @{$xy}[1..$#$xy];
+      splice( @$xy, 1, $firstInWindow ) unless $firstInWindow == -1;
     }
   }
 }
@@ -268,14 +264,16 @@ sub plotStoredData
   my ($xmin, $xmax) = @_;
   print PIPE "set xrange [$xmin:$xmax]\n" if defined $xmin;
 
-  my @extraopts = map {$_->{"extraopts"}} grep {@{$_->{"data"}}} @curves;
+  # get the options for those curves that have any data
+  my @extraopts = map {$_->[0]}  grep {@$_ > 1} @curves;
+
   print PIPE 'plot ' . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
 
-  foreach my $curve (@curves)
+  foreach my $buf (@curves)
   {
-    my $buf = $curve->{"data"};
-    next unless @$buf;
-    for my $elem (@$buf) {
+    # send each point to gnuplot. Ignore the first "point" since it's the
+    # options string
+    for my $elem (@{$buf}[1..$#$buf]) {
       my ($x, $y) = @$elem;
       print PIPE "$x $y\n";
     }
@@ -289,10 +287,14 @@ sub newCurve()
   if($title) { $opts = "title \"$title\" $opts" }
   else       { $opts = "notitle $opts" }
 
-  $newpoint = [] unless defined $newpoint;
-  push ( @curves,
-         {"extraopts" => " $opts",
-          "data"      => $newpoint} );
+  if( defined $newpoint )
+  {
+    push @curves, [" $opts", $newpoint];
+  }
+  else
+  {
+    push @curves, [" $opts"];
+  }
 }
 
 sub usage {
