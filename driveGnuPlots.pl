@@ -40,7 +40,8 @@ GetOptions(\%options,
            "y2max=f",
            "y2=i@",
            "hardcopy=s",
-           "help");
+           "help",
+           "dump");
 
 # set up plotting style
 my $style = "";
@@ -108,7 +109,14 @@ sub mainThread {
     my $dopersist = "";
     $dopersist = "--persist" if(!$options{"stream"});
 
-    open PIPE, "|gnuplot $dopersist" || die "Can't initialize gnuplot\n";
+    if(exists $options{"dump"})
+    {
+      *PIPE = *STDOUT;
+    }
+    else
+    {
+      open PIPE, "|gnuplot $dopersist" || die "Can't initialize gnuplot\n";
+    }
     autoflush PIPE 1;
 
     my $temphardcopyfile;
