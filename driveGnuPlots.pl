@@ -268,11 +268,12 @@ sub plotStoredData
   print PIPE "set xrange [$xmin:$xmax]\n" if defined $xmin;
 
   # get the options for those curves that have any data
-  my @extraopts = map {$_->[0]}  grep {@$_ > 1} @curves;
+  my @nonemptyCurves = grep {@$_ > 1} @curves;
+  my @extraopts = map {$_->[0]} @nonemptyCurves;
 
   print PIPE 'plot ' . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
 
-  foreach my $buf (@curves)
+  foreach my $buf (@nonemptyCurves)
   {
     # send each point to gnuplot. Ignore the first "point" since it's the
     # options string
