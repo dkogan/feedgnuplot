@@ -134,8 +134,11 @@ sub mainThread {
       $temphardcopyfile = "/tmp/$temphardcopyfile";
       print PIPE "set output \"$temphardcopyfile\"\n";
     }
+    else
+    {
+      print PIPE "set terminal x11\n";
+    }
 
-    print PIPE "set terminal x11\n";
     print PIPE "set xtics\n";
     if($options{"y2"})
     {
