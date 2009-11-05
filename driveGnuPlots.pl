@@ -182,7 +182,7 @@ sub mainThread {
       }
       else
       {
-        newCurve("", $str);
+        newCurve("", $str, undef, $y2idx);
       }
     }
 
@@ -208,11 +208,7 @@ sub mainThread {
           my $idx   = $1;
           my $point = $2;
 
-          # if this curve index doesn't exist, create curve up-to this index
-          while(!exists $curves[$idx])
-          {
-            newCurve("", "");
-          }
+          newCurve("", "", undef, $idx);
 
           push @{$curves[$idx]}, [$xlast, $point];
         }
@@ -304,19 +300,42 @@ sub plotStoredData
 
 sub newCurve()
 {
-  my ($title, $opts, $newpoint) = @_;
+  my ($title, $opts, $newpoint, $idx) = @_;
+
+  # if this curve index doesn't exist, create curve up-to this index
+  if(defined $idx)
+  {
+    while(!exists $curves[$idx])
+    {
+      pushNewEmptyCurve();
+    }
+  }
+  else
+  {
+    # if we're not given an index, create a new one at the end, and fill it in
+    pushNewEmptyCurve();
+    $idx = $#curves;
+  }
+
   if($title) { $opts = "title \"$title\" $opts" }
   else       { $opts = "notitle $opts" }
 
   if( defined $newpoint )
   {
-    push @curves, [" $opts", $newpoint];
+    $curves[$idx] = [" $opts", $newpoint];
   }
   else
   {
-    push @curves, [" $opts"];
+    $curves[$idx] = [" $opts"];
   }
 }
+
+sub pushNewEmptyCurve
+{
+  my $opts = "notitle ";
+  push @curves, [" $opts"];
+}
+
 
 sub usage {
   print "Usage: $0 <options>\n";
