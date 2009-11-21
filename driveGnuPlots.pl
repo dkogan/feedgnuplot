@@ -208,7 +208,7 @@ sub mainThread {
           my $idx   = $1;
           my $point = $2;
 
-          newCurve("", "", undef, $idx);
+          newCurve("", "", undef, $idx) unless exists $curves[$idx];
 
           push @{$curves[$idx]}, [$xlast, $point];
         }
