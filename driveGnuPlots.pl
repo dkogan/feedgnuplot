@@ -36,6 +36,8 @@ GetOptions(\%options,
            "xlen=f",
            "ymin=f",
            "ymax=f",
+           "xmin=f",
+           "xmax=f",
            "y2min=f",
            "y2max=f",
            "y2=i@",
@@ -152,9 +154,10 @@ sub mainThread {
     {
       print PIPE "set ytics nomirror\n";
       print PIPE "set y2tics\n";
-      print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if $options{"y2max"};
+      print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if( $options{"y2min"} || $options{"y2max"} );
     }
-    print PIPE "set yrange [". $options{"ymin"} . ":" . $options{"ymax"} ."]\n" if $options{"y2max"};
+    print PIPE "set xrange [". $options{"xmin"} . ":" . $options{"xmax"} ."]\n" if( $options{"xmin"} || $options{"xmax"} );;
+    print PIPE "set yrange [". $options{"ymin"} . ":" . $options{"ymax"} ."]\n" if( $options{"ymin"} || $options{"ymax"} );;
     print PIPE "set style data $style\n";
     print PIPE "set grid\n";
 
@@ -320,10 +323,12 @@ sub usage {
   --title  xxx         Set the title of the plot
   --legend xxx         Set the label for a curve plot. Give this option multiple times for multiple curves
   --xlen xxx           Set the size of the x-window to plot
-  --ymin  xxx          Set the range for the y axis. Both or neither of these have to be specified
-  --ymax  xxx          Set the range for the y axis. Both or neither of these have to be specified
-  --y2min xxx          Set the range for the y2 axis. Both or neither of these have to be specified
-  --y2max xxx          Set the range for the y2 axis. Both or neither of these have to be specified
+  --xmin  xxx          Set the range for the x axis. These are ignored in a streaming plot
+  --xmax  xxx          Set the range for the x axis. These are ignored in a streaming plot
+  --ymin  xxx          Set the range for the y axis.
+  --ymax  xxx          Set the range for the y axis.
+  --y2min xxx          Set the range for the y2 axis.
+  --y2max xxx          Set the range for the y2 axis.
   --y2    xxx          Plot the data with this index on the y2 axis. These are 0-indexed
   --hardcopy xxx       If not streaming, output to a file specified here. Format inferred from filename
 OEF
