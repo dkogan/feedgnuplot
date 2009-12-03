@@ -130,18 +130,20 @@ sub mainThread {
       ($outputfileType) = $outputfile =~ /\.(ps|pdf|png)$/;
       if(!$outputfileType) { die("Only .ps, .pdf and .png supported\n"); }
 
-      if ($outputfileType eq "png")
-      {
-        print PIPE "set terminal png\n";
-      }
-      else
-      {
-        print PIPE "set terminal postscript solid color landscape 10\n";
-      }
 # write to a temporary file first
       $temphardcopyfile = $outputfile;
       $temphardcopyfile =~ s{/}{_}g;
       $temphardcopyfile = "/tmp/$temphardcopyfile";
+      if ($outputfileType eq "png")
+      {
+        print PIPE "set terminal png\n";
+        $temphardcopyfile .= '.png';
+      }
+      else
+      {
+        print PIPE "set terminal postscript solid color landscape 10\n";
+        $temphardcopyfile .= '.ps';
+      }
       print PIPE "set output \"$temphardcopyfile\"\n";
     }
     else
@@ -242,6 +244,7 @@ sub mainThread {
         usleep(100_000) until -e $temphardcopyfile;
         usleep(100_000) until(system("fuser -s $temphardcopyfile"));
 
+        print "Finished gnuplotting. Converting...\n";
         if($outputfileType eq "pdf")
         {
           system("ps2pdf $temphardcopyfile $outputfile");
@@ -250,7 +253,7 @@ sub mainThread {
         {
           system("mv $temphardcopyfile $outputfile");
         }
-        printf "Wrote output to $outputfile\n";
+        print "Wrote output to $outputfile\n";
         return;
       }
 
