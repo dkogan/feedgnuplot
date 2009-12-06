@@ -190,7 +190,7 @@ sub mainThread {
     my $numRE = qr/([-]?[0-9\.]+(?:e[-]?[0-9]+)?)/;
     my $xlast;
 
-    while( $_ = ($dataQueue && $dataQueue->dequeue()) || <> )
+    while( $_ = ($dataQueue && $dataQueue->dequeue()) // <> )
     {
       if($_ ne "Plot now")
       {
