@@ -186,8 +186,8 @@ sub mainThread {
       }
     }
 
-    # regexp for a possibly floating point, possibly scientific notation number
-    my $numRE = qr/([-]?[0-9\.]+(?:e[-]?[0-9]+)?)/;
+    # regexp for a possibly floating point, possibly scientific notation number, fully captured
+    my $numRE = qr/([-]?[0-9\.]+(?:e[-]?[0-9]+)?)/o;
     my $xlast;
 
     while( $_ = ($dataQueue && $dataQueue->dequeue()) // <> )
