@@ -15,6 +15,26 @@ autoflush STDOUT 1;
 # options
 my @curves      = ();
 
+my $usage = <<OEF;
+Usage: $0 <options>
+  --[no]stream         Do [not] display the data a point at a time, as it comes in
+  --[no]lines          Do [not] draw lines to connect consecutive points
+  --xlabel xxx         Set x-axis label
+  --ylabel xxx         Set y-axis label
+  --y2label xxx        Set y2-axis label
+  --title  xxx         Set the title of the plot
+  --legend xxx         Set the label for a curve plot. Give this option multiple times for multiple curves
+  --xlen xxx           Set the size of the x-window to plot
+  --xmin  xxx          Set the range for the x axis. These are ignored in a streaming plot
+  --xmax  xxx          Set the range for the x axis. These are ignored in a streaming plot
+  --ymin  xxx          Set the range for the y axis.
+  --ymax  xxx          Set the range for the y axis.
+  --y2min xxx          Set the range for the y2 axis.
+  --y2max xxx          Set the range for the y2 axis.
+  --y2    xxx          Plot the data with this index on the y2 axis. These are 0-indexed
+  --hardcopy xxx       If not streaming, output to a file specified here. Format inferred from filename
+OEF
+
 # stream in the data by default
 # point plotting by default
 my %options = ( "stream" => 1,
@@ -43,7 +63,7 @@ GetOptions(\%options,
            "y2=i@",
            "hardcopy=s",
            "help",
-           "dump");
+           "dump") or die($usage);
 
 # set up plotting style
 my $style = "";
@@ -54,8 +74,7 @@ if(!$style) { $style = "points"; }
 
 if( defined $options{"help"} )
 {
-  usage();
-  return;
+  die($usage);
 }
 
 # now start the data acquisition and plotting threads
@@ -70,8 +89,7 @@ if($options{"stream"})
   }
   if( !defined $options{"xlen"} )
   {
-    usage();
-    die("Must specify the size of the moving x-window. Doing nothing\n");
+    die("$usage\nMust specify the size of the moving x-window. Doing nothing\n");
   }
   $xwindow = $options{"xlen"};
 
@@ -338,27 +356,3 @@ sub pushNewEmptyCurve
   my $opts = "notitle ";
   push @curves, [" $opts"];
 }
-
-
-sub usage {
-  print "Usage: $0 <options>\n";
-  print <<OEF;
-  --[no]stream         Do [not] display the data a point at a time, as it comes in
-  --[no]lines          Do [not] draw lines to connect consecutive points
-  --xlabel xxx         Set x-axis label
-  --ylabel xxx         Set y-axis label
-  --y2label xxx        Set y2-axis label
-  --title  xxx         Set the title of the plot
-  --legend xxx         Set the label for a curve plot. Give this option multiple times for multiple curves
-  --xlen xxx           Set the size of the x-window to plot
-  --xmin  xxx          Set the range for the x axis. These are ignored in a streaming plot
-  --xmax  xxx          Set the range for the x axis. These are ignored in a streaming plot
-  --ymin  xxx          Set the range for the y axis.
-  --ymax  xxx          Set the range for the y axis.
-  --y2min xxx          Set the range for the y2 axis.
-  --y2max xxx          Set the range for the y2 axis.
-  --y2    xxx          Plot the data with this index on the y2 axis. These are 0-indexed
-  --hardcopy xxx       If not streaming, output to a file specified here. Format inferred from filename
-OEF
-}
-
