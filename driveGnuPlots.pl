@@ -8,8 +8,6 @@ use Data::Dumper;
 use threads;
 use Thread::Queue;
 
-autoflush STDOUT 1;
-
 my $usage = <<OEF;
 Usage: $0 <options>
   --[no]stream         Do [not] display the data a point at a time, as it comes in
