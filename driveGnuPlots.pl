@@ -189,11 +189,14 @@ sub mainThread {
     # regexp for a possibly floating point, possibly scientific notation number, fully captured
     my $numRE = qr/([-]?[0-9\.]+(?:e[-]?[0-9]+)?)/o;
     my $xlast;
+    my $haveNewData;
 
     while( $_ = ($dataQueue && $dataQueue->dequeue()) // <> )
     {
       if($_ ne "Plot now")
       {
+        $haveNewData = 1;
+
         # parse the incoming data lines. The format is
         # x idx0 dat0 idx1 dat1 ....
         # where idxX is the index of the curve that datX corresponds to
@@ -217,6 +220,9 @@ sub mainThread {
 
       elsif($options{"stream"} && defined $xlast)
       {
+        next unless $haveNewData;
+        $haveNewData = undef;
+
         cutOld($xlast - $xwindow);
         plotStoredData($xlast - $xwindow, $xlast);
       }
