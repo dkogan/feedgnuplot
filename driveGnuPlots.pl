@@ -10,6 +10,31 @@ use Thread::Queue;
 
 my $usage = <<OEF;
 Usage: $0 <options>
+
+  --[no]domain         If enabled, the first element of each line is the
+                       domain variable.  If not, the point index is used
+
+  --[no]dataindex      If enabled, each data point is preceded by the index
+                       of the data set that point corresponds to.  If not
+                       enabled, the order of the point is used.
+
+As an example, if line 3 of the input is "0 9 1 20"
+ '--nodomain --nodataindex' would parse the 4 numbers as points in 4
+   different curves at x=3
+
+ '--domain --nodataindex' would parse the 4 numbers as points in 3 different
+   curves at x=0. Here, 0 is the x-variable and 9,1,20 are the data values
+
+ '--nodomain --dataindex' would parse the 4 numbers as points in 2 different
+   curves at x=3. Here 0 and 1 are the data indices and 9 and 20 are the
+   data values
+
+ '--domain --dataindex' would parse the 4 numbers as a single point at
+   x=0. Here 9 is the data index and 1 is the data value. 20 is an extra
+   value, so it is ignored. If another value followed 20, we'd get another
+   point in curve number
+
+
   --[no]stream         Do [not] display the data a point at a time, as it
                        comes in
   --[no]lines          Do [not] draw lines to connect consecutive points
@@ -39,15 +64,19 @@ OEF
 
 # stream in the data by default
 # point plotting by default
-my %options = ( "stream" => 1,
-                "points" => 0,
-                "lines"  => 0,
-                "ymin"   => "",
-                "ymax"   => "",
-                "y2min"  => "",
-                "y2max"  => "");
+my %options = ( "stream"    => 1,
+                "domain"    => 0,
+                "dataindex" => 0,
+                "points"    => 0,
+                "lines"     => 0,
+                "ymin"      => "",
+                "ymax"      => "",
+                "y2min"     => "",
+                "y2max"     => "");
 GetOptions(\%options,
            "stream!",
+           "domain!",
+           "dataindex!",
            "lines!",
            "points!",
            "legend=s@",
@@ -107,7 +136,15 @@ if($options{"stream"})
 
   while(<>)
   {
+    # place every line of input to the queue, so that the plotting thread can process it.
     $dataQueue->enqueue($_);
+
+    # if we are using an implicit domain (x = line number), then we send it on the data queue also,
+    # since $. is not meaningful in the plotting thread
+    if(!$options{domain})
+    {
+      $dataQueue->enqueue($.);
+    }
   }
 
   $dataQueue->enqueue("Plot now");
@@ -228,17 +265,47 @@ sub mainThread {
         # parse the incoming data lines. The format is
         # x idx0 dat0 idx1 dat1 ....
         # where idxX is the index of the curve that datX corresponds to
-        /$numRE/gco or next;
-        $xlast = $1;
+        #
+        # $options{domain} indicates whether the initial 'x' is given or not (if not, the line
+        # number is used)
+        # $options{dataindex} indicates whether idxX is given or not (if not, the point order in the
+        # line is used)
 
-        while(/([0-9]+) $numRE/gco)
+        if($options{domain})
         {
-          my $idx   = $1;
-          my $point = $2;
+          /$numRE/go or next;
+          $xlast = $1;
+        }
+        else
+        {
+          # since $. is not meaningful in the plotting thread if we're using the data queue, we pass
+          # $. on the data queue in that case. This construct pulls it from the queue if we're using
+          # it, otherwise it uses $. directly
+          $xlast = ($dataQueue && $dataQueue->dequeue()) // $.;
+        }
 
-          newCurve("", "", undef, $idx) unless exists $curves[$idx];
+        if($options{dataindex})
+        {
+          while(/([0-9]+)\s+$numRE/go)
+          {
+            my $idx   = $1;
+            my $point = $2;
 
-          push @{$curves[$idx]}, [$xlast, $point];
+            newCurve("", "", undef, $idx) unless exists $curves[$idx];
+
+            push @{$curves[$idx]}, [$xlast, $point];
+          }
+        }
+        else
+        {
+          my $idx = 0;
+          foreach my $point (/$numRE/go)
+          {
+            newCurve("", "", undef, $idx) unless exists $curves[$idx];
+
+            push @{$curves[$idx]}, [$xlast, $point];
+            $idx++;
+          }
         }
       }
 
