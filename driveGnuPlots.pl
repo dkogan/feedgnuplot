@@ -10,11 +10,6 @@ use Thread::Queue;
 
 autoflush STDOUT 1;
 
-# list containing the plot data. Each element is a reference to a list,
-# representing the data for one curve. The first "point" is a string of plot
-# options
-my @curves      = ();
-
 my $usage = <<OEF;
 Usage: $0 <options>
   --[no]stream         Do [not] display the data a point at a time, as it comes in
@@ -76,6 +71,12 @@ if( defined $options{"help"} )
 {
   die($usage);
 }
+
+
+# list containing the plot data. Each element is a reference to a list,
+# representing the data for one curve. The first "point" is a string of plot
+# options
+my @curves = ();
 
 # now start the data acquisition and plotting threads
 my $dataQueue;
