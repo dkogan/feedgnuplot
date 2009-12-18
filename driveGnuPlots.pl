@@ -62,9 +62,9 @@ As an example, if line 3 of the input is "0 9 1 20"
                        debugging.
 OEF
 
-# stream in the data by default
+# do not stream in the data by default
 # point plotting by default
-my %options = ( "stream"    => 1,
+my %options = ( "stream"    => 0,
                 "domain"    => 0,
                 "dataindex" => 0,
                 "points"    => 0,
