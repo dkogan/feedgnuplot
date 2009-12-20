@@ -184,7 +184,6 @@ sub mainThread {
     }
     autoflush PIPE 1;
 
-    my $temphardcopyfile;
     my $outputfile;
     my $outputfileType;
     if( defined $options{"hardcopy"})
@@ -193,21 +192,13 @@ sub mainThread {
       ($outputfileType) = $outputfile =~ /\.(ps|pdf|png)$/;
       if(!$outputfileType) { die("Only .ps, .pdf and .png supported\n"); }
 
-# write to a temporary file first
-      $temphardcopyfile = $outputfile;
-      $temphardcopyfile =~ s{/}{_}g;
-      $temphardcopyfile = "/tmp/$temphardcopyfile";
-      if ($outputfileType eq "png")
-      {
-        print PIPE "set terminal png\n";
-        $temphardcopyfile .= '.png';
-      }
-      else
-      {
-        print PIPE "set terminal postscript solid color landscape 10\n";
-        $temphardcopyfile .= '.ps';
-      }
-      print PIPE "set output \"$temphardcopyfile\"\n";
+      my %terminalOpts =
+      ( ps  => 'postscript solid color landscape 10',
+        pdf => 'pdfcairo solid color font ",10" size 11in,8.5in',
+        png => 'png' );
+
+      print PIPE "set terminal $terminalOpts{$outputfileType}\n";
+      print PIPE "set output \"$outputfile\"\n";
     }
     else
     {
@@ -334,18 +325,9 @@ sub mainThread {
         print PIPE "set output\n";
         # sleep until the plot file exists, and it is closed. Sometimes the output is
         # still being written at this point
-        usleep(100_000) until -e $temphardcopyfile;
-        usleep(100_000) until(system("fuser -s $temphardcopyfile"));
+        usleep(100_000) until -e $outputfile;
+        usleep(100_000) until(system("fuser -s $outputfile"));
 
-        print "Finished gnuplotting. Converting...\n";
-        if($outputfileType eq "pdf")
-        {
-          system("ps2pdf $temphardcopyfile $outputfile");
-        }
-        else
-        {
-          system("mv $temphardcopyfile $outputfile");
-        }
         print "Wrote output to $outputfile\n";
         return;
       }
