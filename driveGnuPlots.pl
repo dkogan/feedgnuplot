@@ -249,6 +249,8 @@ sub mainThread {
 
     while( $_ = ($dataQueue && $dataQueue->dequeue()) // <> )
     {
+      next if /^#/o;
+
       if($_ ne "Plot now")
       {
         $haveNewData = 1;
