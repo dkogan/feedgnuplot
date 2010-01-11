@@ -310,7 +310,7 @@ sub mainThread {
       }
     }
 
-    # read in all of the data
+    # finished reading in all of the data
     if($options{"stream"})
     {
       print PIPE "exit;\n";
