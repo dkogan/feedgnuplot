@@ -8,6 +8,16 @@ use Data::Dumper;
 use threads;
 use Thread::Queue;
 
+open(GNUPLOT_VERSION, "gnuplot --version |");
+my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*([0-9]*\.[0-9]*)/;
+if(!$gnuplotVersion)
+{
+  print STDERR "Couldn't find the version of gnuplot. Does it work? Trying anyway...\n";
+  $gnuplotVersion = 0;
+}
+
+close(GNUPLOT_VERSION);
+
 my $usage = <<OEF;
 Usage: $0 <options>
 
@@ -172,7 +182,11 @@ sub plotThread
 sub mainThread {
     local *PIPE;
     my $dopersist = "";
-    $dopersist = "--persist" if(!$options{"stream"});
+
+    if($gnuplotVersion >= 4.3)
+    {
+      $dopersist = "--persist" if(!$options{"stream"});
+    }
 
     if(exists $options{"dump"})
     {
