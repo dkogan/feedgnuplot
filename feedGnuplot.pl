@@ -85,6 +85,11 @@ As an example, if line 3 of the input is "0 9 1 20"
   --hardcopy xxx       If not streaming, output to a file specified here. Format
                        inferred from filename
 
+  --maxcurves xxx      The maximum allowed number of curves. This is 10 by default,
+                       but can be reset with this option. This exists purely to
+                       prevent perl from allocating all of the system's memory when
+                       reading bogus data
+
   --dump               Instead of printing to gnuplot, print to STDOUT. For
                        debugging.
 OEF
@@ -99,7 +104,9 @@ my %options = ( "stream"    => 0,
                 "ymin"      => "",
                 "ymax"      => "",
                 "y2min"     => "",
-                "y2max"     => "");
+                "y2max"     => "",
+                "maxcurves" => 10);
+
 GetOptions(\%options,
            "stream!",
            "domain!",
@@ -120,6 +127,7 @@ GetOptions(\%options,
            "y2max=f",
            "y2=i@",
            "hardcopy=s",
+           "maxcurves=i",
            "help",
            "dump") or die($usage);
 
@@ -412,6 +420,13 @@ sub plotStoredData
 sub newCurve()
 {
   my ($title, $opts, $newpoint, $idx) = @_;
+
+  if(scalar @curves >= $options{maxcurves})
+  {
+    say STDERR "Tried to exceed the --maxcurves setting.";
+    say STDERR "Invoke with a higher --maxcurves limit if you really want to do this.";
+    return;
+  }
 
   # if this curve index doesn't exist, create curve up-to this index
   if(defined $idx)
