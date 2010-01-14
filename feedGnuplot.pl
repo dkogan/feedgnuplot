@@ -85,7 +85,7 @@ As an example, if line 3 of the input is "0 9 1 20"
   --hardcopy xxx       If not streaming, output to a file specified here. Format
                        inferred from filename
 
-  --maxcurves xxx      The maximum allowed number of curves. This is 10 by default,
+  --maxcurves xxx      The maximum allowed number of curves. This is 100 by default,
                        but can be reset with this option. This exists purely to
                        prevent perl from allocating all of the system's memory when
                        reading bogus data
@@ -105,7 +105,7 @@ my %options = ( "stream"    => 0,
                 "ymax"      => "",
                 "y2min"     => "",
                 "y2max"     => "",
-                "maxcurves" => 10);
+                "maxcurves" => 100);
 
 GetOptions(\%options,
            "stream!",
