@@ -47,27 +47,44 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --[no]stream         Do [not] display the data a point at a time, as it
                        comes in
+
   --[no]lines          Do [not] draw lines to connect consecutive points
+
   --[no]points         Do [not] draw points
+
   --xlabel xxx         Set x-axis label
+
   --ylabel xxx         Set y-axis label
+
   --y2label xxx        Set y2-axis label
+
   --title  xxx         Set the title of the plot
+
   --legend xxx         Set the label for a curve plot. Give this option multiple
                        times for multiple curves
+
   --xlen xxx           Set the size of the x-window to plot
+
   --xmin  xxx          Set the range for the x axis. These are ignored in a
                        streaming plot
+
   --xmax  xxx          Set the range for the x axis. These are ignored in a
                        streaming plot
+
   --ymin  xxx          Set the range for the y axis.
+
   --ymax  xxx          Set the range for the y axis.
+
   --y2min xxx          Set the range for the y2 axis.
+
   --y2max xxx          Set the range for the y2 axis.
+
   --y2    xxx          Plot the data with this index on the y2 axis. These are
                        0-indexed
+
   --hardcopy xxx       If not streaming, output to a file specified here. Format
                        inferred from filename
+
   --dump               Instead of printing to gnuplot, print to STDOUT. For
                        debugging.
 OEF
