@@ -60,3 +60,8 @@ updated at 1 Hz, so the script can handle rapidly-incoming data without
 spending all of its time replotting.
 
 For more information, invoke with --help, or read the source.
+
+
+This program is originally based on the driveGnuPlots.pl script from
+Thanassis Tsiodras. It is available from his site at
+http://users.softlab.ece.ntua.gr/~ttsiod/gnuplotStreaming.html
