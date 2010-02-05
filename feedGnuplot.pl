@@ -94,6 +94,16 @@ As an example, if line 3 of the input is "0 9 1 20"
                        debugging.
 OEF
 
+# if I'm using a self-plotting data file with a #! line, then $ARGV[0] will contain ALL of the
+# options and $ARGV[1] will contain the data file to plot. In this case I need to split $ARGV[0] so
+# that GetOptions() can parse it correctly. On the other hand, if I'm plotting normally (not with
+# #!)  a file with spaces in the filename, I don't want to split the filename. Hopefully this logic
+# takes care of both those cases.
+if(exists $ARGV[0] && !-r $ARGV[0])
+{
+  unshift @ARGV, split(/\s+/, shift(@ARGV));
+}
+
 # do not stream in the data by default
 # point plotting by default
 my %options = ( "stream"    => 0,
