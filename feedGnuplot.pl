@@ -19,7 +19,10 @@ if(!$gnuplotVersion)
 close(GNUPLOT_VERSION);
 
 my $usage = <<OEF;
-Usage: $0 <options>
+Usage: $0 [options] file1 file2 ...
+  any number of data files can be given on the cmdline. They will be processed
+  in sequence. If no data files are given, data will be read in from standard
+  input.
 
   --[no]domain         If enabled, the first element of each line is the
                        domain variable.  If not, the point index is used
