@@ -66,7 +66,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --legend xxx         Set the label for a curve plot. Give this option multiple
                        times for multiple curves
 
-  --xlen xxx           Set the size of the x-window to plot
+  --xlen xxx           Set the size of the x-window to plot. Omit this or set it
+                       to 0 to plot ALL the data
 
   --xmin  xxx          Set the range for the x axis. These are ignored in a
                        streaming plot
@@ -114,6 +115,7 @@ my %options = ( "stream"    => 0,
                 "dataindex" => 0,
                 "points"    => 0,
                 "lines"     => 0,
+                "xlen"      => 0,
                 "ymin"      => "",
                 "ymax"      => "",
                 "y2min"     => "",
@@ -172,11 +174,6 @@ if($options{"stream"})
   {
     $options{"stream"} = undef;
   }
-  if( !defined $options{"xlen"} )
-  {
-    die("$usage\nMust specify the size of the moving x-window. Doing nothing\n");
-  }
-  $xwindow = $options{"xlen"};
 
   $dataQueue = Thread::Queue->new();
   my $addThr    = threads->create(\&mainThread);
@@ -359,8 +356,15 @@ sub mainThread {
         next unless $haveNewData;
         $haveNewData = undef;
 
-        cutOld($xlast - $xwindow);
-        plotStoredData($xlast - $xwindow, $xlast);
+        if( $options{"xlen"} )
+        {
+          cutOld($xlast - $options{"xlen"});
+          plotStoredData($xlast - $options{"xlen"}, $xlast);
+        }
+        else
+        {
+          plotStoredData();
+        }
       }
     }
 
