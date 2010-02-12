@@ -52,12 +52,13 @@ outputfile". The output type is inferred from the filename with .ps, .pdf
 and .png currently supported.
 
 If something is producing data in realtime, feedGnuplot.pl can be used to
-produce a realtime display. The --stream option should be passed in along
-with "--xlen windowsize". This will produce a scrolling window containing
+produce a realtime display by passing in the --stream option. The "--xlen
+windowsize" option can be passed in also to plot a scrolling window, containing
 the last windowsize-worth of data (windowsize has the units of the x axis,
-whether it is a point index or the passed-in data). The scrolling window is
-updated at 1 Hz, so the script can handle rapidly-incoming data without
-spending all of its time replotting.
+whether it is a point index or the passed-in domain). If --xlen is omitted or
+set to 0, all of the available data is plotted, with no moving window. The
+realtime data is updated at 1 Hz, so the script can handle rapidly-incoming data
+without spending all of its time replotting.
 
 For more information, invoke with --help, or read the source.
 
