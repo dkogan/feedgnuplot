@@ -159,9 +159,9 @@ if( defined $options{"help"} )
 }
 
 
-# list containing the plot data. Each element is a reference to a list,
-# representing the data for one curve. The first "point" is a string of plot
-# options
+# list containing the plot data. Each element is a reference to a list, representing the data for
+# one curve. The first "point" is a hash describing various curve parameters. The rest are all
+# references to lists of (x,y) tuples
 my @curves = ();
 
 # now start the data acquisition and plotting threads
@@ -283,7 +283,7 @@ sub mainThread {
       my $str = " axes x1y2 linewidth 3";
       if(exists $curves[$y2idx])
       {
-        $curves[$y2idx][0] .= $str;
+        $curves[$y2idx][0]{"options"} .= $str;
       }
       else
       {
@@ -419,14 +419,14 @@ sub plotStoredData
 
   # get the options for those curves that have any data
   my @nonemptyCurves = grep {@$_ > 1} @curves;
-  my @extraopts = map {$_->[0]} @nonemptyCurves;
+  my @extraopts = map {$_->[0]{"options"}} @nonemptyCurves;
 
   print PIPE 'plot ' . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
 
   foreach my $buf (@nonemptyCurves)
   {
     # send each point to gnuplot. Ignore the first "point" since it's the
-    # options string
+    # curve options
     for my $elem (@{$buf}[1..$#$buf]) {
       my ($x, $y) = @$elem;
       print PIPE "$x $y\n";
@@ -466,16 +466,16 @@ sub newCurve()
 
   if( defined $newpoint )
   {
-    $curves[$idx] = [" $opts", $newpoint];
+    $curves[$idx] = [{"options" => " $opts"}, $newpoint];
   }
   else
   {
-    $curves[$idx] = [" $opts"];
+    $curves[$idx] = [{"options" => " $opts"}];
   }
 }
 
 sub pushNewEmptyCurve
 {
   my $opts = "notitle ";
-  push @curves, [" $opts"];
+  push @curves, [{"options" => " $opts"}];
 }
