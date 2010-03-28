@@ -351,8 +351,9 @@ sub mainThread {
         }
       }
 
-      elsif($options{"stream"} && defined $xlast)
+      elsif($options{"stream"})
       {
+        # only redraw a streaming plot if there's new data to plot
         next unless $haveNewData;
         $haveNewData = undef;
 
