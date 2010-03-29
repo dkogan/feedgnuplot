@@ -94,6 +94,12 @@ As an example, if line 3 of the input is "0 9 1 20"
                        prevent perl from allocating all of the system's memory when
                        reading bogus data
 
+  --monotonic          If --domain is given, checks to make sure that the x-
+                       coordinate in the input data is monotonically increasing.
+                       If a given x-variable is in the past, all data currently
+                       cached for this curve is purged. Without --monotonic, all
+                       data is kept. No --monotonic by default
+
   --dump               Instead of printing to gnuplot, print to STDOUT. For
                        debugging.
 OEF
@@ -109,7 +115,8 @@ if(exists $ARGV[0] && !-r $ARGV[0])
 }
 
 # do not stream in the data by default
-# point plotting by default
+# point plotting by default.
+# no monotonicity checks by default
 my %options = ( "stream"    => 0,
                 "domain"    => 0,
                 "dataindex" => 0,
@@ -143,6 +150,7 @@ GetOptions(\%options,
            "y2=i@",
            "hardcopy=s",
            "maxcurves=i",
+           "monotonic!",
            "help",
            "dump") or die($usage);
 
@@ -333,9 +341,7 @@ sub mainThread {
             my $idx   = $1;
             my $point = $2;
 
-            newCurve("", "", undef, $idx) unless exists $curves[$idx];
-
-            push @{$curves[$idx]}, [$xlast, $point];
+            pushPoint($idx, [$xlast, $point]);
           }
         }
         else
@@ -343,9 +349,7 @@ sub mainThread {
           my $idx = 0;
           foreach my $point (/$numRE/go)
           {
-            newCurve("", "", undef, $idx) unless exists $curves[$idx];
-
-            push @{$curves[$idx]}, [$xlast, $point];
+            pushPoint($idx, [$xlast, $point]);
             $idx++;
           }
         }
@@ -435,7 +439,7 @@ sub plotStoredData
   }
 }
 
-sub newCurve()
+sub newCurve
 {
   my ($title, $opts, $newpoint, $idx) = @_;
 
@@ -478,4 +482,26 @@ sub pushNewEmptyCurve
 {
   my $opts = "notitle ";
   push @curves, [{"options" => " $opts"}];
+}
+
+sub pushPoint
+{
+  my ($idx, $xy) = @_;
+
+  if ( !exists $curves[$idx] )
+  {
+    newCurve("", "", undef, $idx);
+  }
+  elsif($options{monotonic})
+  {
+    my $curve = $curves[$idx];
+    if( @$curve > 1 && $xy->[0] < $curve->[$#{$curve}][0] )
+    {
+      # the x-coordinate of the new point is in the past, so I wipe out all the data for this curve
+      # and start anew
+      splice( @$curve, 1, @$curve-1 );
+    }
+  }
+
+  push @{$curves[$idx]}, $xy;
 }
