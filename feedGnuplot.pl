@@ -123,10 +123,6 @@ my %options = ( "stream"    => 0,
                 "points"    => 0,
                 "lines"     => 0,
                 "xlen"      => 0,
-                "ymin"      => "",
-                "ymax"      => "",
-                "y2min"     => "",
-                "y2max"     => "",
                 "maxcurves" => 100);
 
 GetOptions(\%options,
@@ -262,15 +258,27 @@ sub mainThread {
       print PIPE "set terminal x11\n";
     }
 
+    # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
+    # gnuplot
+    $options{xmin}  = "" unless defined $options{xmin};
+    $options{xmax}  = "" unless defined $options{xmax};
+    $options{ymin}  = "" unless defined $options{ymin};
+    $options{ymax}  = "" unless defined $options{ymax};
+    $options{y2min} = "" unless defined $options{y2min};
+    $options{y2max} = "" unless defined $options{y2max};
+
     print PIPE "set xtics\n";
     if($options{"y2"})
     {
       print PIPE "set ytics nomirror\n";
       print PIPE "set y2tics\n";
-      print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if( $options{"y2min"} || $options{"y2max"} );
+      # if any of the ranges are given, set the range
+      print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if length( $options{"y2min"} . $options{"y2max"} );
     }
-    print PIPE "set xrange [". $options{"xmin"} . ":" . $options{"xmax"} ."]\n" if( $options{"xmin"} || $options{"xmax"} );;
-    print PIPE "set yrange [". $options{"ymin"} . ":" . $options{"ymax"} ."]\n" if( $options{"ymin"} || $options{"ymax"} );;
+
+    # if any of the ranges are given, set the range
+    print PIPE "set xrange [". $options{"xmin"} . ":" . $options{"xmax"} ."]\n" if length( $options{"xmin"} . $options{"xmax"} );
+    print PIPE "set yrange [". $options{"ymin"} . ":" . $options{"ymax"} ."]\n" if length( $options{"ymin"} . $options{"ymax"} );
     print PIPE "set style data $style\n";
     print PIPE "set grid\n";
 
