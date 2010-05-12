@@ -248,7 +248,7 @@ sub mainThread {
       my %terminalOpts =
       ( ps  => 'postscript solid color landscape 10',
         pdf => 'pdfcairo solid color font ",10" size 11in,8.5in',
-        png => 'png' );
+        png => 'png size 1280,1024' );
 
       print PIPE "set terminal $terminalOpts{$outputfileType}\n";
       print PIPE "set output \"$outputfile\"\n";
