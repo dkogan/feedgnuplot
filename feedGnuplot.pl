@@ -86,6 +86,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --y2    xxx          Plot the data with this index on the y2 axis. These are
                        0-indexed
 
+  --size  xxx          Gnuplot size option
+
   --hardcopy xxx       If not streaming, output to a file specified here. Format
                        inferred from filename
 
@@ -144,6 +146,7 @@ GetOptions(\%options,
            "y2min=f",
            "y2max=f",
            "y2=i@",
+           "size=s",
            "hardcopy=s",
            "maxcurves=i",
            "monotonic!",
@@ -286,6 +289,8 @@ sub mainThread {
     print(PIPE "set ylabel  \"" . $options{"ylabel" } . "\"\n") if $options{"ylabel"};
     print(PIPE "set y2label \"" . $options{"y2label"} . "\"\n") if $options{"y2label"};
     print(PIPE "set title   \"" . $options{"title"  } . "\"\n") if $options{"title"};
+
+    print(PIPE "set size   \"" . $options{size} . "\"\n") if defined $options{"size"};
 
 # For the specified values, set the legend entries to 'title "blah blah"'
     if($options{"legend"})
