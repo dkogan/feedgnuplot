@@ -317,7 +317,8 @@ sub mainThread {
     my $xlast;
     my $haveNewData;
 
-    while( $_ = ($dataQueue && $dataQueue->dequeue()) // <> )
+    # I should be using the // operator, but I'd like to be compatible with perl 5.8
+    while( $_ = (defined $dataQueue ? $dataQueue->dequeue() : <>))
     {
       next if /^#/o;
 
@@ -344,7 +345,9 @@ sub mainThread {
           # since $. is not meaningful in the plotting thread if we're using the data queue, we pass
           # $. on the data queue in that case. This construct pulls it from the queue if we're using
           # it, otherwise it uses $. directly
-          $xlast = ($dataQueue && $dataQueue->dequeue()) // $.;
+
+          # I should be using the // operator, but I'd like to be compatible with perl 5.8
+          $xlast = defined $dataQueue ? $dataQueue->dequeue() : $.;
         }
 
         if($options{dataindex})
