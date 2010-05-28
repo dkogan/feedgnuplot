@@ -313,7 +313,7 @@ sub mainThread {
     }
 
     # regexp for a possibly floating point, possibly scientific notation number, fully captured
-    my $numRE = qr/([-]?[0-9\.]+(?:e[-+]?[0-9]+)?)/o;
+    my $numRE = qr/([-]?[0-9\.]+(?:e[-+]?[0-9]+)?)/io;
     my $xlast;
     my $haveNewData;
 
