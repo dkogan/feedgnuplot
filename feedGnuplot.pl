@@ -294,8 +294,7 @@ sub mainThread {
     print(PIPE "set ylabel  \"" . $options{"ylabel" } . "\"\n") if $options{"ylabel"};
     print(PIPE "set y2label \"" . $options{"y2label"} . "\"\n") if $options{"y2label"};
     print(PIPE "set title   \"" . $options{"title"  } . "\"\n") if $options{"title"};
-
-    print(PIPE "set size   \"" . $options{size} . "\"\n") if defined $options{"size"};
+    print(PIPE "set size $options{size}\n")                     if $options{size};
 
 # For the specified values, set the legend entries to 'title "blah blah"'
     if($options{"legend"})
