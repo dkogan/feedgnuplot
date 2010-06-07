@@ -6,6 +6,7 @@ use IO::Handle;
 use List::MoreUtils qw( first_index );
 use Data::Dumper;
 use threads;
+use threads::shared;
 use Thread::Queue;
 
 open(GNUPLOT_VERSION, "gnuplot --version |");
@@ -175,6 +176,7 @@ my @curves = ();
 my $dataQueue;
 my $xwindow;
 
+my $streamingFinished : shared = undef;
 if($options{"stream"})
 {
   if( defined $options{"hardcopy"})
@@ -199,11 +201,10 @@ if($options{"stream"})
     }
   }
 
-  $dataQueue->enqueue("Plot now");
-  $dataQueue->enqueue(undef);
+  $streamingFinished = 1;
 
-  $addThr->join();
   $plotThr->join();
+  $addThr->join();
 }
 else
 {
@@ -214,11 +215,14 @@ else
 
 sub plotThread
 {
-  while(1)
+  while(! $streamingFinished)
   {
     sleep(1);
     $dataQueue->enqueue("Plot now");
   }
+
+  $dataQueue->enqueue(undef);
+
 }
 
 sub mainThread {
