@@ -190,15 +190,16 @@ if($options{"stream"})
 
   while(<>)
   {
-    # place every line of input to the queue, so that the plotting thread can process it.
-    $dataQueue->enqueue($_);
+    chomp;
 
-    # if we are using an implicit domain (x = line number), then we send it on the data queue also,
-    # since $. is not meaningful in the plotting thread
+    # place every line of input to the queue, so that the plotting thread can process it. if we are
+    # using an implicit domain (x = line number), then we send it on the data queue also, since
+    # $. is not meaningful in the plotting thread
     if(!$options{domain})
     {
-      $dataQueue->enqueue($.);
+      $_ .= " $.";
     }
+    $dataQueue->enqueue($_);
   }
 
   $streamingFinished = 1;
@@ -347,11 +348,16 @@ sub mainThread {
         else
         {
           # since $. is not meaningful in the plotting thread if we're using the data queue, we pass
-          # $. on the data queue in that case. This construct pulls it from the queue if we're using
-          # it, otherwise it uses $. directly
-
-          # I should be using the // operator, but I'd like to be compatible with perl 5.8
-          $xlast = defined $dataQueue ? $dataQueue->dequeue() : $.;
+          # $. on the data queue in that case
+          if(defined $dataQueue)
+          {
+            s/ ([\d]+)$//o;
+            $xlast = $1;
+          }
+          else
+          {
+            $xlast = $.;
+          }
         }
 
         if($options{dataindex})
