@@ -290,11 +290,11 @@ sub mainThread {
     print PIPE "set style data $style\n";
     print PIPE "set grid\n";
 
-    print(PIPE "set xlabel  \"" . $options{"xlabel" } . "\"\n") if $options{"xlabel"};
-    print(PIPE "set ylabel  \"" . $options{"ylabel" } . "\"\n") if $options{"ylabel"};
-    print(PIPE "set y2label \"" . $options{"y2label"} . "\"\n") if $options{"y2label"};
-    print(PIPE "set title   \"" . $options{"title"  } . "\"\n") if $options{"title"};
-    print(PIPE "set size $options{size}\n")                     if $options{size};
+    print(PIPE "set xlabel  \"" . $options{"xlabel" } . "\"\n") if defined $options{"xlabel"};
+    print(PIPE "set ylabel  \"" . $options{"ylabel" } . "\"\n") if defined $options{"ylabel"};
+    print(PIPE "set y2label \"" . $options{"y2label"} . "\"\n") if defined $options{"y2label"};
+    print(PIPE "set title   \"" . $options{"title"  } . "\"\n") if defined $options{"title"};
+    print(PIPE "set size $options{size}\n")                     if defined $options{size};
 
 # For the specified values, set the legend entries to 'title "blah blah"'
     if($options{"legend"})
