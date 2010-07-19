@@ -305,15 +305,7 @@ sub mainThread {
 # For the values requested to be printed on the y2 axis, set that
     foreach my $y2idx (@{$options{"y2"}})
     {
-      my $str = " axes x1y2 linewidth 3";
-      if(exists $curves[$y2idx])
-      {
-        $curves[$y2idx][0]{"options"} .= $str;
-      }
-      else
-      {
-        newCurve("", $str, undef, $y2idx);
-      }
+      addCurveOption($y2idx, 'axes x1y2 linewidth 3');
     }
 
     # regexp for a possibly floating point, possibly scientific notation number, fully captured
@@ -500,6 +492,19 @@ sub newCurve
   else
   {
     $curves[$idx] = [{"options" => " $opts"}];
+  }
+}
+
+sub addCurveOption
+{
+  my ($idx, $str) = @_;
+  if(exists $curves[$idx])
+  {
+    $curves[$idx][0]{"options"} .= " $str";
+  }
+  else
+  {
+    newCurve('', $str, undef, $idx);
   }
 }
 
