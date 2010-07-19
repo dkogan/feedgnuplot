@@ -87,6 +87,12 @@ As an example, if line 3 of the input is "0 9 1 20"
   --y2    xxx          Plot the data with this index on the y2 axis. These are
                        0-indexed
 
+  --curvestyle xxx     Additional style per curve. Give this option multiple
+                       times for multiple curves
+
+  --extracmds xxx      Additional commands. These could contain extra global styles
+                       for instance
+
   --size  xxx          Gnuplot size option
 
   --hardcopy xxx       If not streaming, output to a file specified here. Format
@@ -147,6 +153,8 @@ GetOptions(\%options,
            "y2min=f",
            "y2max=f",
            "y2=i@",
+           "curvestyle=s@",
+           "extracmds=s@",
            "size=s",
            "hardcopy=s",
            "maxcurves=i",
@@ -306,6 +314,26 @@ sub mainThread {
     foreach my $y2idx (@{$options{"y2"}})
     {
       addCurveOption($y2idx, 'axes x1y2 linewidth 3');
+    }
+
+# add the extra curve options
+    if($options{"curvestyle"})
+    {
+      my $idx = 0;
+      foreach (@{$options{"curvestyle"}})
+      {
+        addCurveOption($idx, $_);
+        $idx++;
+      }
+    }
+
+# add the extra global options
+    if($options{"extracmds"})
+    {
+      foreach (@{$options{"extracmds"}})
+      {
+        print(PIPE "$_\n");
+      }
     }
 
     # regexp for a possibly floating point, possibly scientific notation number, fully captured
