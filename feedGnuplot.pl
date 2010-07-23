@@ -486,6 +486,10 @@ sub plotStoredData
 
 sub newCurve
 {
+  # I optionally pass in the title of this plot and any additional options separately. The title
+  # COULD be a part of $opts, but this raises an issue in the no-title case. When no title is
+  # specified, gnuplot will still add a legend entry with an unhelpful '-' label. I can still grep
+  # $opts to see if a title is given, but that's a bit ugly in its own way...
   my ($title, $opts, $newpoint, $idx) = @_;
 
   if(scalar @curves >= $options{maxcurves})
