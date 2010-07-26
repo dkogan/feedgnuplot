@@ -434,7 +434,7 @@ sub mainThread {
         # sleep until the plot file exists, and it is closed. Sometimes the output is
         # still being written at this point
         usleep(100_000) until -e $outputfile;
-        usleep(100_000) until(system("fuser -s $outputfile"));
+        usleep(100_000) until(system("fuser -s \"$outputfile\""));
 
         print "Wrote output to $outputfile\n";
         return;
