@@ -8,6 +8,7 @@ use Data::Dumper;
 use threads;
 use threads::shared;
 use Thread::Queue;
+use Text::ParseWords;
 
 open(GNUPLOT_VERSION, "gnuplot --version |");
 my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*([0-9]*\.[0-9]*)/;
@@ -120,7 +121,7 @@ OEF
 # takes care of both those cases.
 if(exists $ARGV[0] && !-r $ARGV[0])
 {
-  unshift @ARGV, split(/\s+/, shift(@ARGV));
+  unshift @ARGV, shellwords shift @ARGV;
 }
 
 # do not stream in the data by default
