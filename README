@@ -67,11 +67,44 @@ is updated at 1 Hz, so the script can handle rapidly-incoming data without
 spending all of its time replotting. Example:
 
 
-seq 5 | awk '{print 2*$1, $1*$1; system("sleep 2"); fflush()}' |
+seq 500 | awk '{print 2*$1, $1*$1; system("sleep 2"); fflush()}' |
 feedGnuplot.pl --stream --lines --points --legend "data 0" --title "Test plot" --y2 1
 
 
-For more information, invoke with --help, or read the source.
+This script can be used to generate self-plotting data files. If a file
+called 'data' is created with:
+
+
+#!/usr/local/bin/feedGnuplot.pl --lines --points --legend "data 0" --title "Test plot" --y2 1
+2 1
+4 4
+6 9
+8 16
+10 25
+12 36
+14 49
+16 64
+18 81
+20 100
+22 121
+24 144
+26 169
+28 196
+30 225
+
+
+This file can be plotted with
+
+
+bash$ ./tst
+
+
+The caveats here are that on Linux the whole #! line is limited to 127
+charaters and that the full path to feedGnuplot.pl must be given.
+
+For more information, invoke with --help, or read the source. Any bugs or
+suggestions should be addressed to dkogan@cds.caltech.edu. The latest
+version of the script is available at http://github.com/dkogan/feedgnuplot
 
 
 This program is originally based on the driveGnuPlots.pl script from
