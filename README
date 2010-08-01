@@ -6,8 +6,10 @@ plots from data coming in on STDIN or given in a filename passed on the
 commandline. Various data representations are supported, as is hardcopy
 output and streaming display of live data. A simple example:
 
+
 seq 5 | awk '{print 2*$1, $1*$1}' |
 feedGnuplot.pl --lines --points --legend "data 0" --title "Test plot" --y2 1
+
 
 You should see a plot with two curves (one on the y1 axis and the other on
 the y2 axis), a legend and a title. The first line of the example generates
@@ -20,8 +22,10 @@ By default, the line number of the incoming data is used for the x-axis. To
 plot an x-y dataset, feed in the x values as the first element in every line
 and pass in --domain. With the previous example:
 
+
 seq 5 | awk '{print 2*$1, $1*$1}' |
 feedGnuplot.pl --domain --lines --points --legend "data 0" --title "Test plot" --y2 1
+
 
 we get only one curve, with different x values. As many points as desired
 can appear on a single line, but all points on a line are associated with
@@ -32,8 +36,10 @@ plotted, this is undesireable. With the --dataindex option, each point in
 the input is preceded by an integer identifying the curve the point belongs
 to. With the previous example:
 
+
 seq 5 | awk '{print 2*$1, $1*$1}' |
 feedGnuplot.pl --dataindex --lines --points --legend "data 0" --title "Test plot" --y2 1
+
 
 we get 5 different curves with one point in each. The first column, as
 produced by awk, is '2,4,6,8,10'. These are interpreted as the indices of
