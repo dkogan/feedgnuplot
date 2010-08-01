@@ -64,7 +64,12 @@ windowsize-worth of data (windowsize has the units of the x axis, whether it
 is a point index or the passed-in domain). If --xlen is omitted or set to 0,
 all of the available data is plotted, with no moving window. The realtime data
 is updated at 1 Hz, so the script can handle rapidly-incoming data without
-spending all of its time replotting.
+spending all of its time replotting. Example:
+
+
+seq 5 | awk '{print 2*$1, $1*$1; system("sleep 2"); fflush()}' |
+feedGnuplot.pl --stream --lines --points --legend "data 0" --title "Test plot" --y2 1
+
 
 For more information, invoke with --help, or read the source.
 
