@@ -515,8 +515,8 @@ sub newCurve
     $idx = $#curves;
   }
 
-  if($title) { $opts = "title \"$title\" $opts" }
-  else       { $opts = "notitle $opts" }
+  if(defined $title) { $opts = "title \"$title\" $opts" }
+  else               { $opts = "notitle $opts" }
 
   if( defined $newpoint )
   {
