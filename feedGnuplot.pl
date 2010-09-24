@@ -486,9 +486,9 @@ sub plotStoredData
   {
     # send each point to gnuplot. Ignore the first "point" since it's the
     # curve options
-    for my $elem (@{$buf}[1..$#$buf]) {
-      my ($x, $y) = @$elem;
-      print PIPE "$x $y\n";
+    for my $elem (@{$buf}[1..$#$buf])
+    {
+      print PIPE "@$elem\n";
     }
     print PIPE "e\n";
   }
