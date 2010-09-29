@@ -418,7 +418,7 @@ sub mainThread {
 
         if( $options{"xlen"} )
         {
-          cutOld($xlast - $options{"xlen"});
+          pruneOldData($xlast - $options{"xlen"});
           plotStoredData($xlast - $options{"xlen"}, $xlast);
         }
         else
@@ -457,7 +457,7 @@ sub mainThread {
     }
 }
 
-sub cutOld
+sub pruneOldData
 {
   my ($oldestx) = @_;
 
