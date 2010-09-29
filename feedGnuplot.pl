@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 use Getopt::Long;
-use Time::HiRes qw( usleep gettimeofday tv_interval);
+use Time::HiRes qw( usleep );
 use IO::Handle;
 use List::MoreUtils qw( first_index );
 use Data::Dumper;
