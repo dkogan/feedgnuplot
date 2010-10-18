@@ -96,6 +96,8 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --size  xxx          Gnuplot size option
 
+  --square             Plot data with aspect ratio 1
+
   --hardcopy xxx       If not streaming, output to a file specified here. Format
                        inferred from filename
 
@@ -157,6 +159,7 @@ GetOptions(\%options,
            "curvestyle=s@",
            "extracmds=s@",
            "size=s",
+           "square!",
            "hardcopy=s",
            "maxcurves=i",
            "monotonic!",
@@ -303,6 +306,12 @@ sub mainThread {
     print(PIPE "set ylabel  \"" . $options{"ylabel" } . "\"\n") if defined $options{"ylabel"};
     print(PIPE "set y2label \"" . $options{"y2label"} . "\"\n") if defined $options{"y2label"};
     print(PIPE "set title   \"" . $options{"title"  } . "\"\n") if defined $options{"title"};
+
+    if($options{square})
+    {
+      $options{size} = '' unless defined $options{size};
+      $options{size} .= " ratio -1";
+    }
     print(PIPE "set size $options{size}\n")                     if defined $options{size};
 
 # For the specified values, set the legend entries to 'title "blah blah"'
