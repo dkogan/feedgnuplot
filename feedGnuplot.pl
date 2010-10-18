@@ -358,8 +358,6 @@ sub mainThread {
 
       if($_ ne "Plot now")
       {
-        $haveNewData = 1;
-
         # parse the incoming data lines. The format is
         # x idx0 dat0 idx1 dat1 ....
         # where idxX is the index of the curve that datX corresponds to
@@ -396,6 +394,7 @@ sub mainThread {
             my $idx   = $1;
             my $point = $2;
 
+            $haveNewData = 1;
             pushPoint($idx, [$xlast, $point]);
           }
         }
@@ -404,6 +403,7 @@ sub mainThread {
           my $idx = 0;
           foreach my $point (/$numRE/go)
           {
+            $haveNewData = 1;
             pushPoint($idx, [$xlast, $point]);
             $idx++;
           }
