@@ -510,8 +510,8 @@ sub newCurve
 
   if(scalar @curves >= $options{maxcurves})
   {
-    say STDERR "Tried to exceed the --maxcurves setting.";
-    say STDERR "Invoke with a higher --maxcurves limit if you really want to do this.";
+    print STDERR "Tried to exceed the --maxcurves setting.\n";
+    print STDERR "Invoke with a higher --maxcurves limit if you really want to do this.\n";
     return;
   }
 
