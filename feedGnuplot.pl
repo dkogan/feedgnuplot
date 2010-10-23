@@ -496,6 +496,12 @@ sub plotStoredData
 
 sub newCurve
 {
+  sub pushNewEmptyCurve
+  {
+    my $opts = "notitle ";
+    push @curves, [{"options" => " $opts"}];
+  }
+
   # I optionally pass in the title of this plot and any additional options separately. The title
   # COULD be a part of $opts, but this raises an issue in the no-title case. When no title is
   # specified, gnuplot will still add a legend entry with an unhelpful '-' label. I can still grep
@@ -550,12 +556,7 @@ sub addCurveOption
   }
 }
 
-sub pushNewEmptyCurve
-{
-  my $opts = "notitle ";
-  push @curves, [{"options" => " $opts"}];
-}
-
+# function to add a point to the plot. Assumes that the curve indexed by $idx already exists
 sub pushPoint
 {
   my ($idx, $xy) = @_;
