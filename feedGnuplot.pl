@@ -4,7 +4,6 @@ use Getopt::Long;
 use Time::HiRes qw( usleep );
 use IO::Handle;
 use List::MoreUtils qw( first_index );
-use Data::Dumper;
 use threads;
 use threads::shared;
 use Thread::Queue;
