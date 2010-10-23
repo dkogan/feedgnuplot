@@ -506,7 +506,7 @@ sub newCurve
   # COULD be a part of $opts, but this raises an issue in the no-title case. When no title is
   # specified, gnuplot will still add a legend entry with an unhelpful '-' label. I can still grep
   # $opts to see if a title is given, but that's a bit ugly in its own way...
-  my ($title, $opts, $newpoint, $idx) = @_;
+  my ($title, $opts, $idx) = @_;
 
   if(scalar @curves >= $options{maxcurves})
   {
@@ -533,14 +533,7 @@ sub newCurve
   if(defined $title) { $opts = "title \"$title\" $opts" }
   else               { $opts = "notitle $opts" }
 
-  if( defined $newpoint )
-  {
-    $curves[$idx] = [{"options" => " $opts"}, $newpoint];
-  }
-  else
-  {
-    $curves[$idx] = [{"options" => " $opts"}];
-  }
+  $curves[$idx] = [{"options" => " $opts"}];
 }
 
 sub addCurveOption
@@ -552,7 +545,7 @@ sub addCurveOption
   }
   else
   {
-    newCurve('', $str, undef, $idx);
+    newCurve('', $str, $idx);
   }
 }
 
@@ -563,7 +556,7 @@ sub pushPoint
 
   if ( !exists $curves[$idx] )
   {
-    newCurve("", "", undef, $idx);
+    newCurve("", "", $idx);
   }
   elsif($options{monotonic})
   {
