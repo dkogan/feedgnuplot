@@ -168,12 +168,12 @@ GetOptions(\%options,
 
 # set up plotting style
 my $style = "";
-if($options{"lines"})  { $style .= "lines";}
-if($options{"points"}) { $style .= "points";}
+if($options{lines})  { $style .= "lines";}
+if($options{points}) { $style .= "points";}
 
 if(!$style) { $style = "points"; }
 
-if( defined $options{"help"} )
+if( defined $options{help} )
 {
   die($usage);
 }
@@ -192,11 +192,11 @@ my $dataQueue;
 my $xwindow;
 
 my $streamingFinished : shared = undef;
-if($options{"stream"})
+if($options{stream})
 {
-  if( defined $options{"hardcopy"})
+  if( defined $options{hardcopy})
   {
-    $options{"stream"} = undef;
+    $options{stream} = undef;
   }
 
   $dataQueue = Thread::Queue->new();
@@ -247,10 +247,10 @@ sub mainThread {
 
     if($gnuplotVersion >= 4.3)
     {
-      $dopersist = "--persist" if(!$options{"stream"});
+      $dopersist = "--persist" if(!$options{stream});
     }
 
-    if(exists $options{"dump"})
+    if(exists $options{dump})
     {
       *PIPE = *STDOUT;
     }
@@ -262,9 +262,9 @@ sub mainThread {
 
     my $outputfile;
     my $outputfileType;
-    if( defined $options{"hardcopy"})
+    if( defined $options{hardcopy})
     {
-      $outputfile = $options{"hardcopy"};
+      $outputfile = $options{hardcopy};
       ($outputfileType) = $outputfile =~ /\.(ps|pdf|png)$/;
       if(!$outputfileType) { die("Only .ps, .pdf and .png supported\n"); }
 
@@ -291,24 +291,24 @@ sub mainThread {
     $options{y2max} = "" unless defined $options{y2max};
 
     print PIPE "set xtics\n";
-    if($options{"y2"})
+    if($options{y2})
     {
       print PIPE "set ytics nomirror\n";
       print PIPE "set y2tics\n";
       # if any of the ranges are given, set the range
-      print PIPE "set y2range [". $options{"y2min"} . ":" . $options{"y2max"} ."]\n" if length( $options{"y2min"} . $options{"y2max"} );
+      print PIPE "set y2range [". $options{y2min} . ":" . $options{y2max} ."]\n" if length( $options{y2min} . $options{y2max} );
     }
 
     # if any of the ranges are given, set the range
-    print PIPE "set xrange [". $options{"xmin"} . ":" . $options{"xmax"} ."]\n" if length( $options{"xmin"} . $options{"xmax"} );
-    print PIPE "set yrange [". $options{"ymin"} . ":" . $options{"ymax"} ."]\n" if length( $options{"ymin"} . $options{"ymax"} );
+    print PIPE "set xrange [". $options{xmin} . ":" . $options{xmax} ."]\n" if length( $options{xmin} . $options{xmax} );
+    print PIPE "set yrange [". $options{ymin} . ":" . $options{ymax} ."]\n" if length( $options{ymin} . $options{ymax} );
     print PIPE "set style data $style\n";
     print PIPE "set grid\n";
 
-    print(PIPE "set xlabel  \"" . $options{"xlabel" } . "\"\n") if defined $options{"xlabel"};
-    print(PIPE "set ylabel  \"" . $options{"ylabel" } . "\"\n") if defined $options{"ylabel"};
-    print(PIPE "set y2label \"" . $options{"y2label"} . "\"\n") if defined $options{"y2label"};
-    print(PIPE "set title   \"" . $options{"title"  } . "\"\n") if defined $options{"title"};
+    print(PIPE "set xlabel  \"" . $options{xlabel } . "\"\n") if defined $options{xlabel};
+    print(PIPE "set ylabel  \"" . $options{ylabel } . "\"\n") if defined $options{ylabel};
+    print(PIPE "set y2label \"" . $options{y2label} . "\"\n") if defined $options{y2label};
+    print(PIPE "set title   \"" . $options{title  } . "\"\n") if defined $options{title};
 
     if($options{square})
     {
@@ -318,35 +318,35 @@ sub mainThread {
     print(PIPE "set size $options{size}\n")                     if defined $options{size};
 
 # For the specified values, set the legend entries to 'title "blah blah"'
-    if($options{"legend"})
+    if($options{legend})
     {
       my $id = 0;
-      foreach (@{$options{"legend"}})
+      foreach (@{$options{legend}})
       {
         setCurveLabel($id++, $_);
       }
     }
 
 # add the extra curve options
-    if($options{"curvestyle"})
+    if($options{curvestyle})
     {
       my $id = 0;
-      foreach (@{$options{"curvestyle"}})
+      foreach (@{$options{curvestyle}})
       {
         addCurveOption($id++, $_);
       }
     }
 
 # For the values requested to be printed on the y2 axis, set that
-    foreach (@{$options{"y2"}})
+    foreach (@{$options{y2}})
     {
       addCurveOption($_, 'axes x1y2 linewidth 3');
     }
 
 # add the extra global options
-    if($options{"extracmds"})
+    if($options{extracmds})
     {
-      foreach (@{$options{"extracmds"}})
+      foreach (@{$options{extracmds}})
       {
         print(PIPE "$_\n");
       }
@@ -416,16 +416,16 @@ sub mainThread {
         }
       }
 
-      elsif($options{"stream"})
+      elsif($options{stream})
       {
         # only redraw a streaming plot if there's new data to plot
         next unless $haveNewData;
         $haveNewData = undef;
 
-        if( $options{"xlen"} )
+        if( $options{xlen} )
         {
-          pruneOldData($xlast - $options{"xlen"});
-          plotStoredData($xlast - $options{"xlen"}, $xlast);
+          pruneOldData($xlast - $options{xlen});
+          plotStoredData($xlast - $options{xlen}, $xlast);
         }
         else
         {
@@ -435,7 +435,7 @@ sub mainThread {
     }
 
     # finished reading in all of the data
-    if($options{"stream"})
+    if($options{stream})
     {
       print PIPE "exit;\n";
       close PIPE;
@@ -444,7 +444,7 @@ sub mainThread {
     {
       plotStoredData();
 
-      if( defined $options{"hardcopy"})
+      if( defined $options{hardcopy})
       {
         print PIPE "set output\n";
         # sleep until the plot file exists, and it is closed. Sometimes the output is
@@ -484,7 +484,7 @@ sub plotStoredData
 
   # get the options for those curves that have any data
   my @nonemptyCurves = grep {@$_ > 1} @curves;
-  my @extraopts = map {$_->[0]{"options"}} @nonemptyCurves;
+  my @extraopts = map {$_->[0]{options}} @nonemptyCurves;
 
   print PIPE 'plot ' . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
 
