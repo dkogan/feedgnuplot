@@ -9,7 +9,7 @@ use threads::shared;
 use Thread::Queue;
 use Text::ParseWords;
 
-open(GNUPLOT_VERSION, "gnuplot --version |");
+open(GNUPLOT_VERSION, 'gnuplot --version |');
 my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*(\d*\.\d*)/;
 if(!$gnuplotVersion)
 {
@@ -129,49 +129,49 @@ if(exists $ARGV[0] && !-r $ARGV[0])
 # do not stream in the data by default
 # point plotting by default.
 # no monotonicity checks by default
-my %options = ( "stream"    => 0,
-                "domain"    => 0,
-                "dataid"    => 0,
-                "points"    => 0,
-                "lines"     => 0,
-                "xlen"      => 0,
-                "maxcurves" => 100);
+my %options = ( stream    => 0,
+                domain    => 0,
+                dataid    => 0,
+                points    => 0,
+                lines     => 0,
+                xlen      => 0,
+                maxcurves => 100);
 
 GetOptions(\%options,
-           "stream!",
-           "domain!",
-           "dataid!",
-           "lines!",
-           "points!",
-           "legend=s@",
-           "xlabel=s",
-           "ylabel=s",
-           "y2label=s",
-           "title=s",
-           "xlen=f",
-           "ymin=f",
-           "ymax=f",
-           "xmin=f",
-           "xmax=f",
-           "y2min=f",
-           "y2max=f",
-           "y2=s@",
-           "curvestyle=s@",
-           "extracmds=s@",
-           "size=s",
-           "square!",
-           "hardcopy=s",
-           "maxcurves=i",
-           "monotonic!",
-           "help",
-           "dump") or die($usage);
+           'stream!',
+           'domain!',
+           'dataid!',
+           'lines!',
+           'points!',
+           'legend=s@',
+           'xlabel=s',
+           'ylabel=s',
+           'y2label=s',
+           'title=s',
+           'xlen=f',
+           'ymin=f',
+           'ymax=f',
+           'xmin=f',
+           'xmax=f',
+           'y2min=f',
+           'y2max=f',
+           'y2=s@',
+           'curvestyle=s@',
+           'extracmds=s@',
+           'size=s',
+           'square!',
+           'hardcopy=s',
+           'maxcurves=i',
+           'monotonic!',
+           'help',
+           'dump') or die($usage);
 
 # set up plotting style
-my $style = "";
-if($options{lines})  { $style .= "lines";}
-if($options{points}) { $style .= "points";}
+my $style = '';
+if($options{lines})  { $style .= 'lines';}
+if($options{points}) { $style .= 'points';}
 
-if(!$style) { $style = "points"; }
+if(!$style) { $style = 'points'; }
 
 if( defined $options{help} )
 {
@@ -180,7 +180,7 @@ if( defined $options{help} )
 
 
 # list containing the plot data. Each element is a reference to a list, representing the data for
-# one curve. The first "point" is a hash describing various curve parameters. The rest are all
+# one curve. The first 'point' is a hash describing various curve parameters. The rest are all
 # references to lists of (x,y) tuples
 my @curves = ();
 
@@ -234,7 +234,7 @@ sub plotThread
   while(! $streamingFinished)
   {
     sleep(1);
-    $dataQueue->enqueue("Plot now");
+    $dataQueue->enqueue('Plot now');
   }
 
   $dataQueue->enqueue(undef);
@@ -243,11 +243,11 @@ sub plotThread
 
 sub mainThread {
     local *PIPE;
-    my $dopersist = "";
+    my $dopersist = '';
 
     if($gnuplotVersion >= 4.3)
     {
-      $dopersist = "--persist" if(!$options{stream});
+      $dopersist = '--persist' if(!$options{stream});
     }
 
     if(exists $options{dump})
@@ -283,12 +283,12 @@ sub mainThread {
 
     # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
     # gnuplot
-    $options{xmin}  = "" unless defined $options{xmin};
-    $options{xmax}  = "" unless defined $options{xmax};
-    $options{ymin}  = "" unless defined $options{ymin};
-    $options{ymax}  = "" unless defined $options{ymax};
-    $options{y2min} = "" unless defined $options{y2min};
-    $options{y2max} = "" unless defined $options{y2max};
+    $options{xmin}  = '' unless defined $options{xmin};
+    $options{xmax}  = '' unless defined $options{xmax};
+    $options{ymin}  = '' unless defined $options{ymin};
+    $options{ymax}  = '' unless defined $options{ymax};
+    $options{y2min} = '' unless defined $options{y2min};
+    $options{y2max} = '' unless defined $options{y2max};
 
     print PIPE "set xtics\n";
     if($options{y2})
@@ -313,7 +313,7 @@ sub mainThread {
     if($options{square})
     {
       $options{size} = '' unless defined $options{size};
-      $options{size} .= " ratio -1";
+      $options{size} .= ' ratio -1';
     }
     print(PIPE "set size $options{size}\n")                     if defined $options{size};
 
@@ -362,7 +362,7 @@ sub mainThread {
     {
       next if /^#/o;
 
-      if($_ ne "Plot now")
+      if($_ ne 'Plot now')
       {
         # parse the incoming data lines. The format is
         # x id0 dat0 id1 dat1 ....
@@ -502,10 +502,10 @@ sub plotStoredData
 
 sub updateCurveOptions
 {
-  # generates the "options" string for a curve, based on its legend title and its other options
+  # generates the 'options' string for a curve, based on its legend title and its other options
   # These could be integrated into a single string, but that raises an issue in the no-title
   # case. When no title is specified, gnuplot will still add a legend entry with an unhelpful '-'
-  # label. Thus I explicitly do "notitle" for that case
+  # label. Thus I explicitly do 'notitle' for that case
 
   my ($curveoptions) = @_;
   my $titleoption = defined $curveoptions->{title} ?
