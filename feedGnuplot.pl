@@ -11,7 +11,7 @@ use Thread::Queue;
 use Text::ParseWords;
 
 open(GNUPLOT_VERSION, "gnuplot --version |");
-my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*([0-9]*\.[0-9]*)/;
+my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*(\d*\.\d*)/;
 if(!$gnuplotVersion)
 {
   print STDERR "Couldn't find the version of gnuplot. Does it work? Trying anyway...\n";
@@ -347,7 +347,7 @@ sub mainThread {
     }
 
     # regexp for a possibly floating point, possibly scientific notation number, fully captured
-    my $numRE = qr/([-]?[0-9\.]+(?:e[-+]?[0-9]+)?)/io;
+    my $numRE = qr/([-]?[\d\.]+(?:e[-+]?\d+)?)/io;
     my $xlast;
     my $haveNewData;
 
@@ -389,7 +389,7 @@ sub mainThread {
 
         if($options{dataindex})
         {
-          while(/([0-9]+)\s+$numRE/go)
+          while(/(\d+)\s+$numRE/go)
           {
             my $idx   = $1;
             my $point = $2;
