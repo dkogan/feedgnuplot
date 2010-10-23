@@ -29,25 +29,26 @@ Usage: $0 [options] file1 file2 ...
   --[no]domain         If enabled, the first element of each line is the
                        domain variable.  If not, the point index is used
 
-  --[no]dataindex      If enabled, each data point is preceded by the index
-                       of the data set that point corresponds to.  If not
+  --[no]dataid         If enabled, each data point is preceded by the ID
+                       of the data set that point corresponds to. This ID is
+                       interpreted as a string, NOT as just a number. If not
                        enabled, the order of the point is used.
 
 As an example, if line 3 of the input is "0 9 1 20"
- '--nodomain --nodataindex' would parse the 4 numbers as points in 4
+ '--nodomain --nodataid' would parse the 4 numbers as points in 4
    different curves at x=3
 
- '--domain --nodataindex' would parse the 4 numbers as points in 3 different
+ '--domain --nodataid' would parse the 4 numbers as points in 3 different
    curves at x=0. Here, 0 is the x-variable and 9,1,20 are the data values
 
- '--nodomain --dataindex' would parse the 4 numbers as points in 2 different
-   curves at x=3. Here 0 and 1 are the data indices and 9 and 20 are the
+ '--nodomain --dataid' would parse the 4 numbers as points in 2 different
+   curves at x=3. Here 0 and 1 are the data IDs and 9 and 20 are the
    data values
 
- '--domain --dataindex' would parse the 4 numbers as a single point at
-   x=0. Here 9 is the data index and 1 is the data value. 20 is an extra
+ '--domain --dataid' would parse the 4 numbers as a single point at
+   x=0. Here 9 is the data ID and 1 is the data value. 20 is an extra
    value, so it is ignored. If another value followed 20, we'd get another
-   point in curve number
+   point in curve ID 20
 
 
   --[no]stream         Do [not] display the data a point at a time, as it
@@ -85,8 +86,8 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --y2max xxx          Set the range for the y2 axis.
 
-  --y2    xxx          Plot the data with this index on the y2 axis. These are
-                       0-indexed
+  --y2    xxx          Plot the data specified by this curve ID on the y2 axis.
+                       Without --dataid, the ID is just an ordered 0-based index
 
   --curvestyle xxx     Additional style per curve. Give this option multiple
                        times for multiple curves
@@ -131,7 +132,7 @@ if(exists $ARGV[0] && !-r $ARGV[0])
 # no monotonicity checks by default
 my %options = ( "stream"    => 0,
                 "domain"    => 0,
-                "dataindex" => 0,
+                "dataid"    => 0,
                 "points"    => 0,
                 "lines"     => 0,
                 "xlen"      => 0,
@@ -140,7 +141,7 @@ my %options = ( "stream"    => 0,
 GetOptions(\%options,
            "stream!",
            "domain!",
-           "dataindex!",
+           "dataid!",
            "lines!",
            "points!",
            "legend=s@",
@@ -155,7 +156,7 @@ GetOptions(\%options,
            "xmax=f",
            "y2min=f",
            "y2max=f",
-           "y2=i@",
+           "y2=s@",
            "curvestyle=s@",
            "extracmds=s@",
            "size=s",
@@ -183,6 +184,9 @@ if( defined $options{"help"} )
 # one curve. The first "point" is a hash describing various curve parameters. The rest are all
 # references to lists of (x,y) tuples
 my @curves = ();
+
+# list mapping curve names to their indices in the @curves list
+my %curveIndices = ();
 
 # now start the data acquisition and plotting threads
 my $dataQueue;
@@ -317,24 +321,27 @@ sub mainThread {
 # For the specified values, set the legend entries to 'title "blah blah"'
     if($options{"legend"})
     {
-      foreach (@{$options{"legend"}}) { newCurve($_, "") }
-    }
-
-# For the values requested to be printed on the y2 axis, set that
-    foreach my $y2idx (@{$options{"y2"}})
-    {
-      addCurveOption($y2idx, 'axes x1y2 linewidth 3');
+      my $id = 0;
+      foreach (@{$options{"legend"}})
+      {
+        setCurveLabel($id++, $_);
+      }
     }
 
 # add the extra curve options
     if($options{"curvestyle"})
     {
-      my $idx = 0;
+      my $id = 0;
       foreach (@{$options{"curvestyle"}})
       {
-        addCurveOption($idx, $_);
-        $idx++;
+        addCurveOption($id++, $_);
       }
+    }
+
+# For the values requested to be printed on the y2 axis, set that
+    foreach (@{$options{"y2"}})
+    {
+      addCurveOption($_, 'axes x1y2 linewidth 3');
     }
 
 # add the extra global options
@@ -359,12 +366,12 @@ sub mainThread {
       if($_ ne "Plot now")
       {
         # parse the incoming data lines. The format is
-        # x idx0 dat0 idx1 dat1 ....
-        # where idxX is the index of the curve that datX corresponds to
+        # x id0 dat0 id1 dat1 ....
+        # where idX is the ID of the curve that datX corresponds to
         #
         # $options{domain} indicates whether the initial 'x' is given or not (if not, the line
         # number is used)
-        # $options{dataindex} indicates whether idxX is given or not (if not, the point order in the
+        # $options{dataid} indicates whether idX is given or not (if not, the point order in the
         # line is used)
 
         if($options{domain})
@@ -387,25 +394,25 @@ sub mainThread {
           }
         }
 
-        if($options{dataindex})
+        if($options{dataid})
         {
-          while(/(\d+)\s+$numRE/go)
+          while(/(\w+)\s+$numRE/go)
           {
-            my $idx   = $1;
             my $point = $2;
 
             $haveNewData = 1;
-            pushPoint($idx, [$xlast, $point]);
+            pushPoint(getCurveIdx($1),
+                      [$xlast, $point]);
           }
         }
         else
         {
-          my $idx = 0;
+          my $id = 0;
           foreach my $point (/$numRE/go)
           {
             $haveNewData = 1;
-            pushPoint($idx, [$xlast, $point]);
-            $idx++;
+            pushPoint(getCurveIdx($id++),
+                      [$xlast, $point]);
           }
         }
       }
@@ -494,59 +501,59 @@ sub plotStoredData
   }
 }
 
-sub newCurve
+sub updateCurveOptions
 {
-  sub pushNewEmptyCurve
-  {
-    my $opts = "notitle ";
-    push @curves, [{"options" => " $opts"}];
-  }
+  # generates the "options" string for a curve, based on its legend title and its other options
+  # These could be integrated into a single string, but that raises an issue in the no-title
+  # case. When no title is specified, gnuplot will still add a legend entry with an unhelpful '-'
+  # label. Thus I explicitly do "notitle" for that case
 
-  # I optionally pass in the title of this plot and any additional options separately. The title
-  # COULD be a part of $opts, but this raises an issue in the no-title case. When no title is
-  # specified, gnuplot will still add a legend entry with an unhelpful '-' label. I can still grep
-  # $opts to see if a title is given, but that's a bit ugly in its own way...
-  my ($title, $opts, $idx) = @_;
+  my ($curveoptions) = @_;
+  my $titleoption = defined $curveoptions->{title} ?
+    "title \"$curveoptions->{title}\"" : "notitle";
+
+  $curveoptions->{options} = "$curveoptions->{extraoptions} $titleoption";
+}
+
+sub getCurveIdx
+{
+  # This function returns the curve index for a particular curve, creating a new curve if necessary
 
   if(scalar @curves >= $options{maxcurves})
   {
     print STDERR "Tried to exceed the --maxcurves setting.\n";
     print STDERR "Invoke with a higher --maxcurves limit if you really want to do this.\n";
-    return;
+    exit;
   }
 
-  # if this curve index doesn't exist, create curve up-to this index
-  if(defined $idx)
+  my ($id) = @_;
+
+  if( !exists $curveIndices{$id} )
   {
-    while(!exists $curves[$idx])
-    {
-      pushNewEmptyCurve();
-    }
-  }
-  else
-  {
-    # if we're not given an index, create a new one at the end, and fill it in
-    pushNewEmptyCurve();
-    $idx = $#curves;
-  }
+    push @curves, [{extraoptions => ' '}]; # push a curve with no data and no options
+    $curveIndices{$id} =  $#curves;
 
-  if(defined $title) { $opts = "title \"$title\" $opts" }
-  else               { $opts = "notitle $opts" }
-
-  $curves[$idx] = [{"options" => " $opts"}];
+    updateCurveOptions($curves[$#curves][0]);
+  }
+  return $curveIndices{$id};
 }
 
 sub addCurveOption
 {
-  my ($idx, $str) = @_;
-  if(exists $curves[$idx])
-  {
-    $curves[$idx][0]{"options"} .= " $str";
-  }
-  else
-  {
-    newCurve('', $str, $idx);
-  }
+  my ($id, $str) = @_;
+
+  my $idx = getCurveIdx($id);
+  $curves[$idx][0]{extraoptions} .= "$str ";
+  updateCurveOptions($curves[$idx][0]);
+}
+
+sub setCurveLabel
+{
+  my ($id, $str) = @_;
+
+  my $idx = getCurveIdx($id);
+  $curves[$idx][0]{title} = $str;
+  updateCurveOptions($curves[$idx][0]);
 }
 
 # function to add a point to the plot. Assumes that the curve indexed by $idx already exists
@@ -554,11 +561,7 @@ sub pushPoint
 {
   my ($idx, $xy) = @_;
 
-  if ( !exists $curves[$idx] )
-  {
-    newCurve("", "", $idx);
-  }
-  elsif($options{monotonic})
+  if($options{monotonic})
   {
     my $curve = $curves[$idx];
     if( @$curve > 1 && $xy->[0] < $curve->[$#{$curve}][0] )
