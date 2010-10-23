@@ -401,7 +401,7 @@ sub mainThread {
             my $point = $2;
 
             $haveNewData = 1;
-            pushPoint(getCurveIdx($1),
+            pushPoint(getCurve($1),
                       [$xlast, $point]);
           }
         }
@@ -411,7 +411,7 @@ sub mainThread {
           foreach my $point (/$numRE/go)
           {
             $haveNewData = 1;
-            pushPoint(getCurveIdx($id++),
+            pushPoint(getCurve($id++),
                       [$xlast, $point]);
           }
         }
@@ -515,9 +515,10 @@ sub updateCurveOptions
   $curveoptions->{options} = "$curveoptions->{extraoptions} $titleoption";
 }
 
-sub getCurveIdx
+sub getCurve
 {
-  # This function returns the curve index for a particular curve, creating a new curve if necessary
+  # This function returns the curve corresponding to a particular label, creating a new curve if
+  # necessary
 
   if(scalar @curves >= $options{maxcurves})
   {
@@ -535,35 +536,34 @@ sub getCurveIdx
 
     updateCurveOptions($curves[$#curves][0]);
   }
-  return $curveIndices{$id};
+  return $curves[$curveIndices{$id}];
 }
 
 sub addCurveOption
 {
   my ($id, $str) = @_;
 
-  my $idx = getCurveIdx($id);
-  $curves[$idx][0]{extraoptions} .= "$str ";
-  updateCurveOptions($curves[$idx][0]);
+  my $curve = getCurve($id);
+  $curve->[0]{extraoptions} .= "$str ";
+  updateCurveOptions($curve->[0]);
 }
 
 sub setCurveLabel
 {
   my ($id, $str) = @_;
 
-  my $idx = getCurveIdx($id);
-  $curves[$idx][0]{title} = $str;
-  updateCurveOptions($curves[$idx][0]);
+  my $curve = getCurve($id);
+  $curve->[0]{title} = $str;
+  updateCurveOptions($curve->[0]);
 }
 
 # function to add a point to the plot. Assumes that the curve indexed by $idx already exists
 sub pushPoint
 {
-  my ($idx, $xy) = @_;
+  my ($curve, $xy) = @_;
 
   if($options{monotonic})
   {
-    my $curve = $curves[$idx];
     if( @$curve > 1 && $xy->[0] < $curve->[$#{$curve}][0] )
     {
       # the x-coordinate of the new point is in the past, so I wipe out all the data for this curve
@@ -572,5 +572,5 @@ sub pushPoint
     }
   }
 
-  push @{$curves[$idx]}, $xy;
+  push @$curve, $xy;
 }
