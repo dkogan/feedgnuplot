@@ -68,6 +68,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --legend xxx         Set the label for a curve plot. Give this option multiple
                        times for multiple curves
 
+  --autolegend         Use the curve IDs for the legend
+
   --xlen xxx           Set the size of the x-window to plot. Omit this or set it
                        to 0 to plot ALL the data
 
@@ -144,6 +146,7 @@ GetOptions(\%options,
            'lines!',
            'points!',
            'legend=s@',
+           'autolegend!',
            'xlabel=s',
            'ylabel=s',
            'y2label=s',
@@ -507,10 +510,13 @@ sub updateCurveOptions
   # case. When no title is specified, gnuplot will still add a legend entry with an unhelpful '-'
   # label. Thus I explicitly do 'notitle' for that case
 
-  my ($curveoptions) = @_;
-  my $titleoption = defined $curveoptions->{title} ?
-    "title \"$curveoptions->{title}\"" : "notitle";
+  my ($curveoptions, $id) = @_;
 
+  my $title;
+  $title = $curveoptions->{title} if(defined $curveoptions->{title});
+  $title = $id                    if $options{autolegend};
+
+  my $titleoption = defined $title ? "title \"$title\"" : "notitle";
   $curveoptions->{options} = "$curveoptions->{extraoptions} $titleoption";
 }
 
@@ -533,7 +539,7 @@ sub getCurve
     push @curves, [{extraoptions => ' '}]; # push a curve with no data and no options
     $curveIndices{$id} =  $#curves;
 
-    updateCurveOptions($curves[$#curves][0]);
+    updateCurveOptions($curves[$#curves][0], $id);
   }
   return $curves[$curveIndices{$id}];
 }
@@ -544,7 +550,7 @@ sub addCurveOption
 
   my $curve = getCurve($id);
   $curve->[0]{extraoptions} .= "$str ";
-  updateCurveOptions($curve->[0]);
+  updateCurveOptions($curve->[0], $id);
 }
 
 sub setCurveLabel
@@ -553,7 +559,7 @@ sub setCurveLabel
 
   my $curve = getCurve($id);
   $curve->[0]{title} = $str;
-  updateCurveOptions($curve->[0]);
+  updateCurveOptions($curve->[0], $id);
 }
 
 # function to add a point to the plot. Assumes that the curve indexed by $idx already exists
