@@ -32,13 +32,13 @@ can appear on a single line, but all points on a line are associated with
 the X value that starts that line.
 
 By default, each column represents a separate curve. If sparse data is to be
-plotted, this is undesireable. With the --dataindex option, each point in
-the input is preceded by an integer identifying the curve the point belongs
+plotted, this is undesireable. With the --dataid option, each point in the
+input is preceded by string identifying the curve the point belongs
 to. With the previous example:
 
 
 seq 5 | awk '{print 2*$1, $1*$1}' |
-feedGnuplot.pl --dataindex --lines --points --legend "data 0" --title "Test plot" --y2 1
+feedGnuplot.pl --dataid --lines --points --legend "data 0" --title "Test plot" --y2 1
 
 
 we get 5 different curves with one point in each. The first column, as
@@ -51,7 +51,10 @@ the legend commandline parameters are applied in order to curves
 passed in --legend "data 0" --legend "data 1" --legend "data 2", a legend
 would be created with "data 2" labeled, but no labels for the other
 curves. As many points as desired can appear on a single line, and --domain
-can be used together with --dataindex.
+can be used together with --dataid.
+
+Note that the IDs used with --dataid are general strings, NOT just
+numbers. These IDs can be used to generate the plot legend with --autolegend.
 
 The script is able to produce hardcopy output with "--hardcopy
 outputfile". The output type is inferred from the filename with .ps, .pdf
