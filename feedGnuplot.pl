@@ -169,18 +169,17 @@ GetOptions(\%options,
            'help',
            'dump') or die($usage);
 
+if( defined $options{help} )
+{
+  die($usage);
+}
+
 # set up plotting style
 my $style = '';
 if($options{lines})  { $style .= 'lines';}
 if($options{points}) { $style .= 'points';}
 
 if(!$style) { $style = 'points'; }
-
-if( defined $options{help} )
-{
-  die($usage);
-}
-
 
 # list containing the plot data. Each element is a reference to a list, representing the data for
 # one curve. The first 'point' is a hash describing various curve parameters. The rest are all
