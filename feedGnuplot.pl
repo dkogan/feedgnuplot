@@ -52,6 +52,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --[no]3d             Do [not] plot in 3D. This only makes sense with --domain.
                        Each domain here is an (x,y) tuple
 
+  --colormap           For 3d plots, show a colormapped top-down view
+
   --[no]stream         Do [not] display the data a point at a time, as it
                        comes in
 
@@ -139,6 +141,7 @@ GetOptions(\%options,
            'domain!',
            'dataid!',
            '3d!',
+           'colormap!',
            'lines!',
            'points!',
            'legend=s@',
@@ -173,6 +176,8 @@ if( $options{help} )
 {
   die($usage);
 }
+
+if($options{colormap}) { $options{'3d'} = 1; }; # colormap implies 3d
 
 if( $options{'3d'} )
 {
@@ -359,6 +364,11 @@ sub mainThread
     }
     print(PIPE "set size $options{size}\n")                     if defined $options{size};
 
+    if($options{colormap})
+    {
+      print PIPE "set view map\n";
+    }
+
 # For the specified values, set the legend entries to 'title "blah blah"'
     if($options{legend})
     {
@@ -534,8 +544,22 @@ sub plotStoredData
   my @nonemptyCurves = grep {@$_ > 1} @curves;
   my @extraopts = map {$_->[0]{options}} @nonemptyCurves;
 
-  my $cmd = $options{'3d'} ? 'splot ' : 'plot ';
-  print PIPE $cmd . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
+  my $body = join(', ' , map({ '"-"' . $_} @extraopts) );
+  if($options{'3d'})
+  {
+    if($options{colormap})
+    {
+      print PIPE "splot $body palette\n";
+    }
+    else
+    {
+      print PIPE "splot $body\n";
+    }
+  }
+  else
+  {
+    print PIPE "plot $body\n";
+  }
 
   foreach my $buf (@nonemptyCurves)
   {
