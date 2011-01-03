@@ -128,16 +128,11 @@ if(exists $ARGV[0] && !-r $ARGV[0])
   unshift @ARGV, shellwords shift @ARGV;
 }
 
+# everything off by default:
 # do not stream in the data by default
 # point plotting by default.
 # no monotonicity checks by default
-my %options = ( stream    => 0,
-                domain    => 0,
-                dataid    => 0,
-                points    => 0,
-                lines     => 0,
-                xlen      => 0,
-                maxcurves => 100);
+my %options = ( maxcurves => 100);
 
 GetOptions(\%options,
            'stream!',
@@ -169,7 +164,7 @@ GetOptions(\%options,
            'help',
            'dump') or die($usage);
 
-if( defined $options{help} )
+if( $options{help} )
 {
   die($usage);
 }
@@ -196,7 +191,7 @@ my $xwindow;
 my $streamingFinished : shared = undef;
 if($options{stream})
 {
-  if( defined $options{hardcopy})
+  if( $options{hardcopy})
   {
     $options{stream} = undef;
   }
@@ -265,7 +260,7 @@ sub mainThread
 
     my $outputfile;
     my $outputfileType;
-    if( defined $options{hardcopy})
+    if( $options{hardcopy})
     {
       $outputfile = $options{hardcopy};
       ($outputfileType) = $outputfile =~ /\.(ps|pdf|png)$/;
@@ -447,7 +442,7 @@ sub mainThread
     {
       plotStoredData();
 
-      if( defined $options{hardcopy})
+      if( $options{hardcopy})
       {
         print PIPE "set output\n";
         # sleep until the plot file exists, and it is closed. Sometimes the output is
