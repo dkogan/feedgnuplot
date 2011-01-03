@@ -49,6 +49,8 @@ As an example, if line 3 of the input is "0 9 1 20"
    value, so it is ignored. If another value followed 20, we'd get another
    point in curve ID 20
 
+  --[no]3d             Do [not] plot in 3D. This only makes sense with --domain.
+                       Each domain here is an (x,y) tuple
 
   --[no]stream         Do [not] display the data a point at a time, as it
                        comes in
@@ -58,10 +60,9 @@ As an example, if line 3 of the input is "0 9 1 20"
   --[no]points         Do [not] draw points
 
   --xlabel xxx         Set x-axis label
-
   --ylabel xxx         Set y-axis label
-
-  --y2label xxx        Set y2-axis label
+  --y2label xxx        Set y2-axis label. Does not apply to 3d plots
+  --zlabel xxx         Set y-axis label. Only applies to 3d plots
 
   --title  xxx         Set the title of the plot
 
@@ -71,24 +72,22 @@ As an example, if line 3 of the input is "0 9 1 20"
   --autolegend         Use the curve IDs for the legend
 
   --xlen xxx           Set the size of the x-window to plot. Omit this or set it
-                       to 0 to plot ALL the data
+                       to 0 to plot ALL the data. Does not make sense with 3d plots
 
   --xmin  xxx          Set the range for the x axis. These are ignored in a
                        streaming plot
-
   --xmax  xxx          Set the range for the x axis. These are ignored in a
                        streaming plot
-
   --ymin  xxx          Set the range for the y axis.
-
   --ymax  xxx          Set the range for the y axis.
-
-  --y2min xxx          Set the range for the y2 axis.
-
-  --y2max xxx          Set the range for the y2 axis.
+  --y2min xxx          Set the range for the y2 axis. Does not apply to 3d plots.
+  --y2max xxx          Set the range for the y2 axis. Does not apply to 3d plots.
+  --zmin  xxx          Set the range for the z axis. Only applies to 3d plots.
+  --zmax  xxx          Set the range for the z axis. Only applies to 3d plots.
 
   --y2    xxx          Plot the data specified by this curve ID on the y2 axis.
-                       Without --dataid, the ID is just an ordered 0-based index
+                       Without --dataid, the ID is just an ordered 0-based index.
+                       Does not apply to 3d plots.
 
   --curvestyle xxx     Additional style per curve. Give this option multiple
                        times for multiple curves
@@ -112,7 +111,8 @@ As an example, if line 3 of the input is "0 9 1 20"
                        coordinate in the input data is monotonically increasing.
                        If a given x-variable is in the past, all data currently
                        cached for this curve is purged. Without --monotonic, all
-                       data is kept. No --monotonic by default
+                       data is kept. Does not make sense with 3d plots.
+                       No --monotonic by default.
 
   --dump               Instead of printing to gnuplot, print to STDOUT. For
                        debugging.
@@ -138,6 +138,7 @@ GetOptions(\%options,
            'stream!',
            'domain!',
            'dataid!',
+           '3d!',
            'lines!',
            'points!',
            'legend=s@',
@@ -145,6 +146,7 @@ GetOptions(\%options,
            'xlabel=s',
            'ylabel=s',
            'y2label=s',
+           'zlabel=s',
            'title=s',
            'xlen=f',
            'ymin=f',
@@ -153,6 +155,8 @@ GetOptions(\%options,
            'xmax=f',
            'y2min=f',
            'y2max=f',
+           'zmin=f',
+           'zmax=f',
            'y2=s@',
            'curvestyle=s@',
            'extracmds=s@',
@@ -164,9 +168,45 @@ GetOptions(\%options,
            'help',
            'dump') or die($usage);
 
+# handle various cmdline-option errors
 if( $options{help} )
 {
   die($usage);
+}
+
+if( $options{'3d'} )
+{
+  if( !$options{domain} )
+  {
+    print STDERR "--3d only makes sense with --domain\n";
+    die $usage;
+  }
+
+  if( defined $options{y2min} || defined $options{y2max} || defined $options{y2} )
+  {
+    print STDERR "--3d does not make sense with --y2...\n";
+    die $usage;
+  }
+
+  if( defined $options{xlen} )
+  {
+    print STDERR "--3d does not make sense with --xlen\n";
+    die $usage;
+  }
+
+  if( defined $options{monotonic} )
+  {
+    print STDERR "--3d does not make sense with --monotonic\n";
+    die $usage;
+  }
+}
+else
+{
+  if( defined $options{zmin} || defined $options{zmax} || defined $options{zlabel} )
+  {
+    print STDERR "--zmin/zmax/zlabel only makes sense with --3d\n";
+    die $usage;
+  }
 }
 
 # set up plotting style
@@ -287,6 +327,8 @@ sub mainThread
     $options{ymax}  = '' unless defined $options{ymax};
     $options{y2min} = '' unless defined $options{y2min};
     $options{y2max} = '' unless defined $options{y2max};
+    $options{zmin}  = '' unless defined $options{zmin};
+    $options{zmax}  = '' unless defined $options{zmax};
 
     print PIPE "set xtics\n";
     if($options{y2})
@@ -300,11 +342,13 @@ sub mainThread
     # if any of the ranges are given, set the range
     print PIPE "set xrange [". $options{xmin} . ":" . $options{xmax} ."]\n" if length( $options{xmin} . $options{xmax} );
     print PIPE "set yrange [". $options{ymin} . ":" . $options{ymax} ."]\n" if length( $options{ymin} . $options{ymax} );
+    print PIPE "set zrange [". $options{zmin} . ":" . $options{zmax} ."]\n" if length( $options{zmin} . $options{zmax} );
     print PIPE "set style data $style\n";
     print PIPE "set grid\n";
 
     print(PIPE "set xlabel  \"" . $options{xlabel } . "\"\n") if defined $options{xlabel};
     print(PIPE "set ylabel  \"" . $options{ylabel } . "\"\n") if defined $options{ylabel};
+    print(PIPE "set zlabel  \"" . $options{zlabel } . "\"\n") if defined $options{zlabel};
     print(PIPE "set y2label \"" . $options{y2label} . "\"\n") if defined $options{y2label};
     print(PIPE "set title   \"" . $options{title  } . "\"\n") if defined $options{title};
 
@@ -352,7 +396,7 @@ sub mainThread
 
     # regexp for a possibly floating point, possibly scientific notation number, fully captured
     my $numRE = qr/([-]?[\d\.]+(?:e[-+]?\d+)?)/io;
-    my $xlast;
+    my @domain;
     my $haveNewData;
 
     # I should be using the // operator, but I'd like to be compatible with perl 5.8
@@ -370,11 +414,17 @@ sub mainThread
         # number is used)
         # $options{dataid} indicates whether idX is given or not (if not, the point order in the
         # line is used)
+        # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
 
         if($options{domain})
         {
           /$numRE/go or next;
-          $xlast = $1;
+          $domain[0] = $1;
+          if($options{'3d'})
+          {
+            /$numRE/go or next;
+            $domain[1] = $1;
+          }
         }
         else
         {
@@ -383,11 +433,11 @@ sub mainThread
           if(defined $dataQueue)
           {
             s/ ([\d]+)$//o;
-            $xlast = $1;
+            $domain[0] = $1;
           }
           else
           {
-            $xlast = $.;
+            $domain[0] = $.;
           }
         }
 
@@ -399,7 +449,7 @@ sub mainThread
 
             $haveNewData = 1;
             pushPoint(getCurve($1),
-                      [$xlast, $point]);
+                      [@domain, $point]);
           }
         }
         else
@@ -409,7 +459,7 @@ sub mainThread
           {
             $haveNewData = 1;
             pushPoint(getCurve($id++),
-                      [$xlast, $point]);
+                      [@domain, $point]);
           }
         }
       }
@@ -422,8 +472,8 @@ sub mainThread
 
         if( $options{xlen} )
         {
-          pruneOldData($xlast - $options{xlen});
-          plotStoredData($xlast - $options{xlen}, $xlast);
+          pruneOldData($domain[0] - $options{xlen});
+          plotStoredData($domain[0] - $options{xlen}, $domain[0]);
         }
         else
         {
@@ -484,7 +534,8 @@ sub plotStoredData
   my @nonemptyCurves = grep {@$_ > 1} @curves;
   my @extraopts = map {$_->[0]{options}} @nonemptyCurves;
 
-  print PIPE 'plot ' . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
+  my $cmd = $options{'3d'} ? 'splot ' : 'plot ';
+  print PIPE $cmd . join(', ' , map({ '"-"' . $_} @extraopts) ) . "\n";
 
   foreach my $buf (@nonemptyCurves)
   {
