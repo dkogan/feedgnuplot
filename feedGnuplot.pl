@@ -505,7 +505,7 @@ sub mainThread
       }
 
       # we persist gnuplot, so we shouldn't need this sleep. However, once
-      # gnuplot exist, but the persistent window sticks around, you can no
+      # gnuplot exits, but the persistent window sticks around, you can no
       # longer interactively zoom the plot. So we still sleep
       sleep(100000);
     }
