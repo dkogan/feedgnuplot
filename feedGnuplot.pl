@@ -243,7 +243,8 @@ sub plotThread
 
 }
 
-sub mainThread {
+sub mainThread
+{
     local *PIPE;
     my $dopersist = '';
 
