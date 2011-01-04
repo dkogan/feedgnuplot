@@ -549,14 +549,7 @@ sub plotStoredData
   my $body = join(', ' , map({ '"-"' . $_} @extraopts) );
   if($options{'3d'})
   {
-    if($options{colormap})
-    {
-      print PIPE "splot $body palette\n";
-    }
-    else
-    {
-      print PIPE "splot $body\n";
-    }
+    print PIPE "splot $body\n";
   }
   else
   {
@@ -589,7 +582,8 @@ sub updateCurveOptions
   $title = $id                    if $options{autolegend};
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
-  $curveoptions->{options} = "$titleoption $curveoptions->{extraoptions}";
+  my $colormapoption = $options{colormap} ? 'palette' : '';
+  $curveoptions->{options} = "$titleoption $curveoptions->{extraoptions} $colormapoption";
 }
 
 sub getCurve
