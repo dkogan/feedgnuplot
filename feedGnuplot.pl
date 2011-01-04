@@ -308,13 +308,14 @@ sub mainThread
     if( $options{hardcopy})
     {
       $outputfile = $options{hardcopy};
-      ($outputfileType) = $outputfile =~ /\.(ps|pdf|png)$/;
-      if(!$outputfileType) { die("Only .ps, .pdf and .png supported\n"); }
+      ($outputfileType) = $outputfile =~ /\.(eps|ps|pdf|png)$/;
+      if(!$outputfileType) { die("Only .eps, .ps, .pdf and .png supported\n"); }
 
       my %terminalOpts =
-      ( ps  => 'postscript solid color landscape 10',
-        pdf => 'pdfcairo solid color font ",10" size 11in,8.5in',
-        png => 'png size 1280,1024' );
+      ( eps  => 'postscript solid color eps 10',
+        ps   => 'postscript solid color landscape 10',
+        pdf  => 'pdfcairo solid color font ",10" size 11in,8.5in',
+        png  => 'png size 1280,1024' );
 
       print PIPE "set terminal $terminalOpts{$outputfileType}\n";
       print PIPE "set output \"$outputfile\"\n";
