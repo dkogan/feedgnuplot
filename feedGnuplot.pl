@@ -367,6 +367,7 @@ sub mainThread
     if($options{colormap})
     {
       print PIPE "set view map\n";
+      print PIPE "set cbrange [". $options{zmin} . ":" . $options{zmax} ."]\n" if length( $options{zmin} . $options{zmax} );
     }
 
 # For the specified values, set the legend entries to 'title "blah blah"'
