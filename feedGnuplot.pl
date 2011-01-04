@@ -587,7 +587,7 @@ sub updateCurveOptions
   $title = $id                    if $options{autolegend};
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
-  $curveoptions->{options} = "$curveoptions->{extraoptions} $titleoption";
+  $curveoptions->{options} = "$titleoption $curveoptions->{extraoptions}";
 }
 
 sub getCurve
