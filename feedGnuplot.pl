@@ -94,6 +94,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --curvestyle xxx     Additional style per curve. Give this option multiple
                        times for multiple curves
 
+  --curvestyleall xxx  Additional styles for ALL curves.
+
   --extracmds xxx      Additional commands. These could contain extra global styles
                        for instance
 
@@ -162,6 +164,7 @@ GetOptions(\%options,
            'zmax=f',
            'y2=s@',
            'curvestyle=s@',
+           'curvestyleall=s',
            'extracmds=s@',
            'size=s',
            'square!',
@@ -177,7 +180,16 @@ if( $options{help} )
   die($usage);
 }
 
-if($options{colormap}) { $options{'3d'} = 1; }; # colormap implies 3d
+if($options{colormap})
+{
+  # colormap implies 3d
+  $options{'3d'} = 1;
+
+  # colormap styles all curves with palette. Seems like there should be a way to do this with a
+  # global setting, but I can't get that to work
+  $options{curvestyleall} = '' unless defined $options{curvestyleall};
+  $options{curvestyleall} .= ' palette';
+}
 
 if( $options{'3d'} )
 {
@@ -312,7 +324,7 @@ sub mainThread
       if(!$outputfileType) { die("Only .eps, .ps, .pdf and .png supported\n"); }
 
       my %terminalOpts =
-      ( eps  => 'postscript solid color eps 10',
+      ( eps  => 'postscript solid color enhanced eps',
         ps   => 'postscript solid color landscape 10',
         pdf  => 'pdfcairo solid color font ",10" size 11in,8.5in',
         png  => 'png size 1280,1024' );
@@ -582,8 +594,8 @@ sub updateCurveOptions
   $title = $id                    if $options{autolegend};
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
-  my $colormapoption = $options{colormap} ? 'palette' : '';
-  $curveoptions->{options} = "$titleoption $curveoptions->{extraoptions} $colormapoption";
+  my $extraoption = defined $options{curvestyleall} ? $options{curvestyleall} : '';
+  $curveoptions->{options} = "$titleoption $curveoptions->{extraoptions} $extraoption";
 }
 
 sub getCurve
