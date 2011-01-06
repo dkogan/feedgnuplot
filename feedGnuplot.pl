@@ -224,11 +224,6 @@ elsif(!$options{colormap})
   }
 }
 
-# set up plotting style
-my $style = '';
-if($options{lines})  { $style .= 'lines';}
-if($options{points}) { $style .= 'points';}
-
 # list containing the plot data. Each element is a reference to a list, representing the data for
 # one curve. The first 'point' is a hash describing various curve parameters. The rest are all
 # references to lists of (x,y) tuples
@@ -352,6 +347,11 @@ sub mainThread
       # if any of the ranges are given, set the range
       print PIPE "set y2range [". $options{y2min} . ":" . $options{y2max} ."]\n" if length( $options{y2min} . $options{y2max} );
     }
+
+    # set up plotting style
+    my $style = '';
+    if($options{lines})  { $style .= 'lines';}
+    if($options{points}) { $style .= 'points';}
 
     # if any of the ranges are given, set the range
     print PIPE "set xrange [". $options{xmin} . ":" . $options{xmax} ."]\n" if length( $options{xmin} . $options{xmax} );
