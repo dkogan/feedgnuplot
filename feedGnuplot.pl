@@ -52,7 +52,7 @@ As an example, if line 3 of the input is "0 9 1 20"
   --[no]3d             Do [not] plot in 3D. This only makes sense with --domain.
                        Each domain here is an (x,y) tuple
 
-  --colormap           For 3d plots, show a colormapped top-down view
+  --colormap           Show a colormapped top-down view
 
   --[no]stream         Do [not] display the data a point at a time, as it
                        comes in
@@ -84,8 +84,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --ymax  xxx          Set the range for the y axis.
   --y2min xxx          Set the range for the y2 axis. Does not apply to 3d plots.
   --y2max xxx          Set the range for the y2 axis. Does not apply to 3d plots.
-  --zmin  xxx          Set the range for the z axis. Only applies to 3d plots.
-  --zmax  xxx          Set the range for the z axis. Only applies to 3d plots.
+  --zmin  xxx          Set the range for the z axis. Only applies to 3d plots or colormaps.
+  --zmax  xxx          Set the range for the z axis. Only applies to 3d plots or colormaps.
 
   --y2    xxx          Plot the data specified by this curve ID on the y2 axis.
                        Without --dataid, the ID is just an ordered 0-based index.
@@ -182,9 +182,6 @@ if( $options{help} )
 
 if($options{colormap})
 {
-  # colormap implies 3d
-  $options{'3d'} = 1;
-
   # colormap styles all curves with palette. Seems like there should be a way to do this with a
   # global setting, but I can't get that to work
   $options{curvestyleall} = '' unless defined $options{curvestyleall};
@@ -217,11 +214,11 @@ if( $options{'3d'} )
     die $usage;
   }
 }
-else
+elsif(!$options{colormap})
 {
   if( defined $options{zmin} || defined $options{zmax} || defined $options{zlabel} )
   {
-    print STDERR "--zmin/zmax/zlabel only makes sense with --3d\n";
+    print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
     die $usage;
   }
 }
@@ -377,7 +374,6 @@ sub mainThread
 
     if($options{colormap})
     {
-      print PIPE "set view map\n";
       print PIPE "set cbrange [". $options{zmin} . ":" . $options{zmax} ."]\n" if length( $options{zmin} . $options{zmax} );
     }
 
@@ -442,7 +438,7 @@ sub mainThread
         {
           /$numRE/go or next;
           $domain[0] = $1;
-          if($options{'3d'})
+          if($options{'3d'} || $options{colormap})
           {
             /$numRE/go or next;
             $domain[1] = $1;
