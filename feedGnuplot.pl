@@ -413,8 +413,8 @@ sub mainThread
       }
     }
 
-    # regexp for a possibly floating point, possibly scientific notation number, fully captured
-    my $numRE = qr/([-]?[\d\.]+(?:e[-+]?\d+)?)/io;
+    # regexp for a possibly floating point, possibly scientific notation number
+    my $numRE   = '[-]?[\d\.]+(?:e[-+]?\d+)?';
     my @domain;
     my $haveNewData;
 
@@ -437,11 +437,11 @@ sub mainThread
 
         if($options{domain})
         {
-          /$numRE/go or next;
+          /($numRE)/go or next;
           $domain[0] = $1;
           if($options{'3d'} || $options{colormap})
           {
-            /$numRE/go or next;
+            /($numRE)/go or next;
             $domain[1] = $1;
           }
         }
@@ -462,7 +462,7 @@ sub mainThread
 
         if($options{dataid})
         {
-          while(/(\w+)\s+$numRE/go)
+          while(/(\w+)\s+($numRE)/go)
           {
             my $point = $2;
 
