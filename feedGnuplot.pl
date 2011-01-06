@@ -180,11 +180,12 @@ if( $options{help} )
   die($usage);
 }
 
+$options{curvestyleall} = '' unless defined $options{curvestyleall};
+
 if($options{colormap})
 {
   # colormap styles all curves with palette. Seems like there should be a way to do this with a
   # global setting, but I can't get that to work
-  $options{curvestyleall} = '' unless defined $options{curvestyleall};
   $options{curvestyleall} .= ' palette';
 }
 
