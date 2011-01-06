@@ -231,8 +231,6 @@ my $style = '';
 if($options{lines})  { $style .= 'lines';}
 if($options{points}) { $style .= 'points';}
 
-if(!$style) { $style = 'points'; }
-
 # list containing the plot data. Each element is a reference to a list, representing the data for
 # one curve. The first 'point' is a hash describing various curve parameters. The rest are all
 # references to lists of (x,y) tuples
@@ -361,7 +359,7 @@ sub mainThread
     print PIPE "set xrange [". $options{xmin} . ":" . $options{xmax} ."]\n" if length( $options{xmin} . $options{xmax} );
     print PIPE "set yrange [". $options{ymin} . ":" . $options{ymax} ."]\n" if length( $options{ymin} . $options{ymax} );
     print PIPE "set zrange [". $options{zmin} . ":" . $options{zmax} ."]\n" if length( $options{zmin} . $options{zmax} );
-    print PIPE "set style data $style\n";
+    print PIPE "set style data $style\n" if $style;
     print PIPE "set grid\n";
 
     print(PIPE "set xlabel  \"" . $options{xlabel } . "\"\n") if defined $options{xlabel};
