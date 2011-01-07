@@ -60,8 +60,9 @@ As an example, if line 3 of the input is "0 9 1 20"
                        comes in
 
   --[no]lines          Do [not] draw lines to connect consecutive points
-
   --[no]points         Do [not] draw points
+  --circles            Plot with circles. This requires a radius be specified for
+                       each point. Automatically increments extraValuesPerPoint
 
   --xlabel xxx         Set x-axis label
   --ylabel xxx         Set y-axis label
@@ -156,6 +157,7 @@ GetOptions(\%options,
            'colormap!',
            'lines!',
            'points!',
+           'circles',
            'legend=s@',
            'autolegend!',
            'xlabel=s',
@@ -302,6 +304,7 @@ sub mainThread
     my $valuesPerPoint = 1;
     if($options{extraValuesPerPoint}) { $valuesPerPoint += $options{extraValuesPerPoint}; }
     if($options{colormap})            { $valuesPerPoint++; }
+    if($options{circles} )            { $valuesPerPoint++; }
 
     local *PIPE;
     my $dopersist = '';
@@ -367,6 +370,10 @@ sub mainThread
     my $style = '';
     if($options{lines})  { $style .= 'lines';}
     if($options{points}) { $style .= 'points';}
+    if($options{circles})
+    {
+      $options{curvestyleall} = "with circles $options{curvestyleall}";
+    }
 
     # if any of the ranges are given, set the range
     print PIPE "set xrange [". $options{xmin} . ":" . $options{xmax} ."]\n" if length( $options{xmin} . $options{xmax} );
