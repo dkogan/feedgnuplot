@@ -52,7 +52,9 @@ As an example, if line 3 of the input is "0 9 1 20"
   --[no]3d             Do [not] plot in 3D. This only makes sense with --domain.
                        Each domain here is an (x,y) tuple
 
-  --colormap           Show a colormapped top-down view
+  --colormap           Show a colormapped xy plot. Requires extra data for the color.
+                       zmin/zmax can be used to set the extents of the colors.
+                       Automatically increments extraValuesPerPoint
 
   --[no]stream         Do [not] display the data a point at a time, as it
                        comes in
@@ -299,6 +301,7 @@ sub mainThread
 {
     my $valuesPerPoint = 1;
     if($options{extraValuesPerPoint}) { $valuesPerPoint += $options{extraValuesPerPoint}; }
+    if($options{colormap})            { $valuesPerPoint++; }
 
     local *PIPE;
     my $dopersist = '';
@@ -457,7 +460,7 @@ sub mainThread
         {
           /($numRE)/go or next;
           $domain[0] = $1;
-          if($options{'3d'} || $options{colormap})
+          if($options{'3d'})
           {
             /($numRE)/go or next;
             $domain[1] = $1;
