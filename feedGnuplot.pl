@@ -556,7 +556,10 @@ sub pruneOldData
     if( @$xy > 1 )
     {
       my $firstInWindow = first_index {$_->[0] >= $oldestx} @{$xy}[1..$#$xy];
-      splice( @$xy, 1, $firstInWindow ) unless $firstInWindow == -1;
+      if($firstInWindow == -1)
+      { splice( @$xy, 1); }
+      else
+      { splice( @$xy, 1, $firstInWindow ); }
     }
   }
 }
