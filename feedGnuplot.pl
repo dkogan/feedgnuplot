@@ -118,6 +118,14 @@ As an example, if line 3 of the input is "0 9 1 20"
                        data is kept. Does not make sense with 3d plots.
                        No --monotonic by default.
 
+  --extraValuesPerPoint xxx
+                       How many extra values are given for each data point. Normally this
+                       is 0, and does not need to be specified, but sometimes we want
+                       extra data, like for colors or point sizes or error bars, etc.
+                       Feedgnuplot options that require this (colormap, circles) are
+                       automatically set. This option is ONLY needed if unknown styles are used,
+                       with --curvestyleall for instance
+
   --dump               Instead of printing to gnuplot, print to STDOUT. For
                        debugging.
 OEF
@@ -171,6 +179,7 @@ GetOptions(\%options,
            'hardcopy=s',
            'maxcurves=i',
            'monotonic!',
+           'extraValuesPerPoint=i',
            'help',
            'dump') or die($usage);
 
@@ -288,6 +297,9 @@ sub plotThread
 
 sub mainThread
 {
+    my $valuesPerPoint = 1;
+    if($options{extraValuesPerPoint}) { $valuesPerPoint += $options{extraValuesPerPoint}; }
+
     local *PIPE;
     my $dopersist = '';
 
@@ -415,6 +427,12 @@ sub mainThread
 
     # regexp for a possibly floating point, possibly scientific notation number
     my $numRE   = '[-]?[\d\.]+(?:e[-+]?\d+)?';
+
+    # a point may be preceded by an id
+    my $pointRE = $options{dataid} ? '(\w+)\s+' : '()';
+    $pointRE .= '(' . join('\s+', ($numRE) x $valuesPerPoint) . ')';
+    $pointRE = qr/$pointRE/;
+
     my @domain;
     my $haveNewData;
 
@@ -460,26 +478,15 @@ sub mainThread
           }
         }
 
-        if($options{dataid})
+        my $id = -1;
+        while (/$pointRE/go)
         {
-          while(/(\w+)\s+($numRE)/go)
-          {
-            my $point = $2;
+          if($1 ne '') {$id = $1;}
+          else         {$id++;   }
 
-            $haveNewData = 1;
-            pushPoint(getCurve($1),
-                      [@domain, $point]);
-          }
-        }
-        else
-        {
-          my $id = 0;
-          foreach my $point (/$numRE/go)
-          {
-            $haveNewData = 1;
-            pushPoint(getCurve($id++),
-                      [@domain, $point]);
-          }
+          $haveNewData = 1;
+          pushPoint(getCurve($id),
+                    [@domain, split( /\s+/, $2)]);
         }
       }
 
