@@ -191,7 +191,8 @@ GetOptions(\%options,
 # handle various cmdline-option errors
 if( $options{help} )
 {
-  die($usage);
+  say STDERR $usage;
+  exit 0;
 }
 
 $options{curvestyleall} = '' unless defined $options{curvestyleall};
