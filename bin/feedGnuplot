@@ -10,6 +10,8 @@ use threads::shared;
 use Thread::Queue;
 use Text::ParseWords;
 
+our $VERSION = '1.00';
+
 open(GNUPLOT_VERSION, 'gnuplot --version |');
 my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*(\d*\.\d*)/;
 if(!$gnuplotVersion)
@@ -674,3 +676,177 @@ sub pushPoint
 
   push @$curve, $xy;
 }
+
+
+__END__
+
+=head1 NAME
+
+feedGnuplot - A pipe-oriented frontend to Gnuplot
+
+=head1 SYNOPSIS
+
+Simple plotting of stored data:
+
+ $ seq 5 | awk '{print 2*$1, $1*$1}'
+ 2 1
+ 4 4
+ 6 9
+ 8 16
+ 10 25
+
+ $ seq 5 | awk '{print 2*$1, $1*$1}' |
+   feedGnuplot --lines --points --legend "data 0" --title "Test plot" --y2 1
+
+Simple real-time plotting example: plot how much data is received on the wlan0
+network interface in bytes/second (uses bash, awk and Linux):
+
+ $ while true; do sleep 1; cat /proc/net/dev; done |
+   awk '/wlan0/ {if(b) {print $2-b; fflush()} b=$2}' |
+   feedGnuplot --lines --stream --xlen 10 --ylabel 'Bytes/sec' --xlabel seconds
+
+=head1 DESCRIPTION
+
+This is a flexible, command-line-oriented frontend to Gnuplot. It creates
+plots from data coming in on STDIN or given in a filename passed on the
+commandline. Various data representations are supported, as is hardcopy
+output and streaming display of live data. A simple example:
+
+ $ seq 5 | awk '{print 2*$1, $1*$1}' | feedGnuplot
+
+You should see a plot with two curves: one on the y1 axis (left) and the other
+on the y2 axis (right). The plots should have a legend and a title. The C<awk>
+command generates some data to plot and the C<feedGnuplot> reads it in from
+STDIN and generates the plot. The <awk> invocation is just an example; more
+interesting things would be plotted in normal usage. None of the
+commandline-options are required for the most basic plotting. Input parsing is
+flexible; every line need not have the same number of points. New curves will be
+created as needed.
+
+The most commonly used functionality of gnuplot is supported directly by the
+script. Anything not directly supported can still be done with the
+C<--extracmds> and C<--curvestyle> options.
+
+=head2 Data formats
+
+=head3 Domain selection
+
+There are 2 main commandline options to control the interpretation of the input
+data. If C<--domain> is passed in, the first value on each line of input is
+interpreted as the I<X>-value for the rest of the data on that line. Without
+C<--domain> the I<X>-value is the line number, and the first value on a line is
+a plain data point like the others. Default is C<--nodomain>. Thus the example
+above produced 2 curves, with B<1,2,3,4,5> as the I<X>-values. If we run the
+same command with --domain:
+
+ $ seq 5 | awk '{print 2*$1, $1*$1}' | feedGnuplot --domain
+
+we get only 1 curve, with B<2,4,6,8,10> as the I<X>-values. As many points as
+desired can appear on a single line, but all points on a line are associated
+with the I<X>-value at the start of that line.
+
+=head3 Curve indexing
+
+By default, each column represents a separate curve. This works unless sparse
+data is to be plotted. With the C<--dataid> option, each point is represented by
+2 values: a string identifying the curve, and the value itself. If we add
+C<--dataid> to the original example:
+
+ $ seq 5 | awk '{print 2*$1, $1*$1}' | feedGnuplot --dataid --autolegend
+
+we get 5 different curves with one point in each. The first column, as produced
+by awk, is B<2,4,6,8,10>. These are interpreted as the IDs of the curves to be
+plotted. The C<--autolegend> option adds a legend using the given IDs to label
+the curves. The IDs need not be numbers; generic strings are accepted. As many
+points as desired can appear on a single line. C<--domain> can be used in
+conjunction with C<--dataid>.
+
+=head3 3D data
+
+To plot 3D data, pass in C<--3d> (for 3D curves) or C<--colormap> (top-down
+view, color encoding I<Z>). C<--domain> MUST be given when plotting 3D data to
+avoid domain ambiguity. If 3D data is being plotted, there are by definition 2
+domain values instead of one (I<Z> as a function of I<X> and I<Y> instead of
+I<Y> as a function of I<X>). Thus the first 2 values on each line are
+interpreted as the domain instead of just 1. The rest of the processing happens
+the same way as before.
+
+=head2 Real-time streaming data
+
+To plot display realtime data, pass in the C<--stream> option. Data will then be
+plotted as it is received, with the refresh rate limited to 1Hz (currently
+hard-coded). To plot only the most recent data (instead of I<all> the data),
+C<--xlen windowsize> can be given. This will create an constantly-updating,
+scrolling view of the recent past. The windowsize is given in domain units
+(passed-in values if C<--domain> or line numbers otherwise).
+
+=head2 Hardcopy output
+
+The script is able to produce hardcopy output with C<--hardcopy outputfile>. The
+output type is inferred from the filename with B<.ps>, B<.eps>, B<.pdf> and
+B<.png> currently supported.
+
+=head2 Self-plotting data files
+
+This script can be used to create self-plotting data files. A self-plotting,
+executable data file C<data> is formatted as
+
+ $ cat data
+ #!/usr/bin/feedGnuplot --lines --points
+ 2 1
+ 4 4
+ 6 9
+ 8 16
+ 10 25
+ 12 36
+ 14 49
+ 16 64
+ 18 81
+ 20 100
+ 22 121
+ 24 144
+ 26 169
+ 28 196
+ 30 225
+
+This is the shebang (#!) line followed by the data, formatted as before. The
+data file can be plotted simply with
+
+ $ ./data
+
+The caveats here are that on Linux the whole #! line is limited to 127 charaters
+and that the full path to feedGnuplot must be given. The 127 character limit is
+a serious limitation, but this can likely be resolved with a kernel patch. I
+have only tried on Linux 2.6.
+
+=head2 Further help
+
+All the options are described with
+
+ $ feedGnuplot --help
+
+=head1 ACKNOWLEDGEMENT
+
+This program is originally based on the driveGnuPlots.pl script from
+Thanassis Tsiodras. It is available from his site at
+L<http://users.softlab.ece.ntua.gr/~ttsiod/gnuplotStreaming.html>
+
+=head1 REPOSITORY
+
+L<https://github.com/dkogan/feedgnuplot>
+
+=head1 AUTHOR
+
+Dima Kogan, C<< <dkogan at cds.caltech.edu> >>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2011 Dima Kogan.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
+
+=cut
