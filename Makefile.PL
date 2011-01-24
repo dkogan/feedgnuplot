@@ -18,3 +18,10 @@ WriteMakefile
    clean                      => { FILES => 'feedGnuplot-*' },
   );
 
+# reroute the main POD into a separate README.pod
+open SCRIPT, 'bin/feedGnuplot' or die "Couldn't open main script";
+open README, '>README.pod'     or die "Couldn't open README.pod";
+while(<SCRIPT>)
+{
+  if(/^=/../^=cut/) { print README; }
+}
