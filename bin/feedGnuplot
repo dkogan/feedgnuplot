@@ -128,9 +128,9 @@ As an example, if line 3 of the input is "0 9 1 20"
                        How many extra values are given for each data point. Normally this
                        is 0, and does not need to be specified, but sometimes we want
                        extra data, like for colors or point sizes or error bars, etc.
-                       Feedgnuplot options that require this (colormap, circles) are
-                       automatically set. This option is ONLY needed if unknown styles are used,
-                       with --curvestyleall for instance
+                       feedGnuplot options that require this (colormap, circles)
+                       automatically set it. This option is ONLY needed if unknown styles are
+                       used, with --curvestyleall for instance
 
   --dump               Instead of printing to gnuplot, print to STDOUT. For
                        debugging.
@@ -714,29 +714,36 @@ output and streaming display of live data. A simple example:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' | feedGnuplot
 
-You should see a plot with two curves: one on the y1 axis (left) and the other
-on the y2 axis (right). The plots should have a legend and a title. The C<awk>
-command generates some data to plot and the C<feedGnuplot> reads it in from
-STDIN and generates the plot. The <awk> invocation is just an example; more
-interesting things would be plotted in normal usage. None of the
-commandline-options are required for the most basic plotting. Input parsing is
-flexible; every line need not have the same number of points. New curves will be
-created as needed.
+You should see a plot with two curves. The C<awk> command generates some data to
+plot and the C<feedGnuplot> reads it in from STDIN and generates the plot. The
+<awk> invocation is just an example; more interesting things would be plotted in
+normal usage. None of the commandline-options are required for the most basic
+plotting. Input parsing is flexible; every line need not have the same number of
+points. New curves will be created as needed.
 
 The most commonly used functionality of gnuplot is supported directly by the
 script. Anything not directly supported can still be done with the
-C<--extracmds> and C<--curvestyle> options.
+C<--extracmds> and C<--curvestyle> options. Arbitrary gnuplot commands can be
+passed in with C<--extracmds>. For example, to turn off the grid, pass in
+C<--extracmds 'unset grid'>. As many of these options as needed can be pased
+in. To add arbitrary curve styles, use C<--curvestyle extrastyle>. Pass these
+more than once to affect more than one curve. To apply an extra style to I<all>
+the curves, pass in C<--curvestyleall extrastyle>.
 
 =head2 Data formats
 
+By default, each value present in the incoming data represents a distinct data
+point, as demonstrated in the above example (we had 10 numbers in the input and
+10 points in the plot). If requested, the script supports more sophisticated
+interpretation of input data
+
 =head3 Domain selection
 
-There are 2 main commandline options to control the interpretation of the input
-data. If C<--domain> is passed in, the first value on each line of input is
+If C<--domain> is passed in, the first value on each line of input is
 interpreted as the I<X>-value for the rest of the data on that line. Without
 C<--domain> the I<X>-value is the line number, and the first value on a line is
 a plain data point like the others. Default is C<--nodomain>. Thus the example
-above produced 2 curves, with B<1,2,3,4,5> as the I<X>-values. If we run the
+above produces 2 curves, with B<1,2,3,4,5> as the I<X>-values. If we run the
 same command with --domain:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' | feedGnuplot --domain
@@ -747,7 +754,7 @@ with the I<X>-value at the start of that line.
 
 =head3 Curve indexing
 
-By default, each column represents a separate curve. This works unless sparse
+By default, each column represents a separate curve. This is fine unless sparse
 data is to be plotted. With the C<--dataid> option, each point is represented by
 2 values: a string identifying the curve, and the value itself. If we add
 C<--dataid> to the original example:
@@ -755,30 +762,46 @@ C<--dataid> to the original example:
  $ seq 5 | awk '{print 2*$1, $1*$1}' | feedGnuplot --dataid --autolegend
 
 we get 5 different curves with one point in each. The first column, as produced
-by awk, is B<2,4,6,8,10>. These are interpreted as the IDs of the curves to be
-plotted. The C<--autolegend> option adds a legend using the given IDs to label
-the curves. The IDs need not be numbers; generic strings are accepted. As many
-points as desired can appear on a single line. C<--domain> can be used in
+by C<awk>, is B<2,4,6,8,10>. These are interpreted as the IDs of the curves to
+be plotted. The C<--autolegend> option adds a legend using the given IDs to
+label the curves. The IDs need not be numbers; generic strings are accepted. As
+many points as desired can appear on a single line. C<--domain> can be used in
 conjunction with C<--dataid>.
+
+=head3 Multi-value style support
+
+Depending on how gnuplot is plotting the data, more than one value may be needed
+to represent a single point. For example, the script has support to plot all the
+data with C<--circles>. This requires a radius to be specified for each point in
+addition to the position of the point. Thus, when plotting with C<--circles>, 2
+numbers are read for each data point instead of 1. A similar situation exists
+with C<--colormap> where each point contains the position I<and> the
+color. There are other gnuplot styles that require more data (such as error
+bars), but none of these are directly supported by the script. They can still be
+used, though, by specifying the specific style with C<--curvestyle>, and
+specifying how many extra values are needed for each point with
+C<--extraValuesPerPoint extra>. C<--extraValuesPerPoint> is ONLY needed for the
+styles not explicitly supported; supported styles set that variable
+automatically.
 
 =head3 3D data
 
-To plot 3D data, pass in C<--3d> (for 3D curves) or C<--colormap> (top-down
-view, color encoding I<Z>). C<--domain> MUST be given when plotting 3D data to
-avoid domain ambiguity. If 3D data is being plotted, there are by definition 2
-domain values instead of one (I<Z> as a function of I<X> and I<Y> instead of
-I<Y> as a function of I<X>). Thus the first 2 values on each line are
+To plot 3D data, pass in C<--3d>. C<--domain> MUST be given when plotting 3D
+data to avoid domain ambiguity. If 3D data is being plotted, there are by
+definition 2 domain values instead of one (I<Z> as a function of I<X> and I<Y>
+instead of I<Y> as a function of I<X>). Thus the first 2 values on each line are
 interpreted as the domain instead of just 1. The rest of the processing happens
 the same way as before.
 
 =head2 Real-time streaming data
 
-To plot display realtime data, pass in the C<--stream> option. Data will then be
+To plot real-time data, pass in the C<--stream> option. Data will then be
 plotted as it is received, with the refresh rate limited to 1Hz (currently
 hard-coded). To plot only the most recent data (instead of I<all> the data),
 C<--xlen windowsize> can be given. This will create an constantly-updating,
-scrolling view of the recent past. The windowsize is given in domain units
-(passed-in values if C<--domain> or line numbers otherwise).
+scrolling view of the recent past. C<windowsize> should be replaced by the
+desired length of the domain window to plot, in domain units (passed-in values
+if C<--domain> or line numbers otherwise).
 
 =head2 Hardcopy output
 
