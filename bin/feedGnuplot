@@ -677,7 +677,6 @@ sub pushPoint
   push @$curve, $xy;
 }
 
-
 __END__
 
 =head1 NAME
