@@ -193,7 +193,7 @@ GetOptions(\%options,
 # handle various cmdline-option errors
 if( $options{help} )
 {
-  say STDERR $usage;
+  print STDERR "$usage\n";
   exit 0;
 }
 
