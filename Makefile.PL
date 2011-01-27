@@ -19,10 +19,15 @@ WriteMakefile
    clean                      => { FILES => 'feedGnuplot-*' },
   );
 
-# reroute the main POD into a separate README.pod
-open SCRIPT, 'bin/feedGnuplot' or die "Couldn't open main script";
-open README, '>README.pod'     or die "Couldn't open README.pod";
-while(<SCRIPT>)
+# reroute the main POD into a separate README.pod if requested. This is here
+# purely to generate a README.pod for the github front page
+if(exists $ARGV[0] && $ARGV[0] eq 'README.pod')
 {
-  if(/^=/../^=cut/) { print README; }
+  open SCRIPT, 'bin/feedGnuplot' or die "Couldn't open main script";
+  open README, '>README.pod'     or die "Couldn't open README.pod";
+  while (<SCRIPT>)
+  {
+    if (/^=/../^=cut/)
+    { print README; }
+  }
 }
