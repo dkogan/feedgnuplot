@@ -13,7 +13,8 @@ WriteMakefile
     : ()),
    PL_FILES                   => {},
    EXE_FILES                  => [ 'bin/feedGnuplot' ],
-   PREREQ_PM                  => { 'Test::Script::Run' => 0 },
+   PREREQ_PM                  => { 'Test::Script::Run' => 0 ,
+                                   'List::MoreUtils'   => 0},
    dist                       => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
    clean                      => { FILES => 'feedGnuplot-*' },
   );
