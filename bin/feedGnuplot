@@ -10,7 +10,7 @@ use threads::shared;
 use Thread::Queue;
 use Text::ParseWords;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 open(GNUPLOT_VERSION, 'gnuplot --version |');
 my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*(\d*\.\d*)/;
