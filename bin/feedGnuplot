@@ -440,7 +440,7 @@ sub mainThread
     }
 
     # regexp for a possibly floating point, possibly scientific notation number
-    my $numRE   = '[-]?[\d\.]+(?:e[-+]?\d+)?';
+    my $numRE   = '-?\d*\.?\d+(?:[Ee][-+]?\d+)?';
 
     # a point may be preceded by an id
     my $pointRE = $options{dataid} ? '(\w+)\s+' : '()';
