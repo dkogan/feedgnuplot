@@ -324,7 +324,7 @@ sub mainThread
     }
     else
     {
-      open PIPE, "|gnuplot $dopersist" || die "Can't initialize gnuplot\n";
+      open PIPE, "|gnuplot $dopersist" or die "Can't initialize gnuplot\n";
     }
     autoflush PIPE 1;
 
