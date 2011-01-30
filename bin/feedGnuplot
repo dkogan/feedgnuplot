@@ -22,7 +22,62 @@ if(!$gnuplotVersion)
 
 close(GNUPLOT_VERSION);
 
-my $usage = <<OEF;
+my %options;
+interpretCommandline(\%options);
+
+# list containing the plot data. Each element is a reference to a list, representing the data for
+# one curve. The first 'point' is a hash describing various curve parameters. The rest are all
+# references to lists of (x,y) tuples
+my @curves = ();
+
+# list mapping curve names to their indices in the @curves list
+my %curveIndices = ();
+
+# now start the data acquisition and plotting threads
+my $dataQueue;
+my $xwindow;
+
+my $streamingFinished : shared = undef;
+if($options{stream})
+{
+  if( $options{hardcopy})
+  {
+    $options{stream} = undef;
+  }
+
+  $dataQueue = Thread::Queue->new();
+  my $addThr    = threads->create(\&mainThread);
+  my $plotThr   = threads->create(\&plotThread);
+
+  while(<>)
+  {
+    chomp;
+
+    # place every line of input to the queue, so that the plotting thread can process it. if we are
+    # using an implicit domain (x = line number), then we send it on the data queue also, since
+    # $. is not meaningful in the plotting thread
+    if(!$options{domain})
+    {
+      $_ .= " $.";
+    }
+    $dataQueue->enqueue($_);
+  }
+
+  $streamingFinished = 1;
+
+  $plotThr->join();
+  $addThr->join();
+}
+else
+{
+  mainThread();
+}
+
+
+
+sub interpretCommandline
+{
+  my $usage = <<OEF;
 Usage: $0 [options] file1 file2 ...
   any number of data files can be given on the cmdline. They will be processed
   in sequence. If no data files are given, data will be read in from standard
@@ -136,160 +191,84 @@ As an example, if line 3 of the input is "0 9 1 20"
                        debugging.
 OEF
 
-# if I'm using a self-plotting data file with a #! line, then $ARGV[0] will contain ALL of the
-# options and $ARGV[1] will contain the data file to plot. In this case I need to split $ARGV[0] so
-# that GetOptions() can parse it correctly. On the other hand, if I'm plotting normally (not with
-# #!)  a file with spaces in the filename, I don't want to split the filename. Hopefully this logic
-# takes care of both those cases.
-if(exists $ARGV[0] && !-r $ARGV[0])
-{
-  unshift @ARGV, shellwords shift @ARGV;
-}
-
-# everything off by default:
-# do not stream in the data by default
-# point plotting by default.
-# no monotonicity checks by default
-my %options = ( maxcurves => 100);
-
-GetOptions(\%options,
-           'stream!',
-           'domain!',
-           'dataid!',
-           '3d!',
-           'colormap!',
-           'lines!',
-           'points!',
-           'circles',
-           'legend=s@',
-           'autolegend!',
-           'xlabel=s',
-           'ylabel=s',
-           'y2label=s',
-           'zlabel=s',
-           'title=s',
-           'xlen=f',
-           'ymin=f',
-           'ymax=f',
-           'xmin=f',
-           'xmax=f',
-           'y2min=f',
-           'y2max=f',
-           'zmin=f',
-           'zmax=f',
-           'y2=s@',
-           'curvestyle=s@',
-           'curvestyleall=s',
-           'extracmds=s@',
-           'size=s',
-           'square!',
-           'hardcopy=s',
-           'maxcurves=i',
-           'monotonic!',
-           'extraValuesPerPoint=i',
-           'help',
-           'dump') or die($usage);
-
-# handle various cmdline-option errors
-if( $options{help} )
-{
-  print STDERR "$usage\n";
-  exit 0;
-}
-
-$options{curvestyleall} = '' unless defined $options{curvestyleall};
-
-if($options{colormap})
-{
-  # colormap styles all curves with palette. Seems like there should be a way to do this with a
-  # global setting, but I can't get that to work
-  $options{curvestyleall} .= ' palette';
-}
-
-if( $options{'3d'} )
-{
-  if( !$options{domain} )
+  # if I'm using a self-plotting data file with a #! line, then $ARGV[0] will contain ALL of the
+  # options and $ARGV[1] will contain the data file to plot. In this case I need to split $ARGV[0] so
+  # that GetOptions() can parse it correctly. On the other hand, if I'm plotting normally (not with
+  # #!)  a file with spaces in the filename, I don't want to split the filename. Hopefully this logic
+  # takes care of both those cases.
+  if (exists $ARGV[0] && !-r $ARGV[0])
   {
-    print STDERR "--3d only makes sense with --domain\n";
-    exit -1;
+    unshift @ARGV, shellwords shift @ARGV;
   }
 
-  if( defined $options{y2min} || defined $options{y2max} || defined $options{y2} )
+  my $options = shift;
+
+  # everything off by default:
+  # do not stream in the data by default
+  # point plotting by default.
+  # no monotonicity checks by default
+  $options = { maxcurves => 100 };
+
+  GetOptions($options, 'stream!', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
+             'circles', 'legend=s@', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
+             'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
+             'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s@', 'curvestyleall=s', 'extracmds=s@',
+             'size=s', 'square!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
+             'extraValuesPerPoint=i', 'help', 'dump') or die($usage);
+
+  # handle various cmdline-option errors
+  if ( $options->{help} )
   {
-    print STDERR "--3d does not make sense with --y2...\n";
-    exit -1;
+    print STDERR "$usage\n";
+    exit 0;
   }
 
-  if( defined $options{xlen} )
+  $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
+
+  if ($options->{colormap})
   {
-    print STDERR "--3d does not make sense with --xlen\n";
-    exit -1;
+    # colormap styles all curves with palette. Seems like there should be a way to do this with a
+    # global setting, but I can't get that to work
+    $options->{curvestyleall} .= ' palette';
   }
 
-  if( defined $options{monotonic} )
+  if ( $options->{'3d'} )
   {
-    print STDERR "--3d does not make sense with --monotonic\n";
-    exit -1;
-  }
-}
-elsif(!$options{colormap})
-{
-  if( defined $options{zmin} || defined $options{zmax} || defined $options{zlabel} )
-  {
-    print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
-    exit -1;
-  }
-}
-
-# list containing the plot data. Each element is a reference to a list, representing the data for
-# one curve. The first 'point' is a hash describing various curve parameters. The rest are all
-# references to lists of (x,y) tuples
-my @curves = ();
-
-# list mapping curve names to their indices in the @curves list
-my %curveIndices = ();
-
-# now start the data acquisition and plotting threads
-my $dataQueue;
-my $xwindow;
-
-my $streamingFinished : shared = undef;
-if($options{stream})
-{
-  if( $options{hardcopy})
-  {
-    $options{stream} = undef;
-  }
-
-  $dataQueue = Thread::Queue->new();
-  my $addThr    = threads->create(\&mainThread);
-  my $plotThr   = threads->create(\&plotThread);
-
-  while(<>)
-  {
-    chomp;
-
-    # place every line of input to the queue, so that the plotting thread can process it. if we are
-    # using an implicit domain (x = line number), then we send it on the data queue also, since
-    # $. is not meaningful in the plotting thread
-    if(!$options{domain})
+    if ( !$options->{domain} )
     {
-      $_ .= " $.";
+      print STDERR "--3d only makes sense with --domain\n";
+      exit -1;
     }
-    $dataQueue->enqueue($_);
+
+    if ( defined $options->{y2min} || defined $options->{y2max} || defined $options->{y2} )
+    {
+      print STDERR "--3d does not make sense with --y2...\n";
+      exit -1;
+    }
+
+    if ( defined $options->{xlen} )
+    {
+      print STDERR "--3d does not make sense with --xlen\n";
+      exit -1;
+    }
+
+    if ( defined $options->{monotonic} )
+    {
+      print STDERR "--3d does not make sense with --monotonic\n";
+      exit -1;
+    }
+  }
+  elsif (!$options->{colormap})
+  {
+    if ( defined $options->{zmin} || defined $options->{zmax} || defined $options->{zlabel} )
+    {
+      print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
+      exit -1;
+    }
   }
 
-  $streamingFinished = 1;
-
-  $plotThr->join();
-  $addThr->join();
+  return \%options;
 }
-else
-{
-  mainThread();
-}
-
-
 
 sub plotThread
 {
