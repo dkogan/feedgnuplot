@@ -12,7 +12,7 @@ use Text::ParseWords;
 
 our $VERSION = '1.02';
 
-open(GNUPLOT_VERSION, 'gnuplot --version |');
+open(GNUPLOT_VERSION, 'gnuplot --version |') or die "Couldn't run gnuplot";
 my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*(\d*\.\d*)/;
 if(!$gnuplotVersion)
 {
