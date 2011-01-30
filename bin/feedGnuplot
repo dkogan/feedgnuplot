@@ -37,9 +37,9 @@ if($options{stream})
     $options{stream} = undef;
   }
 
-  $dataQueue = Thread::Queue->new();
-  my $addThr    = threads->create(\&mainThread);
-  my $plotThr   = threads->create(\&plotThread);
+  $dataQueue  = Thread::Queue->new();
+  my $addThr  = threads->create(\&mainThread);
+  my $plotThr = threads->create(\&plotThread);
 
   while(<>)
   {
@@ -61,9 +61,7 @@ if($options{stream})
   $addThr->join();
 }
 else
-{
-  mainThread();
-}
+{ mainThread(); }
 
 
 
