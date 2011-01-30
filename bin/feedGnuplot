@@ -12,18 +12,10 @@ use Text::ParseWords;
 
 our $VERSION = '1.02';
 
-open(GNUPLOT_VERSION, 'gnuplot --version |') or die "Couldn't run gnuplot";
-my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*(\d*\.\d*)/;
-if(!$gnuplotVersion)
-{
-  print STDERR "Couldn't find the version of gnuplot. Does it work? Trying anyway...\n";
-  $gnuplotVersion = 0;
-}
-
-close(GNUPLOT_VERSION);
-
 my %options;
 interpretCommandline(\%options);
+
+my $gnuplotVersion = getGnuplotVersion();
 
 # list containing the plot data. Each element is a reference to a list, representing the data for
 # one curve. The first 'point' is a hash describing various curve parameters. The rest are all
@@ -268,6 +260,20 @@ OEF
   }
 
   return \%options;
+}
+
+sub getGnuplotVersion
+{
+  open(GNUPLOT_VERSION, 'gnuplot --version |') or die "Couldn't run gnuplot";
+  my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*(\d*\.\d*)/;
+  if (!$gnuplotVersion)
+  {
+    print STDERR "Couldn't find the version of gnuplot. Does it work? Trying anyway...\n";
+    $gnuplotVersion = 0;
+  }
+  close(GNUPLOT_VERSION);
+
+  return $gnuplotVersion;
 }
 
 sub plotThread
