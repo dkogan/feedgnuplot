@@ -211,25 +211,25 @@ if( $options{'3d'} )
   if( !$options{domain} )
   {
     print STDERR "--3d only makes sense with --domain\n";
-    die $usage;
+    exit -1;
   }
 
   if( defined $options{y2min} || defined $options{y2max} || defined $options{y2} )
   {
     print STDERR "--3d does not make sense with --y2...\n";
-    die $usage;
+    exit -1;
   }
 
   if( defined $options{xlen} )
   {
     print STDERR "--3d does not make sense with --xlen\n";
-    die $usage;
+    exit -1;
   }
 
   if( defined $options{monotonic} )
   {
     print STDERR "--3d does not make sense with --monotonic\n";
-    die $usage;
+    exit -1;
   }
 }
 elsif(!$options{colormap})
@@ -237,7 +237,7 @@ elsif(!$options{colormap})
   if( defined $options{zmin} || defined $options{zmax} || defined $options{zlabel} )
   {
     print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
-    die $usage;
+    exit -1;
   }
 }
 
