@@ -10,7 +10,7 @@ use threads::shared;
 use Thread::Queue;
 use Text::ParseWords;
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 my %options;
 interpretCommandline(\%options);
