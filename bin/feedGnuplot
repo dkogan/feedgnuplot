@@ -256,8 +256,6 @@ OEF
       exit -1;
     }
   }
-
-  return \%options;
 }
 
 sub getGnuplotVersion
