@@ -197,7 +197,7 @@ OEF
   # do not stream in the data by default
   # point plotting by default.
   # no monotonicity checks by default
-  $options = { maxcurves => 100 };
+  $options{ maxcurves } = 100;
 
   GetOptions($options, 'stream!', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s@', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
