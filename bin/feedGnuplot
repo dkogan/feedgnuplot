@@ -10,7 +10,7 @@ use Text::ParseWords;
 use Config;
 if (! $Config{'useithreads'})
 {
-  say "I require a threaded perl";
+  print "I require a threaded perl\n";
   exit(0);
 }
 
