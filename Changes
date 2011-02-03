@@ -1,5 +1,12 @@
 Revision history for feedGnuplot
 
+1.06    2011/02/03
+        Added a check to only work with threaded perls. This should now
+        pass CPAN testers' checks
+
+1.02-5  2011/01/30
+        Various minor packaging changes
+
 1.01    2011/01/23
         Documentation and packaging updates
 
