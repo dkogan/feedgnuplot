@@ -793,8 +793,12 @@ B<.png> currently supported.
 
 =head2 Self-plotting data files
 
-This script can be used to create self-plotting data files. A self-plotting,
-executable data file C<data> is formatted as
+This script can be used to enable self-plotting data files. There are 2 ways of
+doing this: with a shebang (#!) or with inline perl data.
+
+=head3 Self-plotting data with a #!
+
+A self-plotting, executable data file C<data> is formatted as
 
  $ cat data
  #!/usr/bin/feedGnuplot --lines --points
@@ -823,6 +827,44 @@ The caveats here are that on Linux the whole #! line is limited to 127 charaters
 and that the full path to feedGnuplot must be given. The 127 character limit is
 a serious limitation, but this can likely be resolved with a kernel patch. I
 have only tried on Linux 2.6.
+
+=head3 Self-plotting data with perl inline data
+
+Perl supports storing data and code in the same file. This can also be used to
+create self-plotting files:
+
+ $ cat plotdata.pl
+ #!/usr/bin/perl
+ use strict;
+ use warnings;
+
+ open PLOT, "| feedGnuplot --lines --points" or die "Couldn't open plotting pipe";
+ while( <DATA> )
+ {
+   my @xy = split;
+   print PLOT "@xy\n";
+ }
+ __DATA__
+ 2 1
+ 4 4
+ 6 9
+ 8 16
+ 10 25
+ 12 36
+ 14 49
+ 16 64
+ 18 81
+ 20 100
+ 22 121
+ 24 144
+ 26 169
+ 28 196
+ 30 225
+
+This is especially useful if the logged data is not in a format directly
+supported by feedGnuplot. Raw data can be stored after the __DATA__ directive,
+with a small perl script to manipulate the data into a useable format and send
+it to the plotter.
 
 =head2 Further help
 
