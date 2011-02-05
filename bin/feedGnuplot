@@ -12,7 +12,7 @@ use Thread::Queue;
 
 
 
-our $VERSION = '1.06';
+our $VERSION = '1.07';
 
 my %options;
 interpretCommandline(\%options);
