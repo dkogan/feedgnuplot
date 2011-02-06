@@ -4,7 +4,7 @@ use warnings;
 use Getopt::Long;
 use Time::HiRes qw( usleep );
 use IO::Handle;
-use List::MoreUtils qw( first_index );
+use List::Util qw( first );
 use Text::ParseWords;
 use threads;
 use threads::shared;
@@ -550,11 +550,10 @@ sub pruneOldData
   {
     if( @$xy > 1 )
     {
-      my $firstInWindow = first_index {$_->[0] >= $oldestx} @{$xy}[1..$#$xy];
-      if($firstInWindow == -1)
-      { splice( @$xy, 1); }
+      if( my $firstInWindow = first {$xy->[$_][0] >= $oldestx} 1..$#$xy )
+      { splice( @$xy, 1, $firstInWindow-1 ); }
       else
-      { splice( @$xy, 1, $firstInWindow ); }
+      { splice( @$xy, 1); }
     }
   }
 }
