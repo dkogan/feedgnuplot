@@ -128,7 +128,7 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --xlen xxx           When using --stream, sets the size of the x-window to plot.
                        Omit this or set it to 0 to plot ALL the data. Does not
-                       make sense with 3d plots
+                       make sense with 3d plots. Implies --monotonic
 
   --xmin  xxx          Set the range for the x axis. These are ignored in a
                        streaming plot
@@ -265,6 +265,9 @@ OEF
     print STDERR "--xlen does not make sense without --stream\n";
     exit -1;
   }
+
+  # --xlen implies an order to the data, so I force monotonicity
+  $options{monotonic} = defined $options{xlen};
 }
 
 sub getGnuplotVersion
