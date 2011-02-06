@@ -509,9 +509,7 @@ sub mainThread
           plotStoredData($domain[0] - $options{xlen}, $domain[0]);
         }
         else
-        {
-          plotStoredData();
-        }
+        { plotStoredData(); }
       }
     }
 
@@ -571,14 +569,8 @@ sub plotStoredData
   my @extraopts = map {$_->[0]{options}} @nonemptyCurves;
 
   my $body = join(', ' , map({ '"-"' . $_} @extraopts) );
-  if($options{'3d'})
-  {
-    print PIPE "splot $body\n";
-  }
-  else
-  {
-    print PIPE "plot $body\n";
-  }
+  if($options{'3d'}) { print PIPE "splot $body\n"; }
+  else               { print PIPE  "plot $body\n"; }
 
   foreach my $buf (@nonemptyCurves)
   {
