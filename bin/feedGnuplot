@@ -126,8 +126,9 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --autolegend         Use the curve IDs for the legend
 
-  --xlen xxx           Set the size of the x-window to plot. Omit this or set it
-                       to 0 to plot ALL the data. Does not make sense with 3d plots
+  --xlen xxx           When using --stream, sets the size of the x-window to plot.
+                       Omit this or set it to 0 to plot ALL the data. Does not
+                       make sense with 3d plots
 
   --xmin  xxx          Set the range for the x axis. These are ignored in a
                        streaming plot
@@ -257,6 +258,12 @@ OEF
       print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
       exit -1;
     }
+  }
+
+  if(defined $options{xlen} && !defined $options{stream} )
+  {
+    print STDERR "--xlen does not make sense without --stream\n";
+    exit -1;
   }
 }
 
