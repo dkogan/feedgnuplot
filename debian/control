@@ -1,0 +1,17 @@
+Source: feedgnuplot
+Section: perl
+Priority: optional
+Build-Depends: debhelper (>= 7)
+Build-Depends-Indep: perl
+Maintainer: Dima Kogan <dkogan@cds.caltech.edu>
+Standards-Version: 3.9.1
+Homepage: http://search.cpan.org/dist/feedGnuplot/
+
+Package: feedgnuplot
+Architecture: all
+Depends: ${misc:Depends}, ${perl:Depends}
+Description: A pipe-oriented frontend to Gnuplot
+ This is a flexible, command-line-oriented frontend to Gnuplot. It creates
+ plots from data coming in on STDIN or given in a filename passed on the
+ commandline. Various data representations are supported, as is hardcopy
+ output and streaming display of live data.

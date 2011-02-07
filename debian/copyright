@@ -1,0 +1,28 @@
+Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
+Maintainer: Dima Kogan, <dkogan at cds.caltech.edu>
+Source: http://search.cpan.org/dist/feedGnuplot/
+Name: feedGnuplot
+
+Files: *
+Copyright: Dima Kogan, <dkogan at cds.caltech.edu>
+License: 
+
+Files: debian/*
+Copyright: 2011, Dima Kogan <dkogan@cds.caltech.edu>
+License: Artistic or GPL-1+
+
+License: Artistic
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the Artistic License, which comes with Perl.
+ .
+ On Debian GNU/Linux systems, the complete text of the Artistic License
+ can be found in `/usr/share/common-licenses/Artistic'.
+
+License: GPL-1+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 1, or (at your option)
+ any later version.
+ .
+ On Debian GNU/Linux systems, the complete text of version 1 of the
+ General Public License can be found in `/usr/share/common-licenses/GPL-1'.
