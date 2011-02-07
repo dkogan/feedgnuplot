@@ -1,0 +1,5 @@
+feedgnuplot (1.08-1) unstable; urgency=low
+
+  * Initial debianized release.
+
+ -- Dima Kogan <dkogan@cds.caltech.edu>  Sun, 6 Feb 2011 15:58:22 -0800
