@@ -34,7 +34,7 @@ output and streaming display of live data. A simple example:
 
 You should see a plot with two curves. The C<awk> command generates some data to
 plot and the C<feedGnuplot> reads it in from STDIN and generates the plot. The
-<awk> invocation is just an example; more interesting things would be plotted in
+C<awk> invocation is just an example; more interesting things would be plotted in
 normal usage. None of the commandline-options are required for the most basic
 plotting. Input parsing is flexible; every line need not have the same number of
 points. New curves will be created as needed.
