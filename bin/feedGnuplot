@@ -513,33 +513,25 @@ sub mainThread
       }
     }
 
-    # finished reading in all of the data
-    if($options{stream})
+    # finished reading in all. Plot what we have
+    plotStoredData();
+
+    if ( $options{hardcopy})
     {
-      print PIPE "exit;\n";
-      close PIPE;
+      print PIPE "set output\n";
+      # sleep until the plot file exists, and it is closed. Sometimes the output is
+      # still being written at this point
+      usleep(100_000) until -e $outputfile;
+      usleep(100_000) until(system("fuser -s \"$outputfile\""));
+
+      print "Wrote output to $outputfile\n";
+      return;
     }
-    else
-    {
-      plotStoredData();
 
-      if( $options{hardcopy})
-      {
-        print PIPE "set output\n";
-        # sleep until the plot file exists, and it is closed. Sometimes the output is
-        # still being written at this point
-        usleep(100_000) until -e $outputfile;
-        usleep(100_000) until(system("fuser -s \"$outputfile\""));
-
-        print "Wrote output to $outputfile\n";
-        return;
-      }
-
-      # we persist gnuplot, so we shouldn't need this sleep. However, once
-      # gnuplot exits, but the persistent window sticks around, you can no
-      # longer interactively zoom the plot. So we still sleep
-      sleep(100000);
-    }
+    # we persist gnuplot, so we shouldn't need this sleep. However, once
+    # gnuplot exits, but the persistent window sticks around, you can no
+    # longer interactively zoom the plot. So we still sleep
+    sleep(100000);
 }
 
 sub pruneOldData
