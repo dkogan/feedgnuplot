@@ -34,8 +34,8 @@ output and streaming display of live data. A simple example:
 
 You should see a plot with two curves. The C<awk> command generates some data to
 plot and the C<feedGnuplot> reads it in from STDIN and generates the plot. The
-C<awk> invocation is just an example; more interesting things would be plotted in
-normal usage. None of the commandline-options are required for the most basic
+C<awk> invocation is just an example; more interesting things would be plotted
+in normal usage. No commandline-options are required for the most basic
 plotting. Input parsing is flexible; every line need not have the same number of
 points. New curves will be created as needed.
 
@@ -43,7 +43,7 @@ The most commonly used functionality of gnuplot is supported directly by the
 script. Anything not directly supported can still be done with the
 C<--extracmds> and C<--curvestyle> options. Arbitrary gnuplot commands can be
 passed in with C<--extracmds>. For example, to turn off the grid, pass in
-C<--extracmds 'unset grid'>. As many of these options as needed can be pased
+C<--extracmds 'unset grid'>. As many of these options as needed can be passed
 in. To add arbitrary curve styles, use C<--curvestyle extrastyle>. Pass these
 more than once to affect more than one curve. To apply an extra style to I<all>
 the curves, pass in C<--curvestyleall extrastyle>.
@@ -51,18 +51,18 @@ the curves, pass in C<--curvestyleall extrastyle>.
 =head2 Data formats
 
 By default, each value present in the incoming data represents a distinct data
-point, as demonstrated in the above example (we had 10 numbers in the input and
-10 points in the plot). If requested, the script supports more sophisticated
-interpretation of input data
+point, as demonstrated in the original example above (we had 10 numbers in the
+input and 10 points in the plot). If requested, the script supports more
+sophisticated interpretation of input data
 
 =head3 Domain selection
 
 If C<--domain> is passed in, the first value on each line of input is
 interpreted as the I<X>-value for the rest of the data on that line. Without
 C<--domain> the I<X>-value is the line number, and the first value on a line is
-a plain data point like the others. Default is C<--nodomain>. Thus the example
-above produces 2 curves, with B<1,2,3,4,5> as the I<X>-values. If we run the
-same command with --domain:
+a plain data point like the others. Default is C<--nodomain>. Thus the original
+example above produces 2 curves, with B<1,2,3,4,5> as the I<X>-values. If we run
+the same command with --domain:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' | feedGnuplot --domain
 
