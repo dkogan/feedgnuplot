@@ -1,5 +1,9 @@
 Revision history for feedGnuplot
 
+1.09    2011/04/03
+        Better square aspect ratio support, minor POD updates and bug
+        fixes
+
 1.08    2011/02/06
         No more dependency on List::MoreUtils. Stock perl install is
         now sufficient
