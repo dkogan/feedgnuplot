@@ -155,7 +155,10 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --size  xxx          Gnuplot size option
 
-  --square             Plot data with aspect ratio 1
+  --square             Plot data with aspect ratio 1. For 3D plots, this controls the
+                       aspect ratio for all 3 axes
+
+  --square_xy          For 3D plots, set square aspect ratio for ONLY the x,y axes
 
   --hardcopy xxx       If not streaming, output to a file specified here. Format
                        inferred from filename
@@ -206,7 +209,7 @@ OEF
              'circles', 'legend=s@', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s@', 'curvestyleall=s', 'extracmds=s@',
-             'size=s', 'square!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
+             'size=s', 'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
              'extraValuesPerPoint=i', 'help', 'dump') or die($usage);
 
   # handle various cmdline-option errors
@@ -251,11 +254,20 @@ OEF
       exit -1;
     }
   }
-  elsif (!$options->{colormap})
+  else
   {
-    if ( defined $options->{zmin} || defined $options->{zmax} || defined $options->{zlabel} )
+    if(!$options->{colormap})
     {
-      print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
+      if ( defined $options->{zmin} || defined $options->{zmax} || defined $options->{zlabel} )
+      {
+        print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
+        exit -1;
+      }
+    }
+
+    if ( defined $options->{square_xy} )
+    {
+      print STDERR "--square_xy only makes sense with --3d\n";
       exit -1;
     }
   }
@@ -387,10 +399,23 @@ sub mainThread
 
     if($options{square})
     {
-      $options{size} = '' unless defined $options{size};
-      $options{size} .= ' ratio -1';
+      # set a square aspect ratio. Gnuplot does this differently for 2D and 3D plots
+      if(! $options{'3d'})
+      {
+        $options{size} = '' unless defined $options{size};
+        $options{size} .= ' ratio -1';
+      }
+      else
+      {
+        print(PIPE "set view equal xyz\n");
+      }
     }
     print(PIPE "set size $options{size}\n")                     if defined $options{size};
+
+    if($options{square_xy})
+    {
+      print(PIPE "set view equal xy\n");
+    }
 
     if($options{colormap})
     {
