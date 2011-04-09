@@ -124,7 +124,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --legend xxx         Set the label for a curve plot. Give this option multiple
                        times for multiple curves
 
-  --autolegend         Use the curve IDs for the legend
+  --autolegend         Use the curve IDs for the legend. Titles given with --legend
+                       override these
 
   --xlen xxx           When using --stream, sets the size of the x-window to plot.
                        Omit this or set it to 0 to plot ALL the data. Does not
@@ -609,9 +610,13 @@ sub updateCurveOptions
 
   my ($curveoptions, $id) = @_;
 
+  # use the given title, unless we're generating a legend automatically. Given titles
+  # override autolegend
   my $title;
-  $title = $curveoptions->{title} if(defined $curveoptions->{title});
-  $title = $id                    if $options{autolegend};
+  if(defined $curveoptions->{title})
+  { $title = $curveoptions->{title}; }
+  elsif( $options{autolegend} )
+  { $title = $id; }
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
   my $extraoption = defined $options{curvestyleall} ? $options{curvestyleall} : '';
