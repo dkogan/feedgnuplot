@@ -9,7 +9,7 @@ use Text::ParseWords;
 use threads;
 use threads::shared;
 use Thread::Queue;
-
+use Pod::Usage;
 
 
 our $VERSION = '1.09';
@@ -67,131 +67,10 @@ else
 
 
 
+
+
 sub interpretCommandline
 {
-  my $usage = <<OEF;
-Usage: $0 [options] file1 file2 ...
-  any number of data files can be given on the cmdline. They will be processed
-  in sequence. If no data files are given, data will be read in from standard
-  input.
-
-  --[no]domain         If enabled, the first element of each line is the
-                       domain variable.  If not, the point index is used
-
-  --[no]dataid         If enabled, each data point is preceded by the ID
-                       of the data set that point corresponds to. This ID is
-                       interpreted as a string, NOT as just a number. If not
-                       enabled, the order of the point is used.
-
-As an example, if line 3 of the input is "0 9 1 20"
- '--nodomain --nodataid' would parse the 4 numbers as points in 4
-   different curves at x=3
-
- '--domain --nodataid' would parse the 4 numbers as points in 3 different
-   curves at x=0. Here, 0 is the x-variable and 9,1,20 are the data values
-
- '--nodomain --dataid' would parse the 4 numbers as points in 2 different
-   curves at x=3. Here 0 and 1 are the data IDs and 9 and 20 are the
-   data values
-
- '--domain --dataid' would parse the 4 numbers as a single point at
-   x=0. Here 9 is the data ID and 1 is the data value. 20 is an extra
-   value, so it is ignored. If another value followed 20, we'd get another
-   point in curve ID 20
-
-  --[no]3d             Do [not] plot in 3D. This only makes sense with --domain.
-                       Each domain here is an (x,y) tuple
-
-  --colormap           Show a colormapped xy plot. Requires extra data for the color.
-                       zmin/zmax can be used to set the extents of the colors.
-                       Automatically increments extraValuesPerPoint
-
-  --[no]stream         Do [not] display the data a point at a time, as it
-                       comes in
-
-  --[no]lines          Do [not] draw lines to connect consecutive points
-  --[no]points         Do [not] draw points
-  --circles            Plot with circles. This requires a radius be specified for
-                       each point. Automatically increments extraValuesPerPoint
-
-  --xlabel xxx         Set x-axis label
-  --ylabel xxx         Set y-axis label
-  --y2label xxx        Set y2-axis label. Does not apply to 3d plots
-  --zlabel xxx         Set y-axis label. Only applies to 3d plots
-
-  --title  xxx         Set the title of the plot
-
-  --legend curveID=legend
-                       Set the label for a curve plot. Use this option multiple times
-                       for multiple curves. With --dataid, curveID is the ID. Otherwise,
-                       it's the index of the curve, starting at 0
-
-  --autolegend         Use the curve IDs for the legend. Titles given with --legend
-                       override these
-
-  --xlen xxx           When using --stream, sets the size of the x-window to plot.
-                       Omit this or set it to 0 to plot ALL the data. Does not
-                       make sense with 3d plots. Implies --monotonic
-
-  --xmin  xxx          Set the range for the x axis. These are ignored in a
-                       streaming plot
-  --xmax  xxx          Set the range for the x axis. These are ignored in a
-                       streaming plot
-  --ymin  xxx          Set the range for the y axis.
-  --ymax  xxx          Set the range for the y axis.
-  --y2min xxx          Set the range for the y2 axis. Does not apply to 3d plots.
-  --y2max xxx          Set the range for the y2 axis. Does not apply to 3d plots.
-  --zmin  xxx          Set the range for the z axis. Only applies to 3d plots or colormaps.
-  --zmax  xxx          Set the range for the z axis. Only applies to 3d plots or colormaps.
-
-  --y2    xxx          Plot the data specified by this curve ID on the y2 axis.
-                       Without --dataid, the ID is just an ordered 0-based index.
-                       Does not apply to 3d plots.
-
-  --curvestyle curveID=style
-                       Additional styles per curve. With --dataid, curveID is the
-                       ID. Otherwise, it's the index of the curve, starting at 0. Use
-                       this option multiple times for multiple curves
-
-  --curvestyleall xxx  Additional styles for ALL curves.
-
-  --extracmds xxx      Additional commands. These could contain extra global styles
-                       for instance
-
-  --size  xxx          Gnuplot size option
-
-  --square             Plot data with aspect ratio 1. For 3D plots, this controls the
-                       aspect ratio for all 3 axes
-
-  --square_xy          For 3D plots, set square aspect ratio for ONLY the x,y axes
-
-  --hardcopy xxx       If not streaming, output to a file specified here. Format
-                       inferred from filename
-
-  --maxcurves xxx      The maximum allowed number of curves. This is 100 by default,
-                       but can be reset with this option. This exists purely to
-                       prevent perl from allocating all of the system's memory when
-                       reading bogus data
-
-  --monotonic          If --domain is given, checks to make sure that the x-
-                       coordinate in the input data is monotonically increasing.
-                       If a given x-variable is in the past, all data currently
-                       cached for this curve is purged. Without --monotonic, all
-                       data is kept. Does not make sense with 3d plots.
-                       No --monotonic by default.
-
-  --extraValuesPerPoint xxx
-                       How many extra values are given for each data point. Normally this
-                       is 0, and does not need to be specified, but sometimes we want
-                       extra data, like for colors or point sizes or error bars, etc.
-                       feedGnuplot options that require this (colormap, circles)
-                       automatically set it. This option is ONLY needed if unknown styles are
-                       used, with --curvestyleall for instance
-
-  --dump               Instead of printing to gnuplot, print to STDOUT. For
-                       debugging.
-OEF
-
   # if I'm using a self-plotting data file with a #! line, then $ARGV[0] will contain ALL of the
   # options and $ARGV[1] will contain the data file to plot. In this case I need to split $ARGV[0] so
   # that GetOptions() can parse it correctly. On the other hand, if I'm plotting normally (not with
@@ -215,14 +94,11 @@ OEF
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s%', 'curvestyleall=s', 'extracmds=s@',
              'size=s', 'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
-             'extraValuesPerPoint=i', 'help', 'dump') or die($usage);
+             'extraValuesPerPoint=i', 'help', 'dump') or pod2usage(1);
 
   # handle various cmdline-option errors
   if ( $options->{help} )
-  {
-    print STDERR "$usage\n";
-    exit 0;
-  }
+  { pod2usage(1); }
 
   $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
 
@@ -891,11 +767,123 @@ supported by feedGnuplot. Raw data can be stored after the __DATA__ directive,
 with a small perl script to manipulate the data into a useable format and send
 it to the plotter.
 
-=head2 Further help
+=head1 ARGUMENTS
 
-All the options are described with
+  --[no]domain         If enabled, the first element of each line is the
+                       domain variable.  If not, the point index is used
 
- $ feedGnuplot --help
+  --[no]dataid         If enabled, each data point is preceded by the ID
+                       of the data set that point corresponds to. This ID is
+                       interpreted as a string, NOT as just a number. If not
+                       enabled, the order of the point is used.
+
+As an example, if line 3 of the input is "0 9 1 20"
+ '--nodomain --nodataid' would parse the 4 numbers as points in 4
+   different curves at x=3
+
+ '--domain --nodataid' would parse the 4 numbers as points in 3 different
+   curves at x=0. Here, 0 is the x-variable and 9,1,20 are the data values
+
+ '--nodomain --dataid' would parse the 4 numbers as points in 2 different
+   curves at x=3. Here 0 and 1 are the data IDs and 9 and 20 are the
+   data values
+
+ '--domain --dataid' would parse the 4 numbers as a single point at
+   x=0. Here 9 is the data ID and 1 is the data value. 20 is an extra
+   value, so it is ignored. If another value followed 20, we'd get another
+   point in curve ID 20
+
+  --[no]3d             Do [not] plot in 3D. This only makes sense with --domain.
+                       Each domain here is an (x,y) tuple
+
+  --colormap           Show a colormapped xy plot. Requires extra data for the color.
+                       zmin/zmax can be used to set the extents of the colors.
+                       Automatically increments extraValuesPerPoint
+
+  --[no]stream         Do [not] display the data a point at a time, as it
+                       comes in
+
+  --[no]lines          Do [not] draw lines to connect consecutive points
+  --[no]points         Do [not] draw points
+  --circles            Plot with circles. This requires a radius be specified for
+                       each point. Automatically increments extraValuesPerPoint
+
+  --xlabel xxx         Set x-axis label
+  --ylabel xxx         Set y-axis label
+  --y2label xxx        Set y2-axis label. Does not apply to 3d plots
+  --zlabel xxx         Set y-axis label. Only applies to 3d plots
+
+  --title  xxx         Set the title of the plot
+
+  --legend curveID=legend
+                       Set the label for a curve plot. Use this option multiple times
+                       for multiple curves. With --dataid, curveID is the ID. Otherwise,
+                       it's the index of the curve, starting at 0
+
+  --autolegend         Use the curve IDs for the legend. Titles given with --legend
+                       override these
+
+  --xlen xxx           When using --stream, sets the size of the x-window to plot.
+                       Omit this or set it to 0 to plot ALL the data. Does not
+                       make sense with 3d plots. Implies --monotonic
+
+  --xmin  xxx          Set the range for the x axis. These are ignored in a
+                       streaming plot
+  --xmax  xxx          Set the range for the x axis. These are ignored in a
+                       streaming plot
+  --ymin  xxx          Set the range for the y axis.
+  --ymax  xxx          Set the range for the y axis.
+  --y2min xxx          Set the range for the y2 axis. Does not apply to 3d plots.
+  --y2max xxx          Set the range for the y2 axis. Does not apply to 3d plots.
+  --zmin  xxx          Set the range for the z axis. Only applies to 3d plots or colormaps.
+  --zmax  xxx          Set the range for the z axis. Only applies to 3d plots or colormaps.
+
+  --y2    xxx          Plot the data specified by this curve ID on the y2 axis.
+                       Without --dataid, the ID is just an ordered 0-based index.
+                       Does not apply to 3d plots.
+
+  --curvestyle curveID=style
+                       Additional styles per curve. With --dataid, curveID is the
+                       ID. Otherwise, it's the index of the curve, starting at 0. Use
+                       this option multiple times for multiple curves
+
+  --curvestyleall xxx  Additional styles for ALL curves.
+
+  --extracmds xxx      Additional commands. These could contain extra global styles
+                       for instance
+
+  --size  xxx          Gnuplot size option
+
+  --square             Plot data with aspect ratio 1. For 3D plots, this controls the
+                       aspect ratio for all 3 axes
+
+  --square_xy          For 3D plots, set square aspect ratio for ONLY the x,y axes
+
+  --hardcopy xxx       If not streaming, output to a file specified here. Format
+                       inferred from filename
+
+  --maxcurves xxx      The maximum allowed number of curves. This is 100 by default,
+                       but can be reset with this option. This exists purely to
+                       prevent perl from allocating all of the system's memory when
+                       reading bogus data
+
+  --monotonic          If --domain is given, checks to make sure that the x-
+                       coordinate in the input data is monotonically increasing.
+                       If a given x-variable is in the past, all data currently
+                       cached for this curve is purged. Without --monotonic, all
+                       data is kept. Does not make sense with 3d plots.
+                       No --monotonic by default.
+
+  --extraValuesPerPoint xxx
+                       How many extra values are given for each data point. Normally this
+                       is 0, and does not need to be specified, but sometimes we want
+                       extra data, like for colors or point sizes or error bars, etc.
+                       feedGnuplot options that require this (colormap, circles)
+                       automatically set it. This option is ONLY needed if unknown styles are
+                       used, with --curvestyleall for instance
+
+  --dump               Instead of printing to gnuplot, print to STDOUT. For
+                       debugging.
 
 =head1 ACKNOWLEDGEMENT
 
