@@ -98,7 +98,7 @@ sub interpretCommandline
 
   # handle various cmdline-option errors
   if ( $options->{help} )
-  { pod2usage(1); }
+  { pod2usage(0); }
 
   $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
 
