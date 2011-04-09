@@ -1,5 +1,9 @@
 Revision history for feedGnuplot
 
+1.10    2011/04/09
+        POD updates, --legend and --curvestyle now take in both the curve
+        they are addressing AND the value itself
+
 1.09    2011/04/03
         Better square aspect ratio support, minor POD updates and bug
         fixes
