@@ -89,10 +89,16 @@ sub interpretCommandline
   # no monotonicity checks by default
   $options{ maxcurves } = 100;
 
+  # Previously I was using 'legend=s%' and 'curvestyle=s%' for curve addressing. This had cleaner
+  # syntax, but disregarded the order of the given options. This resulted in arbitrarily ordered
+  # curves.
+  # needed for these to be parsed into a ref to a list
+  $options{legend}      = [];
+  $options{curvestyle}  = [];
   GetOptions($options, 'stream!', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
-             'circles', 'legend=s%', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
+             'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
-             'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s%', 'curvestyleall=s', 'extracmds=s@',
+             'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
              'size=s', 'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
              'extraValuesPerPoint=i', 'help', 'dump') or pod2usage(1);
 
@@ -304,20 +310,26 @@ sub mainThread
     }
 
 # For the specified values, set the legend entries to 'title "blah blah"'
-    if($options{legend})
+    if(@{$options{legend}})
     {
-      foreach my $id (keys %{$options{legend}})
+      # @{$options{legend}} is a list where consecutive pairs are (curveID, legend)
+      my $n = scalar @{$options{legend}}/2;
+      foreach my $idx (0..$n-1)
       {
-        setCurveLabel($id, $options{legend}{$id});
+        setCurveLabel($options{legend}[$idx*2    ],
+                      $options{legend}[$idx*2 + 1]);
       }
     }
 
 # add the extra curve options
-    if($options{curvestyle})
+    if(@{$options{curvestyle}})
     {
-      foreach my $id (keys %{$options{curvestyle}})
+      # @{$options{curvestyle}} is a list where consecutive pairs are (curveID, style)
+      my $n = scalar @{$options{curvestyle}}/2;
+      foreach my $idx (0..$n-1)
       {
-        addCurveOption($id, $options{curvestyle}{$id});
+        addCurveOption($options{curvestyle}[$idx*2    ],
+                       $options{curvestyle}[$idx*2 + 1]);
       }
     }
 
@@ -815,7 +827,7 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --title  xxx         Set the title of the plot
 
-  --legend curveID=legend
+  --legend curveID legend
                        Set the label for a curve plot. Use this option multiple times
                        for multiple curves. With --dataid, curveID is the ID. Otherwise,
                        it's the index of the curve, starting at 0
@@ -842,7 +854,7 @@ As an example, if line 3 of the input is "0 9 1 20"
                        Without --dataid, the ID is just an ordered 0-based index.
                        Does not apply to 3d plots.
 
-  --curvestyle curveID=style
+  --curvestyle curveID style
                        Additional styles per curve. With --dataid, curveID is the
                        ID. Otherwise, it's the index of the curve, starting at 0. Use
                        this option multiple times for multiple curves
