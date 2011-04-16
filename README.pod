@@ -250,7 +250,7 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --title  xxx         Set the title of the plot
 
-  --legend curveID=legend
+  --legend curveID legend
                        Set the label for a curve plot. Use this option multiple times
                        for multiple curves. With --dataid, curveID is the ID. Otherwise,
                        it's the index of the curve, starting at 0
@@ -277,7 +277,7 @@ As an example, if line 3 of the input is "0 9 1 20"
                        Without --dataid, the ID is just an ordered 0-based index.
                        Does not apply to 3d plots.
 
-  --curvestyle curveID=style
+  --curvestyle curveID style
                        Additional styles per curve. With --dataid, curveID is the
                        ID. Otherwise, it's the index of the curve, starting at 0. Use
                        this option multiple times for multiple curves
