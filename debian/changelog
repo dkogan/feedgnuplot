@@ -1,3 +1,9 @@
+feedgnuplot (1.12-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Dima Kogan <dkogan@cds.caltech.edu>  Tue, 19 Apr 2011 11:02:23 -0700
+
 feedgnuplot (1.11-1) unstable; urgency=low
 
   * New upstream release
