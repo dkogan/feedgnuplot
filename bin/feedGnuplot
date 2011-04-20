@@ -447,7 +447,7 @@ sub mainThread
     # we persist gnuplot, so we shouldn't need this sleep. However, once
     # gnuplot exits, but the persistent window sticks around, you can no
     # longer interactively zoom the plot. So we still sleep
-    sleep(100000);
+    sleep(100000) unless $options{dump};
 }
 
 sub pruneOldData
