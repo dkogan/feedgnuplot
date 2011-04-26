@@ -116,7 +116,7 @@ the same way as before.
 To plot real-time data, pass in the C<--stream [refreshperiod]> option. Data
 will then be plotted as it is received. The plot will be updated every
 C<refreshperiod> seconds. If the period isn't specified, a 1Hz refresh rate is
-used. To refresh at specific intervals indicated by the data set the
+used. To refresh at specific intervals indicated by the data, set the
 refreshperiod to 0 or to 'trigger'. The plot will then I<only> be refreshed when
 a data line 'replot' is received. This 'replot' command works in both triggered
 and timed modes, but in triggered mode, it's the only way to replot.
