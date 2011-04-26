@@ -41,7 +41,7 @@ if($options{stream})
 
   $dataQueue  = Thread::Queue->new();
   my $addThr  = threads->create(\&mainThread);
-  my $plotThr = threads->create(\&plotThread);
+  my $plotThr = threads->create(\&plotUpdateThread);
 
   while(<>)
   {
@@ -183,7 +183,7 @@ sub getGnuplotVersion
   return $gnuplotVersion;
 }
 
-sub plotThread
+sub plotUpdateThread
 {
   while(! $streamingFinished)
   {
