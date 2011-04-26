@@ -1,3 +1,9 @@
+feedgnuplot (1.13-1) unstable; urgency=low
+
+  * New upstream release (Better streaming plot control)
+
+ -- Dima Kogan <dima@fatty.local>  Tue, 26 Apr 2011 14:24:09 -0700
+
 feedgnuplot (1.12-1) unstable; urgency=low
 
   * New upstream release
