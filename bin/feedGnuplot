@@ -5,6 +5,7 @@ use Getopt::Long;
 use Time::HiRes qw( usleep );
 use IO::Handle;
 use List::Util qw( first );
+use Scalar::Util qw( looks_like_number );
 use Text::ParseWords;
 use threads;
 use threads::shared;
@@ -41,7 +42,9 @@ if($options{stream})
 
   $dataQueue  = Thread::Queue->new();
   my $addThr  = threads->create(\&mainThread);
-  my $plotThr = threads->create(\&plotUpdateThread);
+
+  # spawn the plot updating thread. If I'm replotting from a data trigger, I don't need this
+  my $plotThr = threads->create(\&plotUpdateThread) unless $options{stream} < 0;
 
   while(<>)
   {
@@ -59,7 +62,7 @@ if($options{stream})
 
   $streamingFinished = 1;
 
-  $plotThr->join();
+  $plotThr->join() if defined $plotThr;
   $addThr->join();
 }
 else
@@ -95,7 +98,7 @@ sub interpretCommandline
   # needed for these to be parsed into a ref to a list
   $options{legend}      = [];
   $options{curvestyle}  = [];
-  GetOptions($options, 'stream!', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
+  GetOptions($options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
@@ -106,7 +109,41 @@ sub interpretCommandline
   if ( $options->{help} )
   { pod2usage(0); }
 
+  # no global style if one isn't given
   $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
+
+  # parse stream option. Allowed only numbers >= 0 or 'trigger'
+  if(defined $options->{stream})
+  {
+    if ( $options->{stream} eq '')
+    {
+      # if no streaming period is given, default to 1Hz.
+      $options->{stream} = 1;
+    }
+
+    if( !looks_like_number $options->{stream} )
+    {
+      if($options->{stream} eq 'trigger')
+      {
+        $options->{stream} = 0;
+      }
+      else
+      {
+        print STDERR "--stream can only take in values >=0 or 'trigger'\n";
+        exit 1;
+      }
+    }
+
+    if ( $options->{stream} == 0 )
+    {
+      $options->{stream} = -1;
+    }
+    elsif ( $options->{stream} <= 0)
+    {
+      print STDERR "--stream can only take in values >=0 or 'trigger'\n";
+      exit 1;
+    }
+  }
 
   if ($options->{colormap})
   {
@@ -159,7 +196,7 @@ sub interpretCommandline
     }
   }
 
-  if(defined $options{xlen} && !defined $options{stream} )
+  if(defined $options{xlen} && !$options{stream} )
   {
     print STDERR "--xlen does not make sense without --stream\n";
     exit -1;
@@ -187,8 +224,8 @@ sub plotUpdateThread
 {
   while(! $streamingFinished)
   {
-    sleep(1);
-    $dataQueue->enqueue('Plot now');
+    usleep( $options{stream} * 1e6 );
+    $dataQueue->enqueue('replot');
   }
 
   $dataQueue->enqueue(undef);
@@ -364,7 +401,7 @@ sub mainThread
     {
       next if /^#/o;
 
-      if($_ ne 'Plot now')
+      if($_ !~ /^replot/o)
       {
         # parse the incoming data lines. The format is
         # x id0 dat0 id1 dat1 ....
@@ -415,7 +452,7 @@ sub mainThread
 
       elsif($options{stream})
       {
-        # only redraw a streaming plot if there's new data to plot
+        # we get here if we need to replot AND if we're streaming
         next unless $haveNewData;
         $haveNewData = undef;
 
@@ -690,13 +727,19 @@ the same way as before.
 
 =head2 Real-time streaming data
 
-To plot real-time data, pass in the C<--stream> option. Data will then be
-plotted as it is received, with the refresh rate limited to 1Hz (currently
-hard-coded). To plot only the most recent data (instead of I<all> the data),
-C<--xlen windowsize> can be given. This will create an constantly-updating,
-scrolling view of the recent past. C<windowsize> should be replaced by the
-desired length of the domain window to plot, in domain units (passed-in values
-if C<--domain> or line numbers otherwise).
+To plot real-time data, pass in the C<--stream [refreshperiod]> option. Data
+will then be plotted as it is received. The plot will be updated every
+C<refreshperiod> seconds. If the period isn't specified, a 1Hz refresh rate is
+used. To refresh at specific intervals indicated by the data set the
+refreshperiod to 0 or to 'trigger'. The plot will then I<only> be refreshed when
+a data line 'replot' is received. This 'replot' command works in both triggered
+and timed modes, but in triggered mode, it's the only way to replot.
+
+To plot only the most recent data (instead of I<all> the data), C<--xlen
+windowsize> can be given. This will create an constantly-updating, scrolling
+view of the recent past. C<windowsize> should be replaced by the desired length
+of the domain window to plot, in domain units (passed-in values if C<--domain>
+or line numbers otherwise).
 
 =head2 Hardcopy output
 
@@ -812,8 +855,11 @@ As an example, if line 3 of the input is "0 9 1 20"
                        zmin/zmax can be used to set the extents of the colors.
                        Automatically increments extraValuesPerPoint
 
-  --[no]stream         Do [not] display the data a point at a time, as it
-                       comes in
+  --stream [period]    Plot the data as it comes in, in realtime. If period is given,
+                       replot every period seconds. If no period is given, replot at
+                       1Hz. If the period is given as 0 or 'trigger', replot ONLY when
+                       the incoming data dictates this . See the "Real-time streaming
+                       data" section of the man page.
 
   --[no]lines          Do [not] draw lines to connect consecutive points
   --[no]points         Do [not] draw points

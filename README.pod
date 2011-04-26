@@ -113,13 +113,19 @@ the same way as before.
 
 =head2 Real-time streaming data
 
-To plot real-time data, pass in the C<--stream> option. Data will then be
-plotted as it is received, with the refresh rate limited to 1Hz (currently
-hard-coded). To plot only the most recent data (instead of I<all> the data),
-C<--xlen windowsize> can be given. This will create an constantly-updating,
-scrolling view of the recent past. C<windowsize> should be replaced by the
-desired length of the domain window to plot, in domain units (passed-in values
-if C<--domain> or line numbers otherwise).
+To plot real-time data, pass in the C<--stream [refreshperiod]> option. Data
+will then be plotted as it is received. The plot will be updated every
+C<refreshperiod> seconds. If the period isn't specified, a 1Hz refresh rate is
+used. To refresh at specific intervals indicated by the data set the
+refreshperiod to 0 or to 'trigger'. The plot will then I<only> be refreshed when
+a data line 'replot' is received. This 'replot' command works in both triggered
+and timed modes, but in triggered mode, it's the only way to replot.
+
+To plot only the most recent data (instead of I<all> the data), C<--xlen
+windowsize> can be given. This will create an constantly-updating, scrolling
+view of the recent past. C<windowsize> should be replaced by the desired length
+of the domain window to plot, in domain units (passed-in values if C<--domain>
+or line numbers otherwise).
 
 =head2 Hardcopy output
 
@@ -235,8 +241,11 @@ As an example, if line 3 of the input is "0 9 1 20"
                        zmin/zmax can be used to set the extents of the colors.
                        Automatically increments extraValuesPerPoint
 
-  --[no]stream         Do [not] display the data a point at a time, as it
-                       comes in
+  --stream [period]    Plot the data as it comes in, in realtime. If period is given,
+                       replot every period seconds. If no period is given, replot at
+                       1Hz. If the period is given as 0 or 'trigger', replot ONLY when
+                       the incoming data dictates this . See the "Real-time streaming
+                       data" section of the man page.
 
   --[no]lines          Do [not] draw lines to connect consecutive points
   --[no]points         Do [not] draw points
