@@ -203,7 +203,7 @@ sub interpretCommandline
   }
 
   # --xlen implies an order to the data, so I force monotonicity
-  $options{monotonic} = defined $options{xlen};
+  $options{monotonic} = 1 if defined $options{xlen};
 }
 
 sub getGnuplotVersion
