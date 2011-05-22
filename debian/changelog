@@ -1,3 +1,9 @@
+feedgnuplot (1.14-1) unstable; urgency=low
+
+  * New upstream release (added 'clear' command, documented commands)
+
+ -- Dima Kogan <dkogan@cds.caltech.edu>  Sun, 22 May 2011 15:25:28 -0700
+
 feedgnuplot (1.13-1) unstable; urgency=low
 
   * New upstream release (Better streaming plot control)
