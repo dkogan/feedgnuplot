@@ -31,6 +31,9 @@ my %curveIndices = ();
 # now start the data acquisition and plotting threads
 my $dataQueue;
 
+# latest domain variable present in our data
+my $latestX;
+
 my $streamingFinished : shared = undef;
 if($options{stream})
 {
@@ -421,6 +424,18 @@ sub mainThread
             /($numRE)/go or next;
             $domain[1] = $1;
           }
+          elsif( $options{monotonic} )
+          {
+            if( defined $latestX && $domain[0] < $latestX )
+            {
+              # the x-coordinate of the new point is in the past, so I wipe out all the data for this curve
+              # and start anew
+              clearCurves();
+            }
+            else
+            { $latestX = $domain[0]; }
+          }
+
         }
         else
         {
@@ -595,17 +610,6 @@ sub setCurveLabel
 sub pushPoint
 {
   my ($curve, $xy) = @_;
-
-  if($options{monotonic})
-  {
-    if( @$curve > 1 && $xy->[0] < $curve->[$#{$curve}][0] )
-    {
-      # the x-coordinate of the new point is in the past, so I wipe out all the data for this curve
-      # and start anew
-      splice( @$curve, 1 );
-    }
-  }
-
   push @$curve, $xy;
 }
 
