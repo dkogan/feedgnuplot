@@ -603,7 +603,7 @@ sub pushPoint
     {
       # the x-coordinate of the new point is in the past, so I wipe out all the data for this curve
       # and start anew
-      splice( @$curve, 1, @$curve-1 );
+      splice( @$curve, 1 );
     }
   }
 
