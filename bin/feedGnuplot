@@ -738,6 +738,14 @@ instead of I<Y> as a function of I<X>). Thus the first 2 values on each line are
 interpreted as the domain instead of just 1. The rest of the processing happens
 the same way as before.
 
+=head3 Special data commands
+
+Other than the raw data, 2 special commands are interpreted if they appear in
+the input. These are C<replot> and C<clear>. If a line of data begins with
+C<replot> and we're plotting in realtime with C<--stream>, the plot will be
+refreshed immediately. If a line of data begins with C<clear>, the plot is
+cleared, to be re-filled with any data following the C<clear>.
+
 =head2 Real-time streaming data
 
 To plot real-time data, pass in the C<--stream [refreshperiod]> option. Data
