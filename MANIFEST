@@ -1,5 +1,4 @@
 Makefile.PL
-Changes
 MANIFEST
 bin/feedGnuplot
 t/00-load.t
