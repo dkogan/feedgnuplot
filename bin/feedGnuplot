@@ -30,7 +30,6 @@ my %curveIndices = ();
 
 # now start the data acquisition and plotting threads
 my $dataQueue;
-my $xwindow;
 
 my $streamingFinished : shared = undef;
 if($options{stream})
