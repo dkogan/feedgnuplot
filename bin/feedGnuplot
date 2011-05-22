@@ -505,14 +505,14 @@ sub pruneOldData
 {
   my ($oldestx) = @_;
 
-  foreach my $xy (@curves)
+  foreach my $curve (@curves)
   {
-    if( @$xy > 1 )
+    if( @$curve > 1 )
     {
-      if( my $firstInWindow = first {$xy->[$_][0] >= $oldestx} 1..$#$xy )
-      { splice( @$xy, 1, $firstInWindow-1 ); }
+      if( my $firstInWindow = first {$curve->[$_][0] >= $oldestx} 1..$#$curve )
+      { splice( @$curve, 1, $firstInWindow-1 ); }
       else
-      { splice( @$xy, 1); }
+      { splice( @$curve, 1); }
     }
   }
 }
