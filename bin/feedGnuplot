@@ -13,7 +13,7 @@ use Thread::Queue;
 use Pod::Usage;
 
 
-our $VERSION = '1.13';
+our $VERSION = '1.14';
 
 my %options;
 interpretCommandline(\%options);
