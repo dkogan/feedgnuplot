@@ -403,7 +403,10 @@ sub mainThread
     {
       next if /^#/o;
 
-      if($_ !~ /^replot/o)
+      if( $options{stream} && /^clear/o )
+      { clearCurves(); }
+
+      if(! /^replot/o)
       {
         # parse the incoming data lines. The format is
         # x id0 dat0 id1 dat1 ....
@@ -604,6 +607,13 @@ sub setCurveLabel
   my $curve = getCurve($id);
   $curve->[0]{title} = $str;
   updateCurveOptions($curve->[0], $id);
+}
+
+# remove all the curve data
+sub clearCurves
+{
+  foreach my $curve(@curves)
+  { splice( @$curve, 1 ); }
 }
 
 # function to add a point to the plot. Assumes that the curve indexed by $idx already exists
