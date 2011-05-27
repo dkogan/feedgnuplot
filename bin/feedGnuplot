@@ -298,7 +298,7 @@ sub mainThread
       print PIPE "set ytics nomirror\n";
       print PIPE "set y2tics\n";
       # if any of the ranges are given, set the range
-      print PIPE "set y2range [". $options{y2min} . ":" . $options{y2max} ."]\n" if length( $options{y2min} . $options{y2max} );
+      print PIPE "set y2range [$options{y2min}:$options{y2max}]\n" if length( $options{y2min} . $options{y2max} );
     }
 
     # set up plotting style
@@ -311,17 +311,17 @@ sub mainThread
     }
 
     # if any of the ranges are given, set the range
-    print PIPE "set xrange [". $options{xmin} . ":" . $options{xmax} ."]\n" if length( $options{xmin} . $options{xmax} );
-    print PIPE "set yrange [". $options{ymin} . ":" . $options{ymax} ."]\n" if length( $options{ymin} . $options{ymax} );
-    print PIPE "set zrange [". $options{zmin} . ":" . $options{zmax} ."]\n" if length( $options{zmin} . $options{zmax} );
+    print PIPE "set xrange [$options{xmin}:$options{xmax}]\n" if length( $options{xmin} . $options{xmax} );
+    print PIPE "set yrange [$options{ymin}:$options{ymax}]\n" if length( $options{ymin} . $options{ymax} );
+    print PIPE "set zrange [$options{zmin}:$options{zmax}]\n" if length( $options{zmin} . $options{zmax} );
     print PIPE "set style data $style\n" if $style;
     print PIPE "set grid\n";
 
-    print(PIPE "set xlabel  \"" . $options{xlabel } . "\"\n") if defined $options{xlabel};
-    print(PIPE "set ylabel  \"" . $options{ylabel } . "\"\n") if defined $options{ylabel};
-    print(PIPE "set zlabel  \"" . $options{zlabel } . "\"\n") if defined $options{zlabel};
-    print(PIPE "set y2label \"" . $options{y2label} . "\"\n") if defined $options{y2label};
-    print(PIPE "set title   \"" . $options{title  } . "\"\n") if defined $options{title};
+    print(PIPE "set xlabel  \"$options{xlabel }\"\n") if defined $options{xlabel};
+    print(PIPE "set ylabel  \"$options{ylabel }\"\n") if defined $options{ylabel};
+    print(PIPE "set zlabel  \"$options{zlabel }\"\n") if defined $options{zlabel};
+    print(PIPE "set y2label \"$options{y2label}\"\n") if defined $options{y2label};
+    print(PIPE "set title   \"$options{title  }\"\n") if defined $options{title};
 
     if($options{square})
     {
@@ -345,7 +345,7 @@ sub mainThread
 
     if($options{colormap})
     {
-      print PIPE "set cbrange [". $options{zmin} . ":" . $options{zmax} ."]\n" if length( $options{zmin} . $options{zmax} );
+      print PIPE "set cbrange [$options{zmin}:$options{zmax}]\n" if length( $options{zmin} . $options{zmax} );
     }
 
 # For the specified values, set the legend entries to 'title "blah blah"'
@@ -529,7 +529,7 @@ sub plotStoredData
   my @nonemptyCurves = grep {@$_ > 1} @curves;
   my @extraopts = map {$_->[0]{options}} @nonemptyCurves;
 
-  my $body = join(', ' , map({ '"-"' . $_} @extraopts) );
+  my $body = join(', ' , map({ "'-' $_" } @extraopts) );
   if($options{'3d'}) { print PIPE "splot $body\n"; }
   else               { print PIPE  "plot $body\n"; }
 
