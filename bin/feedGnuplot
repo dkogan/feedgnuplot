@@ -641,7 +641,7 @@ Simple plotting of stored data:
  10 25
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' |
-   feedGnuplot --lines --points --legend 0="data 0" --title "Test plot" --y2 1
+   feedGnuplot --lines --points --legend 0 "data 0" --title "Test plot" --y2 1
 
 Simple real-time plotting example: plot how much data is received on the wlan0
 network interface in bytes/second (uses bash, awk and Linux):
