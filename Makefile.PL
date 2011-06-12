@@ -2,6 +2,19 @@ use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
+
+sub MY::libscan
+{
+    package MY;
+
+    my ($self, $file) = @_;
+
+    # Don't install the README.pod or any non-feedGnuplot .pl file
+    return undef if $file !~ /feedGnuplot.pl/ && $file =~ /\.pl$|^README.pod/;
+
+    return $self->SUPER::libscan ($file);
+}
+
 WriteMakefile
   (
    NAME                       => 'feedGnuplot',
