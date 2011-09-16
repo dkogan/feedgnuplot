@@ -2,7 +2,7 @@ feedgnuplot (1.14-1) unstable; urgency=low
 
   * New upstream release (added 'clear' command, documented commands)
 
- -- Dima Kogan <dkogan@cds.caltech.edu>  Sun, 22 May 2011 15:25:28 -0700
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 22 May 2011 15:25:28 -0700
 
 feedgnuplot (1.13-1) unstable; urgency=low
 
@@ -14,28 +14,28 @@ feedgnuplot (1.12-1) unstable; urgency=low
 
   * New upstream release
 
- -- Dima Kogan <dkogan@cds.caltech.edu>  Tue, 19 Apr 2011 11:02:23 -0700
+ -- Dima Kogan <dima@secretsauce.net>  Tue, 19 Apr 2011 11:02:23 -0700
 
 feedgnuplot (1.11-1) unstable; urgency=low
 
   * New upstream release
 
- -- Dima Kogan <dkogan@cds.caltech.edu>  Sat, 09 Apr 2011 14:10:21 -0700
+ -- Dima Kogan <dima@secretsauce.net>  Sat, 09 Apr 2011 14:10:21 -0700
 
 feedgnuplot (1.10-1) unstable; urgency=low
 
   * New upstream release
 
- -- Dima Kogan <dkogan@cds.caltech.edu>  Sat, 09 Apr 2011 14:08:06 -0700
+ -- Dima Kogan <dima@secretsauce.net>  Sat, 09 Apr 2011 14:08:06 -0700
 
 feedgnuplot (1.09-1) unstable; urgency=low
 
   * New upstream release
 
- -- Dima Kogan <dkogan@cds.caltech.edu>  Sun, 03 Apr 2011 17:23:38 -0700
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 03 Apr 2011 17:23:38 -0700
 
 feedgnuplot (1.08-1) unstable; urgency=low
 
   * Initial debianized release.
 
- -- Dima Kogan <dkogan@cds.caltech.edu>  Sun, 6 Feb 2011 15:58:22 -0800
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 6 Feb 2011 15:58:22 -0800
