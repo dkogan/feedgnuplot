@@ -1,14 +1,14 @@
 Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
-Maintainer: Dima Kogan, <dkogan at cds.caltech.edu>
+Maintainer: Dima Kogan, <dima at secretsauce.net>
 Source: http://search.cpan.org/dist/feedGnuplot/
 Name: feedGnuplot
 
 Files: *
-Copyright: Dima Kogan, <dkogan at cds.caltech.edu>
+Copyright: Dima Kogan, <dima at secretsauce.net>
 License: 
 
 Files: debian/*
-Copyright: 2011, Dima Kogan <dkogan@cds.caltech.edu>
+Copyright: 2011, Dima Kogan <dima@secretsauce.net>
 License: Artistic or GPL-1+
 
 License: Artistic
