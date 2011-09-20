@@ -671,7 +671,7 @@ script. Anything not directly supported can still be done with the
 C<--extracmds> and C<--curvestyle> options. Arbitrary gnuplot commands can be
 passed in with C<--extracmds>. For example, to turn off the grid, pass in
 C<--extracmds 'unset grid'>. As many of these options as needed can be passed
-in. To add arbitrary curve styles, use C<--curvestyle curveID=extrastyle>. Pass
+in. To add arbitrary curve styles, use C<--curvestyle curveID extrastyle>. Pass
 these more than once to affect more than one curve. To apply an extra style to
 I<all> the curves, pass in C<--curvestyleall extrastyle>.
 
