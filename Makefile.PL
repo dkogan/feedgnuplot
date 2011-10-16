@@ -28,7 +28,7 @@ sub MY::libscan
 WriteMakefile
   (
    NAME                       => 'feedgnuplot',
-   AUTHOR                     => q{Dima Kogan <dkogan@cds.caltech.edu>},
+   AUTHOR                     => q{Dima Kogan <dima@secretsauce.net>},
    VERSION                    => parseversion(),
    ABSTRACT_FROM              => 'bin/feedgnuplot',
    ($ExtUtils::MakeMaker::VERSION >= 6.3002
