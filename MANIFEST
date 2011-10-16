@@ -1,5 +1,5 @@
 Makefile.PL
 MANIFEST
-bin/feedGnuplot
+bin/feedgnuplot
 t/00-load.t
 t/manifest.t

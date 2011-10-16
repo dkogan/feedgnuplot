@@ -1,7 +1,7 @@
 Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
 Maintainer: Dima Kogan, <dima at secretsauce.net>
 Source: http://search.cpan.org/dist/feedGnuplot/
-Name: feedGnuplot
+Name: feedgnuplot
 
 Files: *
 Copyright: Dima Kogan, <dima at secretsauce.net>

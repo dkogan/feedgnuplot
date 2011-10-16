@@ -1,2 +1,2 @@
 version=3
-http://search.cpan.org/dist/feedGnuplot/   .*/feedGnuplot-v?(\d[\d.-]+)\.(?:tar(?:\.gz|\.bz2)?|tgz|zip)$
+http://search.cpan.org/dist/feedGnuplot/   .*/feedgnuplot-v?(\d[\d.-]+)\.(?:tar(?:\.gz|\.bz2)?|tgz|zip)$

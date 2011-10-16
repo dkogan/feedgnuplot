@@ -12,5 +12,5 @@ BEGIN {
 use Test::More tests => 1;
 use Test::Script::Run;
 
-run_ok( 'feedGnuplot', ['--help'], 'feedGnuplot can run');
+run_ok( 'feedgnuplot', ['--help'], 'feedgnuplot can run');
 
