@@ -2,6 +2,16 @@ use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
+sub parseversion
+{
+# grab the version number from the debian changelog file
+  open DCH, 'debian/changelog' or die "Couldn't open debian/changelog";
+  my ($version) = <DCH> =~ /feedgnuplot \s* \( ([0-9\.]+) - \w+ \)/x
+    or die "Couldn't parse version from debian/changelog";
+  close DCH;
+
+  return $version;
+}
 
 sub MY::libscan
 {
@@ -19,7 +29,7 @@ WriteMakefile
   (
    NAME                       => 'feedgnuplot',
    AUTHOR                     => q{Dima Kogan <dkogan@cds.caltech.edu>},
-   VERSION_FROM               => 'bin/feedgnuplot',
+   VERSION                    => parseversion(),
    ABSTRACT_FROM              => 'bin/feedgnuplot',
    ($ExtUtils::MakeMaker::VERSION >= 6.3002
     ? ('LICENSE'              => 'perl')

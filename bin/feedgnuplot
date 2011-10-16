@@ -12,9 +12,6 @@ use threads::shared;
 use Thread::Queue;
 use Pod::Usage;
 
-
-our $VERSION = '1.14';
-
 my %options;
 interpretCommandline(\%options);
 
