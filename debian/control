@@ -5,7 +5,7 @@ Build-Depends: debhelper (>= 7)
 Build-Depends-Indep: perl
 Maintainer: Dima Kogan <dima@secretsauce.net>
 Standards-Version: 3.9.1
-Homepage: http://search.cpan.org/dist/feedGnuplot/
+Homepage: https://github.com/dkogan/feedgnuplot
 
 Package: feedgnuplot
 Architecture: all
