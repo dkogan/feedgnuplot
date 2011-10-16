@@ -1,3 +1,10 @@
+feedgnuplot (1.15-1) unstable; urgency=low
+
+  * Renamed main script from feedGnuplot to feedgnuplot
+  * Slightly improved packaging, added instructions, etc
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 16 Oct 2011 11:58:15 -0700
+
 feedgnuplot (1.14-1) unstable; urgency=low
 
   * New upstream release (added 'clear' command, documented commands)
