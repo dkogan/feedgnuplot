@@ -1,0 +1,15 @@
+If running on a Debian-based OS (this includes Ubuntu), it is highly recommended
+to install this program as a package by doing
+
+   dpkg-buildpackage -us -uc -b
+   sudo dpkg -i feedgnuplot*.deb
+
+This builds a debian package and installs it.
+
+Without a package, an installation can be done with
+
+         perl Makefile.PL prefix=/usr/local
+         make
+         make install
+
+This installs feedgnuplot to /usr/local. Adjust the paths as required
