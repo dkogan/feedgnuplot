@@ -644,7 +644,7 @@ Simple real-time plotting example: plot how much data is received on the wlan0
 network interface in bytes/second (uses bash, awk and Linux):
 
  $ while true; do sleep 1; cat /proc/net/dev; done |
-   awk '/wlan0/ {if(b) {print $2-b; fflush()} b=$2}' |
+   awk -Winteractive '/wlan0/ {if(b) {print $2-b} b=$2}' |
    feedgnuplot --lines --stream --xlen 10 --ylabel 'Bytes/sec' --xlabel seconds
 
 =head1 DESCRIPTION
