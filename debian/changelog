@@ -1,3 +1,11 @@
+feedgnuplot (1.16) unstable; urgency=low
+
+  * deb version parser now works for any package name
+  * Some POD fixes
+  * now building a native package
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 11 Nov 2011 00:10:18 -0800
+
 feedgnuplot (1.15-2) unstable; urgency=low
 
   * added source format for the debianization
