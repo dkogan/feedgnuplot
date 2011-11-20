@@ -1,7 +1,7 @@
 Source: feedgnuplot
 Section: perl
 Priority: optional
-Build-Depends: debhelper (>= 7)
+Build-Depends: debhelper (>= 7), libtest-script-run-perl
 Build-Depends-Indep: perl
 Maintainer: Dima Kogan <dima@secretsauce.net>
 Standards-Version: 3.9.2
