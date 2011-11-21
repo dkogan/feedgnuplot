@@ -1,3 +1,14 @@
+feedgnuplot (1.17) unstable; urgency=low
+
+  [ Dima Kogan ]
+  * POD: removed -Winteractive, since this was apparently a mawk-ism
+  * added zsh and bash completions to the package
+
+  [ Hermann Schwarting ]
+  * add build dependency libtest-script-run-perl
+
+ -- Dima Kogan <dkogan@secretsauce.net>  Sun, 20 Nov 2011 19:17:22 -0800
+
 feedgnuplot (1.16) unstable; urgency=low
 
   * deb version parser now works for any package name
