@@ -1,6 +1,6 @@
 =head1 NAME
 
-feedgnuplot - A pipe-oriented frontend to Gnuplot
+feedgnuplot - Pipe-oriented frontend to Gnuplot
 
 =head1 SYNOPSIS
 
