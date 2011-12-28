@@ -388,7 +388,7 @@ sub mainThread
     my $numRE   = '-?\d*\.?\d+(?:[Ee][-+]?\d+)?';
 
     # a point may be preceded by an id
-    my $pointRE = $options{dataid} ? '(\w+)\s+' : '()';
+    my $pointRE = $options{dataid} ? '(\S+)\s+' : '()';
     $pointRE .= '(' . join('\s+', ($numRE) x $valuesPerPoint) . ')';
     $pointRE = qr/$pointRE/;
 
