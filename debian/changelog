@@ -1,3 +1,10 @@
+feedgnuplot (1.18) unstable; urgency=low
+
+  * data-ids can now include characters such as -. Any non-whitespace
+    works
+
+ -- Dima Kogan <dkogan@secretsauce.net>  Tue, 27 Dec 2011 16:47:36 -0800
+
 feedgnuplot (1.17) unstable; urgency=low
 
   [ Dima Kogan ]
