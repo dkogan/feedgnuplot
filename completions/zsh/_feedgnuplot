@@ -36,5 +36,6 @@ _arguments -S                                                                   
     '(--3d)--monotonic[Resets plot if an X in the past is seen]'                        \
     '--extraValuesPerPoint[How many extra values are given for each data point]:'       \
     '--dump[Instead of printing to gnuplot, print to STDOUT]'                           \
+    '--geometry[The X11 geometry string]:geometry string:'                              \
     '*--curvestyle[Additional styles for a curve]:curve id: :style:'                    \
     '*--legend[Legend for a curve]:curve id: :legend:'

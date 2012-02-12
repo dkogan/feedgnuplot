@@ -102,7 +102,8 @@ sub interpretCommandline
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
              'size=s', 'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
-             'extraValuesPerPoint=i', 'help', 'dump') or pod2usage(1);
+             'extraValuesPerPoint=i', 'help', 'dump',
+             'geometry=s') or pod2usage(1);
 
   # handle various cmdline-option errors
   if ( $options->{help} )
@@ -252,7 +253,9 @@ sub mainThread
     }
     else
     {
-      open PIPE, "|gnuplot $dopersist" or die "Can't initialize gnuplot\n";
+      my $geometry = defined $options{geometry} ?
+        "-geometry $options{geometry}" : '';
+      open PIPE, "|gnuplot $geometry $dopersist" or die "Can't initialize gnuplot\n";
     }
     autoflush PIPE 1;
 
@@ -960,6 +963,8 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --dump               Instead of printing to gnuplot, print to STDOUT. For
                        debugging.
+
+  --geometry           If using X11, specifies the size, position of the plot window
 
 =head1 ACKNOWLEDGEMENT
 

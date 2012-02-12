@@ -35,5 +35,6 @@ complete -W                                     \
     --monotonic                                 \
     --extraValuesPerPoint                       \
     --dump                                      \
+    --geometry                                  \
     --curvestyle                                \
     --legend' feedgnuplot
