@@ -1,3 +1,9 @@
+feedgnuplot (1.19) unstable; urgency=low
+
+  * added --geometry option to specify plot dimensions
+
+ -- Dima Kogan <dima@secretsauce.net>  Sat, 11 Feb 2012 21:04:42 -0800
+
 feedgnuplot (1.18) unstable; urgency=low
 
   * data-ids can now include characters such as -. Any non-whitespace
