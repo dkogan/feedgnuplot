@@ -337,6 +337,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --dump               Instead of printing to gnuplot, print to STDOUT. For
                        debugging.
 
+  --geometry           If using X11, specifies the size, position of the plot window
+
 =head1 ACKNOWLEDGEMENT
 
 This program is originally based on the driveGnuPlots.pl script from
