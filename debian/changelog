@@ -3,7 +3,7 @@ feedgnuplot (1.18) unstable; urgency=low
   * data-ids can now include characters such as -. Any non-whitespace
     works
 
- -- Dima Kogan <dkogan@secretsauce.net>  Tue, 27 Dec 2011 16:47:36 -0800
+ -- Dima Kogan <dima@secretsauce.net>  Tue, 27 Dec 2011 16:47:36 -0800
 
 feedgnuplot (1.17) unstable; urgency=low
 
@@ -14,7 +14,7 @@ feedgnuplot (1.17) unstable; urgency=low
   [ Hermann Schwarting ]
   * add build dependency libtest-script-run-perl
 
- -- Dima Kogan <dkogan@secretsauce.net>  Sun, 20 Nov 2011 19:17:22 -0800
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 20 Nov 2011 19:17:22 -0800
 
 feedgnuplot (1.16) unstable; urgency=low
 
