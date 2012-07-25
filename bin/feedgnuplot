@@ -276,10 +276,6 @@ sub mainThread
       print PIPE "set terminal $terminalOpts{$outputfileType}\n";
       print PIPE "set output \"$outputfile\"\n";
     }
-    else
-    {
-      print PIPE "set terminal x11\n";
-    }
 
     # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
     # gnuplot
