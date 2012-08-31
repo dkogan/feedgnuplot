@@ -292,7 +292,30 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --y2    xxx          Plot the data specified by this curve ID on the y2 axis.
                        Without --dataid, the ID is just an ordered 0-based index.
-                       Does not apply to 3d plots.
+                       Does not apply to 3d plots. Can be passed multiple times, or passed a
+                       comma-separated list
+
+  --histogram  curveID
+                       Set up a this specific curve to plot a histogram. The bin
+                       width is given with the --binwidth option (assumed 1.0 if
+                       omitted). --histogram does NOT touch the drawing style.
+                       It is often desired to plot these with boxes, and this
+                       MUST be explicitly requested with --curvestyleall 'with
+                       boxes'. This works with --domain and/or --stream, but in
+                       those cases the x-value is used ONLY to cull old data
+                       because of --xlen or --monotonic. I.e. the x-values are
+                       NOT drawn in any way. Can be passed multiple times, or passed a comma-
+                       separated list
+  --binwidth width     The width of bins when making histograms. This setting applies to ALL
+                       histograms in the plot. Defaults to 1.0 if not given.
+  --histstyle style    Normally, histograms are generated with the 'smooth freq'
+                       gnuplot style. --histstyle can be used to select
+                       different 'smooth' settings. Allowed are 'unique',
+                       'cumulative' and 'cnormal'. 'unique' indicates whether a
+                       bin has at least one item in it: instead of counting the
+                       items, it'll always report 0 or 1. 'cumulative' is the
+                       integral of the "normal" histogram. 'cnormal' is like
+                       'cumulative', but rescaled to end up at 1.0.
 
   --curvestyle curveID style
                        Additional styles per curve. With --dataid, curveID is the
@@ -302,7 +325,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --curvestyleall xxx  Additional styles for ALL curves.
 
   --extracmds xxx      Additional commands. These could contain extra global styles
-                       for instance
+                       for instance. Can be passed multiple times, or passed a comma-
+                       separated list
 
   --size  xxx          Gnuplot size option
 
@@ -312,7 +336,12 @@ As an example, if line 3 of the input is "0 9 1 20"
   --square_xy          For 3D plots, set square aspect ratio for ONLY the x,y axes
 
   --hardcopy xxx       If not streaming, output to a file specified here. Format
-                       inferred from filename
+                       inferred from filename, unless specified by --terminal
+  --terminal xxx       String passed to 'set terminal'. No attempts are made to
+                       validate this. --hardcopy sets this to some sensible
+                       defaults if --hardcopy is given .png, .pdf, .ps, .eps or
+                       .svg. If any other file type is desired, use both
+                       --hardcopy and --terminal
 
   --maxcurves xxx      The maximum allowed number of curves. This is 100 by default,
                        but can be reset with this option. This exists purely to
