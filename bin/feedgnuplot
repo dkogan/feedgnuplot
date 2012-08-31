@@ -106,6 +106,7 @@ sub interpretCommandline
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
              'size=s', 'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
+             'terminal=s',
              'extraValuesPerPoint=i', 'help', 'dump',
              'geometry=s') or pod2usage(1);
 
@@ -280,18 +281,25 @@ sub mainThread
     if( $options{hardcopy})
     {
       $outputfile = $options{hardcopy};
-      ($outputfileType) = $outputfile =~ /\.(eps|ps|pdf|png)$/;
-      if(!$outputfileType) { die("Only .eps, .ps, .pdf and .png supported\n"); }
+      $outputfile =~ /\.(eps|ps|pdf|png|svg)$/i;
+      $outputfileType = $1 ? lc $1 : '';
 
       my %terminalOpts =
       ( eps  => 'postscript solid color enhanced eps',
         ps   => 'postscript solid color landscape 10',
         pdf  => 'pdfcairo solid color font ",10" size 11in,8.5in',
-        png  => 'png size 1280,1024' );
+        png  => 'png size 1280,1024',
+        svg  => 'svg');
 
-      print PIPE "set terminal $terminalOpts{$outputfileType}\n";
-      print PIPE "set output \"$outputfile\"\n";
+      $options{terminal} ||= $terminalOpts{$outputfileType}
+        if $terminalOpts{$outputfileType};
+
+      die "Asked to plot to file '$outputfile', but I don't know which terminal to use, and no --terminal given"
+        unless $options{terminal};
     }
+    print PIPE "set terminal $options{terminal}\n" if $options{terminal};
+    print PIPE "set output \"$outputfile\"\n"      if $outputfile;
+
 
     # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
     # gnuplot
@@ -994,7 +1002,12 @@ As an example, if line 3 of the input is "0 9 1 20"
   --square_xy          For 3D plots, set square aspect ratio for ONLY the x,y axes
 
   --hardcopy xxx       If not streaming, output to a file specified here. Format
-                       inferred from filename
+                       inferred from filename, unless specified by --terminal
+  --terminal xxx       String passed to 'set terminal'. No attempts are made to
+                       validate this. --hardcopy sets this to some sensible
+                       defaults if --hardcopy is given .png, .pdf, .ps, .eps or
+                       .svg. If any other file type is desired, use both
+                       --hardcopy and --terminal
 
   --maxcurves xxx      The maximum allowed number of curves. This is 100 by default,
                        but can be reset with this option. This exists purely to
