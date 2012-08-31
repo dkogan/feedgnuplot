@@ -138,8 +138,9 @@ or line numbers otherwise).
 =head2 Hardcopy output
 
 The script is able to produce hardcopy output with C<--hardcopy outputfile>. The
-output type is inferred from the filename with B<.ps>, B<.eps>, B<.pdf> and
-B<.png> currently supported.
+output type can be inferred from the filename, if B<.ps>, B<.eps>, B<.pdf>,
+B<.svg> or B<.png> is requested. If any other file type is requested,
+C<--terminal> I<must> be passed in to tell gnuplot how to make the plot.
 
 =head2 Self-plotting data files
 
