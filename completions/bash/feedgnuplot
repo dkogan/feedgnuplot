@@ -37,4 +37,8 @@ complete -W                                     \
     --dump                                      \
     --geometry                                  \
     --curvestyle                                \
+    --histogram                                 \
+    --binwidth                                  \
+    --histstyle                                 \
+    --terminal                                  \
     --legend' feedgnuplot

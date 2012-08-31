@@ -3,7 +3,7 @@
 _arguments -S                                                                           \
     '()--domain[first element of each line is the domain variable]'                     \
     '--dataid[each data point is preceded by the corresponding ID]'                     \
-    '(--monotonic --xlen)--3d'                                                          \
+    '(--monotonic --xlen --histogram)--3d'                                              \
     '--colormap[show a colormapped xy plot]'                                            \
     '--stream[Plot the data in realtime]::period in s:'                                 \
     '--lines'                                                                           \
@@ -38,4 +38,8 @@ _arguments -S                                                                   
     '--dump[Instead of printing to gnuplot, print to STDOUT]'                           \
     '--geometry[The X11 geometry string]:geometry string:'                              \
     '*--curvestyle[Additional styles for a curve]:curve id: :style:'                    \
+    '(--3d)*--histogram:plot to treat as a histogram:'                                  \
+    '--binwidth:Histogram bin width:'                                                   \
+    '--histstyle:Style of histogram:(frequency unique cumulative cnormal)'              \
+    '--terminal:Terminal options to set with "set terminal":'                           \
     '*--legend[Legend for a curve]:curve id: :legend:'
