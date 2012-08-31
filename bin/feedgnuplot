@@ -89,19 +89,23 @@ sub interpretCommandline
   # do not stream in the data by default
   # point plotting by default.
   # no monotonicity checks by default
+  # normal histograms by default
   $options{ maxcurves } = 100;
+  $options{ histstyle}  = 'freq';
 
   # Previously I was using 'legend=s%' and 'curvestyle=s%' for curve addressing. This had cleaner
   # syntax, but disregarded the order of the given options. This resulted in arbitrarily ordered
   # curves.
   # needed for these to be parsed into a ref to a list
-  $options{legend}      = [];
-  $options{curvestyle}  = [];
+  $options{legend}     = [];
+  $options{curvestyle} = [];
+  $options{histogram}  = [];
   GetOptions($options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
              'size=s', 'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
+             'histogram=s@', 'binwidth=f', 'histstyle=s',
              'extraValuesPerPoint=i', 'help', 'dump',
              'geometry=s') or pod2usage(1);
 
@@ -177,6 +181,12 @@ sub interpretCommandline
       print STDERR "--3d does not make sense with --monotonic\n";
       exit -1;
     }
+
+    if ( defined $options->{binwidth} || @{$options->{histogram}} )
+    {
+      print STDERR "--3d does not make sense with histograms\n";
+      exit -1;
+    }
   }
   else
   {
@@ -204,6 +214,12 @@ sub interpretCommandline
 
   # --xlen implies an order to the data, so I force monotonicity
   $options{monotonic} = 1 if defined $options{xlen};
+
+  if( $options{histstyle} !~ /freq|cum|uniq|cnorm/ )
+  {
+    print STDERR "unknown histstyle. Allowed are 'freq...', 'cum...', 'uniq...', 'cnorm...'\n";
+    exit -1;
+  }
 }
 
 sub getGnuplotVersion
@@ -383,6 +399,16 @@ sub mainThread
       }
     }
 
+# set up histograms
+    $options{binwidth} ||= 1; # if no binwidth given, set it to 1
+    print PIPE
+      "set boxwidth $options{binwidth}\n" .
+      "histbin(x) = $options{binwidth} * floor(0.5 + x/$options{binwidth})\n";
+    foreach (@{$options{histogram}})
+    {
+      setCurveAsHistogram( $_ );
+    }
+
     # regexp for a possibly floating point, possibly scientific notation number
     my $numRE   = '-?\d*\.?\d+(?:[Ee][-+]?\d+)?';
 
@@ -560,7 +586,9 @@ sub updateCurveOptions
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
   my $extraoption = defined $options{curvestyleall} ? $options{curvestyleall} : '';
-  $curveoptions->{options} = "$titleoption $curveoptions->{extraoptions} $extraoption";
+  my $histoptions = $curveoptions->{histoptions} || '';
+
+  $curveoptions->{options} = "$histoptions $titleoption $curveoptions->{extraoptions} $extraoption";
 }
 
 sub getCurve
@@ -602,6 +630,16 @@ sub setCurveLabel
 
   my $curve = getCurve($id);
   $curve->[0]{title} = $str;
+  updateCurveOptions($curve->[0], $id);
+}
+
+sub setCurveAsHistogram
+{
+  my ($id, $str) = @_;
+
+  my $curve = getCurve($id);
+  $curve->[0]{histoptions} = 'using (histbin($2)):(1.0) smooth ' . $options{histstyle};
+
   updateCurveOptions($curve->[0], $id);
 }
 
@@ -916,6 +954,27 @@ As an example, if line 3 of the input is "0 9 1 20"
   --y2    xxx          Plot the data specified by this curve ID on the y2 axis.
                        Without --dataid, the ID is just an ordered 0-based index.
                        Does not apply to 3d plots.
+
+  --histogram  curveID
+                       Set up a this specific curve to plot a histogram. The bin
+                       width is given with the --binwidth option (assumed 1.0 if
+                       omitted). --histogram does NOT touch the drawing style.
+                       It is often desired to plot these with boxes, and this
+                       MUST be explicitly requested with --curvestyleall 'with
+                       boxes'. This works with --domain and/or --stream, but in
+                       those cases the x-value is used ONLY to cull old data
+                       because of --xlen or --monotonic. I.e. the x-values are
+                       NOT drawn in any way.
+  --binwidth width     The width of bins when making histograms. This setting applies to ALL
+                       histograms in the plot. Defaults to 1.0 if not given.
+  --histstyle style    Normally, histograms are generated with the 'smooth freq'
+                       gnuplot style. --histstyle can be used to select
+                       different 'smooth' settings. Allowed are 'unique',
+                       'cumulative' and 'cnormal'. 'unique' indicates whether a
+                       bin has at least one item in it: instead of counting the
+                       items, it'll always report 0 or 1. 'cumulative' is the
+                       integral of the "normal" histogram. 'cnormal' is like
+                       'cumulative', but rescaled to end up at 1.0.
 
   --curvestyle curveID style
                        Additional styles per curve. With --dataid, curveID is the
