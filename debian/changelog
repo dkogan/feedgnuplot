@@ -1,3 +1,12 @@
+feedgnuplot (1.20) unstable; urgency=low
+
+  * no longer hardcoding 'x11' as the default terminal
+  * added histogram support
+  * generic terminals can now be requested
+  * --extracmds, --histogram, --y2 can now take comma-separated lists
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 31 Aug 2012 01:35:50 -0700
+
 feedgnuplot (1.19) unstable; urgency=low
 
   * added --geometry option to specify plot dimensions
