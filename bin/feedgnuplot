@@ -117,6 +117,12 @@ sub interpretCommandline
   # no global style if one isn't given
   $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
 
+  # expand options that are given as comma-separated lists
+  for my $listkey (qw(extracmds histogram y2))
+  {
+    @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}};
+  }
+
   # parse stream option. Allowed only numbers >= 0 or 'trigger'
   if(defined $options->{stream})
   {
@@ -961,7 +967,8 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --y2    xxx          Plot the data specified by this curve ID on the y2 axis.
                        Without --dataid, the ID is just an ordered 0-based index.
-                       Does not apply to 3d plots.
+                       Does not apply to 3d plots. Can be passed multiple times, or passed a
+                       comma-separated list
 
   --histogram  curveID
                        Set up a this specific curve to plot a histogram. The bin
@@ -972,7 +979,8 @@ As an example, if line 3 of the input is "0 9 1 20"
                        boxes'. This works with --domain and/or --stream, but in
                        those cases the x-value is used ONLY to cull old data
                        because of --xlen or --monotonic. I.e. the x-values are
-                       NOT drawn in any way.
+                       NOT drawn in any way. Can be passed multiple times, or passed a comma-
+                       separated list
   --binwidth width     The width of bins when making histograms. This setting applies to ALL
                        histograms in the plot. Defaults to 1.0 if not given.
   --histstyle style    Normally, histograms are generated with the 'smooth freq'
@@ -992,7 +1000,8 @@ As an example, if line 3 of the input is "0 9 1 20"
   --curvestyleall xxx  Additional styles for ALL curves.
 
   --extracmds xxx      Additional commands. These could contain extra global styles
-                       for instance
+                       for instance. Can be passed multiple times, or passed a comma-
+                       separated list
 
   --size  xxx          Gnuplot size option
 
