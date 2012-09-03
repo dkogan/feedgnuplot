@@ -120,7 +120,8 @@ sub interpretCommandline
   # expand options that are given as comma-separated lists
   for my $listkey (qw(extracmds histogram y2))
   {
-    @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}};
+    @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
+      if defined $options{$listkey};
   }
 
   # parse stream option. Allowed only numbers >= 0 or 'trigger'
