@@ -1,3 +1,9 @@
+feedgnuplot (1.22) unstable; urgency=low
+
+  * removed --size option
+
+ -- Dima Kogan <dima@secretsauce.net>  Mon, 03 Sep 2012 08:33:26 -0700
+
 feedgnuplot (1.21) unstable; urgency=low
 
   * removed the POD from the script to its own file
