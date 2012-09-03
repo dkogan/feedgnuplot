@@ -329,8 +329,6 @@ As an example, if line 3 of the input is "0 9 1 20"
                        for instance. Can be passed multiple times, or passed a comma-
                        separated list
 
-  --size  xxx          Gnuplot size option
-
   --square             Plot data with aspect ratio 1. For 3D plots, this controls the
                        aspect ratio for all 3 axes
 

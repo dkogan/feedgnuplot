@@ -27,7 +27,6 @@ complete -W                                     \
     --y2                                        \
     --curvestyleall                             \
     --extracmds                                 \
-    --size                                      \
     --square                                    \
     --square_xy                                 \
     --hardcopy                                  \

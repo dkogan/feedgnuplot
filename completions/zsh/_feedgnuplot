@@ -28,7 +28,6 @@ _arguments -S                                                                   
     '*--y2:plot to place on the Y2 axis:'                                               \
     '--curvestyleall[Additional styles for ALL curves]:'                                \
     '*--extracmds[Additional gnuplot commands]:'                                        \
-    '--size[Gnuplot size option]:'                                                      \
     '--square[Plot data with square aspect ratio]'                                      \
     '--square_xy[For 3D plots, set square aspect ratio for ONLY the x,y axes]'          \
     '--hardcopy[Plot to a file]:'                                                       \

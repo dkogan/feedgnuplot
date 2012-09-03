@@ -104,7 +104,7 @@ sub interpretCommandline
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
-             'size=s', 'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
+             'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
              'extraValuesPerPoint=i', 'help', 'dump',
@@ -355,15 +355,13 @@ sub mainThread
       # set a square aspect ratio. Gnuplot does this differently for 2D and 3D plots
       if(! $options{'3d'})
       {
-        $options{size} = '' unless defined $options{size};
-        $options{size} .= ' ratio -1';
+        print(PIPE "set size ratio -1\n");
       }
       else
       {
         print(PIPE "set view equal xyz\n");
       }
     }
-    print(PIPE "set size $options{size}\n")                     if defined $options{size};
 
     if($options{square_xy})
     {
