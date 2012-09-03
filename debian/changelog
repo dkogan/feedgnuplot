@@ -1,3 +1,11 @@
+feedgnuplot (1.21) unstable; urgency=low
+
+  * removed the POD from the script to its own file
+  * fixed regression to allow no given extracmds, histogram or y2
+    options
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 02 Sep 2012 23:52:21 -0700
+
 feedgnuplot (1.20) unstable; urgency=low
 
   * no longer hardcoding 'x11' as the default terminal
