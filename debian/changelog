@@ -1,6 +1,7 @@
 feedgnuplot (1.23) unstable; urgency=low
 
   * debian packaging cleanup
+  * package now uploaded to Debian (Closes: #686413)
 
  -- Dima Kogan <dima@secretsauce.net>  Mon, 10 Sep 2012 20:47:40 -0700
 
