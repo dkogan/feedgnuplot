@@ -6,8 +6,8 @@ Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.
 Uploaders: Dima Kogan <dima@secretsauce.net>
 Standards-Version: 3.9.3
 Homepage: https://github.com/dkogan/feedgnuplot
-Vcs-Git: git://github.com/dkogan/feedgnuplot.git
-Vcs-Browser: https://github.com/dkogan/feedgnuplot
+Vcs-Git: git://git.debian.org/git/debian-science/packages/feedgnuplot.git
+Vcs-Browser: http://git.debian.org/?p=debian-science/packages/feedgnuplot.git
 DM-Upload-Allowed: yes
 
 Package: feedgnuplot
