@@ -29,6 +29,13 @@ sub MY::libscan
     return $self->SUPER::libscan ($file);
 }
 
+# I want my manpage to go into the man section '1', NOT '1p'. Here I add a
+# snippet to the end of the generated Makefile to force this
+sub MY::postamble
+{
+  return "MAN1EXT := 1\n";
+}
+
 
 WriteMakefile
   (
