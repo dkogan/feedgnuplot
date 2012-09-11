@@ -4,10 +4,6 @@ Upstream-Contact: Dima Kogan, <dima@secretsauce.net>
 Upstream-Name: feedgnuplot
 
 Files: *
-Copyright: Dima Kogan <dima@secretsauce.net>
-License: 
-
-Files: debian/*
 Copyright: 2011, Dima Kogan <dima@secretsauce.net>
 License: Artistic or GPL-1+
 
