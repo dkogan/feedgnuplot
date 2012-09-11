@@ -1,0 +1,70 @@
+feedgnuplot (1.22)
+
+  * removed --size option
+
+ -- Dima Kogan <dima@secretsauce.net>  Mon, 03 Sep 2012 08:33:26 -0700
+
+feedgnuplot (1.21)
+
+  * removed the POD from the script to its own file
+  * fixed regression to allow no given extracmds, histogram or y2
+    options
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 02 Sep 2012 23:52:21 -0700
+
+feedgnuplot (1.20)
+
+  * no longer hardcoding 'x11' as the default terminal
+  * added histogram support
+  * generic terminals can now be requested
+  * --extracmds, --histogram, --y2 can now take comma-separated lists
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 31 Aug 2012 01:35:50 -0700
+
+feedgnuplot (1.19)
+
+  * added --geometry option to specify plot dimensions
+
+ -- Dima Kogan <dima@secretsauce.net>  Sat, 11 Feb 2012 21:04:42 -0800
+
+feedgnuplot (1.18)
+
+  * data-ids can now include characters such as -. Any non-whitespace
+    works
+
+ -- Dima Kogan <dima@secretsauce.net>  Tue, 27 Dec 2011 16:47:36 -0800
+
+feedgnuplot (1.17)
+
+  [ Dima Kogan ]
+  * POD: removed -Winteractive, since this was apparently a mawk-ism
+  * added zsh and bash completions
+
+  [ Hermann Schwarting ]
+  * add build dependency libtest-script-run-perl
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 20 Nov 2011 19:17:22 -0800
+
+feedgnuplot (1.16)
+
+  * Some POD fixes
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 11 Nov 2011 00:10:18 -0800
+
+feedgnuplot (1.15)
+
+  * Renamed main script from feedGnuplot to feedgnuplot
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 16 Oct 2011 11:58:15 -0700
+
+feedgnuplot (1.14)
+
+  * added 'clear' command, documented commands
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 22 May 2011 15:25:28 -0700
+
+feedgnuplot (1.13)
+
+  * Better streaming plot control
+
+ -- Dima Kogan <dima@secretsauce.net>  Tue, 26 Apr 2011 14:24:09 -0700
