@@ -10,8 +10,8 @@ Homepage: https://github.com/dkogan/feedgnuplot
 Package: feedgnuplot
 Architecture: all
 Depends: ${misc:Depends}, ${perl:Depends}, gnuplot
-Description: A pipe-oriented frontend to Gnuplot
- This is a flexible, command-line-oriented frontend to Gnuplot. It creates
- plots from data coming in on STDIN or given in a filename passed on the
- commandline. Various data representations are supported, as is hardcopy
- output and streaming display of live data.
+Description: Pipe-oriented frontend to Gnuplot
+ Flexible, command-line-oriented frontend to Gnuplot. Creates plots from data
+ coming in on STDIN or given in a filename passed on the commandline. Various
+ data representations are supported, as is hardcopy output and streaming display
+ of live data.
