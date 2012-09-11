@@ -1,9 +1,9 @@
-feedgnuplot (1.23) unstable; urgency=low
+feedgnuplot (1.22-1) experimental; urgency=low
 
   * debian packaging cleanup
   * package now uploaded to Debian (Closes: #686413)
 
- -- Dima Kogan <dima@secretsauce.net>  Mon, 10 Sep 2012 20:47:40 -0700
+ -- Dima Kogan <dima@secretsauce.net>  Tue, 11 Sep 2012 11:32:30 -0700
 
 feedgnuplot (1.22) unstable; urgency=low
 
