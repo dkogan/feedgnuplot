@@ -1,0 +1,671 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Getopt::Long;
+use Time::HiRes qw( usleep );
+use IO::Handle;
+use List::Util qw( first );
+use Scalar::Util qw( looks_like_number );
+use Text::ParseWords;
+use threads;
+use threads::shared;
+use Thread::Queue;
+use Pod::Usage;
+
+my %options;
+interpretCommandline(\%options);
+
+my $gnuplotVersion = getGnuplotVersion();
+
+# list containing the plot data. Each element is a reference to a list, representing the data for
+# one curve. The first 'point' is a hash describing various curve parameters. The rest are all
+# references to lists of (x,y) tuples
+my @curves = ();
+
+# list mapping curve names to their indices in the @curves list
+my %curveIndices = ();
+
+# now start the data acquisition and plotting threads
+my $dataQueue;
+
+# latest domain variable present in our data
+my $latestX;
+
+my $streamingFinished : shared = undef;
+if($options{stream})
+{
+  if( $options{hardcopy})
+  {
+    $options{stream} = undef;
+  }
+
+  $dataQueue  = Thread::Queue->new();
+  my $addThr  = threads->create(\&mainThread);
+
+  # spawn the plot updating thread. If I'm replotting from a data trigger, I don't need this
+  my $plotThr = threads->create(\&plotUpdateThread) unless $options{stream} < 0;
+
+  while(<>)
+  {
+    chomp;
+
+    # place every line of input to the queue, so that the plotting thread can process it. if we are
+    # using an implicit domain (x = line number), then we send it on the data queue also, since
+    # $. is not meaningful in the plotting thread
+    if(!$options{domain})
+    {
+      $_ .= " $.";
+    }
+    $dataQueue->enqueue($_);
+  }
+
+  $streamingFinished = 1;
+
+  $plotThr->join() if defined $plotThr;
+  $addThr->join();
+}
+else
+{ mainThread(); }
+
+
+
+
+
+sub interpretCommandline
+{
+  # if I'm using a self-plotting data file with a #! line, then $ARGV[0] will contain ALL of the
+  # options and $ARGV[1] will contain the data file to plot. In this case I need to split $ARGV[0] so
+  # that GetOptions() can parse it correctly. On the other hand, if I'm plotting normally (not with
+  # #!)  a file with spaces in the filename, I don't want to split the filename. Hopefully this logic
+  # takes care of both those cases.
+  if (exists $ARGV[0] && !-r $ARGV[0])
+  {
+    unshift @ARGV, shellwords shift @ARGV;
+  }
+
+  my $options = shift;
+
+  # everything off by default:
+  # do not stream in the data by default
+  # point plotting by default.
+  # no monotonicity checks by default
+  # normal histograms by default
+  $options{ maxcurves } = 100;
+  $options{ histstyle}  = 'freq';
+
+  # Previously I was using 'legend=s%' and 'curvestyle=s%' for curve addressing. This had cleaner
+  # syntax, but disregarded the order of the given options. This resulted in arbitrarily ordered
+  # curves.
+  # needed for these to be parsed into a ref to a list
+  $options{legend}     = [];
+  $options{curvestyle} = [];
+  $options{histogram}  = [];
+  GetOptions($options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
+             'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
+             'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
+             'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
+             'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
+             'histogram=s@', 'binwidth=f', 'histstyle=s',
+             'terminal=s',
+             'extraValuesPerPoint=i', 'help', 'dump',
+             'geometry=s') or pod2usage(1);
+
+  # handle various cmdline-option errors
+  if ( $options->{help} )
+  { pod2usage(0); }
+
+  # no global style if one isn't given
+  $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
+
+  # expand options that are given as comma-separated lists
+  for my $listkey (qw(extracmds histogram y2))
+  {
+    @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
+      if defined $options{$listkey};
+  }
+
+  # parse stream option. Allowed only numbers >= 0 or 'trigger'
+  if(defined $options->{stream})
+  {
+    if ( $options->{stream} eq '')
+    {
+      # if no streaming period is given, default to 1Hz.
+      $options->{stream} = 1;
+    }
+
+    if( !looks_like_number $options->{stream} )
+    {
+      if($options->{stream} eq 'trigger')
+      {
+        $options->{stream} = 0;
+      }
+      else
+      {
+        print STDERR "--stream can only take in values >=0 or 'trigger'\n";
+        exit 1;
+      }
+    }
+
+    if ( $options->{stream} == 0 )
+    {
+      $options->{stream} = -1;
+    }
+    elsif ( $options->{stream} <= 0)
+    {
+      print STDERR "--stream can only take in values >=0 or 'trigger'\n";
+      exit 1;
+    }
+  }
+
+  if ($options->{colormap})
+  {
+    # colormap styles all curves with palette. Seems like there should be a way to do this with a
+    # global setting, but I can't get that to work
+    $options->{curvestyleall} .= ' palette';
+  }
+
+  if ( $options->{'3d'} )
+  {
+    if ( !$options->{domain} )
+    {
+      print STDERR "--3d only makes sense with --domain\n";
+      exit -1;
+    }
+
+    if ( defined $options->{y2min} || defined $options->{y2max} || defined $options->{y2} )
+    {
+      print STDERR "--3d does not make sense with --y2...\n";
+      exit -1;
+    }
+
+    if ( defined $options->{xlen} )
+    {
+      print STDERR "--3d does not make sense with --xlen\n";
+      exit -1;
+    }
+
+    if ( defined $options->{monotonic} )
+    {
+      print STDERR "--3d does not make sense with --monotonic\n";
+      exit -1;
+    }
+
+    if ( defined $options->{binwidth} || @{$options->{histogram}} )
+    {
+      print STDERR "--3d does not make sense with histograms\n";
+      exit -1;
+    }
+  }
+  else
+  {
+    if(!$options->{colormap})
+    {
+      if ( defined $options->{zmin} || defined $options->{zmax} || defined $options->{zlabel} )
+      {
+        print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
+        exit -1;
+      }
+    }
+
+    if ( defined $options->{square_xy} )
+    {
+      print STDERR "--square_xy only makes sense with --3d\n";
+      exit -1;
+    }
+  }
+
+  if(defined $options{xlen} && !$options{stream} )
+  {
+    print STDERR "--xlen does not make sense without --stream\n";
+    exit -1;
+  }
+
+  # --xlen implies an order to the data, so I force monotonicity
+  $options{monotonic} = 1 if defined $options{xlen};
+
+  if( $options{histstyle} !~ /freq|cum|uniq|cnorm/ )
+  {
+    print STDERR "unknown histstyle. Allowed are 'freq...', 'cum...', 'uniq...', 'cnorm...'\n";
+    exit -1;
+  }
+}
+
+sub getGnuplotVersion
+{
+  open(GNUPLOT_VERSION, 'gnuplot --version |') or die "Couldn't run gnuplot";
+  my ($gnuplotVersion) = <GNUPLOT_VERSION> =~ /gnuplot\s*(\d*\.\d*)/;
+  if (!$gnuplotVersion)
+  {
+    print STDERR "Couldn't find the version of gnuplot. Does it work? Trying anyway...\n";
+    $gnuplotVersion = 0;
+  }
+  close(GNUPLOT_VERSION);
+
+  return $gnuplotVersion;
+}
+
+sub plotUpdateThread
+{
+  while(! $streamingFinished)
+  {
+    usleep( $options{stream} * 1e6 );
+    $dataQueue->enqueue('replot');
+  }
+
+  $dataQueue->enqueue(undef);
+
+}
+
+sub mainThread
+{
+    my $valuesPerPoint = 1;
+    if($options{extraValuesPerPoint}) { $valuesPerPoint += $options{extraValuesPerPoint}; }
+    if($options{colormap})            { $valuesPerPoint++; }
+    if($options{circles} )            { $valuesPerPoint++; }
+
+    local *PIPE;
+    my $dopersist = '';
+
+    if($gnuplotVersion >= 4.3)
+    {
+      $dopersist = '--persist' if(!$options{stream});
+    }
+
+    if(exists $options{dump})
+    {
+      *PIPE = *STDOUT;
+    }
+    else
+    {
+      my $geometry = defined $options{geometry} ?
+        "-geometry $options{geometry}" : '';
+      open PIPE, "|gnuplot $geometry $dopersist" or die "Can't initialize gnuplot\n";
+    }
+    autoflush PIPE 1;
+
+    my $outputfile;
+    my $outputfileType;
+    if( $options{hardcopy})
+    {
+      $outputfile = $options{hardcopy};
+      $outputfile =~ /\.(eps|ps|pdf|png|svg)$/i;
+      $outputfileType = $1 ? lc $1 : '';
+
+      my %terminalOpts =
+      ( eps  => 'postscript solid color enhanced eps',
+        ps   => 'postscript solid color landscape 10',
+        pdf  => 'pdfcairo solid color font ",10" size 11in,8.5in',
+        png  => 'png size 1280,1024',
+        svg  => 'svg');
+
+      $options{terminal} ||= $terminalOpts{$outputfileType}
+        if $terminalOpts{$outputfileType};
+
+      die "Asked to plot to file '$outputfile', but I don't know which terminal to use, and no --terminal given"
+        unless $options{terminal};
+    }
+    print PIPE "set terminal $options{terminal}\n" if $options{terminal};
+    print PIPE "set output \"$outputfile\"\n"      if $outputfile;
+
+
+    # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
+    # gnuplot
+    $options{xmin}  = '' unless defined $options{xmin};
+    $options{xmax}  = '' unless defined $options{xmax};
+    $options{ymin}  = '' unless defined $options{ymin};
+    $options{ymax}  = '' unless defined $options{ymax};
+    $options{y2min} = '' unless defined $options{y2min};
+    $options{y2max} = '' unless defined $options{y2max};
+    $options{zmin}  = '' unless defined $options{zmin};
+    $options{zmax}  = '' unless defined $options{zmax};
+
+    print PIPE "set xtics\n";
+    if($options{y2})
+    {
+      print PIPE "set ytics nomirror\n";
+      print PIPE "set y2tics\n";
+      # if any of the ranges are given, set the range
+      print PIPE "set y2range [$options{y2min}:$options{y2max}]\n" if length( $options{y2min} . $options{y2max} );
+    }
+
+    # set up plotting style
+    my $style = '';
+    if($options{lines})  { $style .= 'lines';}
+    if($options{points}) { $style .= 'points';}
+    if($options{circles})
+    {
+      $options{curvestyleall} = "with circles $options{curvestyleall}";
+    }
+
+    # if any of the ranges are given, set the range
+    print PIPE "set xrange [$options{xmin}:$options{xmax}]\n" if length( $options{xmin} . $options{xmax} );
+    print PIPE "set yrange [$options{ymin}:$options{ymax}]\n" if length( $options{ymin} . $options{ymax} );
+    print PIPE "set zrange [$options{zmin}:$options{zmax}]\n" if length( $options{zmin} . $options{zmax} );
+    print PIPE "set style data $style\n" if $style;
+    print PIPE "set grid\n";
+
+    print(PIPE "set xlabel  \"$options{xlabel }\"\n") if defined $options{xlabel};
+    print(PIPE "set ylabel  \"$options{ylabel }\"\n") if defined $options{ylabel};
+    print(PIPE "set zlabel  \"$options{zlabel }\"\n") if defined $options{zlabel};
+    print(PIPE "set y2label \"$options{y2label}\"\n") if defined $options{y2label};
+    print(PIPE "set title   \"$options{title  }\"\n") if defined $options{title};
+
+    if($options{square})
+    {
+      # set a square aspect ratio. Gnuplot does this differently for 2D and 3D plots
+      if(! $options{'3d'})
+      {
+        print(PIPE "set size ratio -1\n");
+      }
+      else
+      {
+        print(PIPE "set view equal xyz\n");
+      }
+    }
+
+    if($options{square_xy})
+    {
+      print(PIPE "set view equal xy\n");
+    }
+
+    if($options{colormap})
+    {
+      print PIPE "set cbrange [$options{zmin}:$options{zmax}]\n" if length( $options{zmin} . $options{zmax} );
+    }
+
+# For the specified values, set the legend entries to 'title "blah blah"'
+    if(@{$options{legend}})
+    {
+      # @{$options{legend}} is a list where consecutive pairs are (curveID, legend)
+      my $n = scalar @{$options{legend}}/2;
+      foreach my $idx (0..$n-1)
+      {
+        setCurveLabel($options{legend}[$idx*2    ],
+                      $options{legend}[$idx*2 + 1]);
+      }
+    }
+
+# add the extra curve options
+    if(@{$options{curvestyle}})
+    {
+      # @{$options{curvestyle}} is a list where consecutive pairs are (curveID, style)
+      my $n = scalar @{$options{curvestyle}}/2;
+      foreach my $idx (0..$n-1)
+      {
+        addCurveOption($options{curvestyle}[$idx*2    ],
+                       $options{curvestyle}[$idx*2 + 1]);
+      }
+    }
+
+# For the values requested to be printed on the y2 axis, set that
+    foreach (@{$options{y2}})
+    {
+      addCurveOption($_, 'axes x1y2 linewidth 3');
+    }
+
+# add the extra global options
+    if($options{extracmds})
+    {
+      foreach (@{$options{extracmds}})
+      {
+        print(PIPE "$_\n");
+      }
+    }
+
+# set up histograms
+    $options{binwidth} ||= 1; # if no binwidth given, set it to 1
+    print PIPE
+      "set boxwidth $options{binwidth}\n" .
+      "histbin(x) = $options{binwidth} * floor(0.5 + x/$options{binwidth})\n";
+    foreach (@{$options{histogram}})
+    {
+      setCurveAsHistogram( $_ );
+    }
+
+    # regexp for a possibly floating point, possibly scientific notation number
+    my $numRE   = '-?\d*\.?\d+(?:[Ee][-+]?\d+)?';
+
+    # a point may be preceded by an id
+    my $pointRE = $options{dataid} ? '(\S+)\s+' : '()';
+    $pointRE .= '(' . join('\s+', ($numRE) x $valuesPerPoint) . ')';
+    $pointRE = qr/$pointRE/;
+
+    my @domain;
+    my $haveNewData;
+
+    # I should be using the // operator, but I'd like to be compatible with perl 5.8
+    while( $_ = (defined $dataQueue ? $dataQueue->dequeue() : <>))
+    {
+      next if /^#/o;
+
+      if( $options{stream} && /^clear/o )
+      { clearCurves(); }
+
+      if(! /^replot/o)
+      {
+        # parse the incoming data lines. The format is
+        # x id0 dat0 id1 dat1 ....
+        # where idX is the ID of the curve that datX corresponds to
+        #
+        # $options{domain} indicates whether the initial 'x' is given or not (if not, the line
+        # number is used)
+        # $options{dataid} indicates whether idX is given or not (if not, the point order in the
+        # line is used)
+        # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
+
+        if($options{domain})
+        {
+          /($numRE)/go or next;
+          $domain[0] = $1;
+          if($options{'3d'})
+          {
+            /($numRE)/go or next;
+            $domain[1] = $1;
+          }
+          elsif( $options{monotonic} )
+          {
+            if( defined $latestX && $domain[0] < $latestX )
+            {
+              # the x-coordinate of the new point is in the past, so I wipe out all the data for this curve
+              # and start anew
+              clearCurves();
+            }
+            else
+            { $latestX = $domain[0]; }
+          }
+
+        }
+        else
+        {
+          # since $. is not meaningful in the plotting thread if we're using the data queue, we pass
+          # $. on the data queue in that case
+          if(defined $dataQueue)
+          {
+            s/ ([\d]+)$//o;
+            $domain[0] = $1;
+          }
+          else
+          {
+            $domain[0] = $.;
+          }
+        }
+
+        my $id = -1;
+        while (/$pointRE/go)
+        {
+          if($1 ne '') {$id = $1;}
+          else         {$id++;   }
+
+          $haveNewData = 1;
+          pushPoint(getCurve($id),
+                    [@domain, split( /\s+/, $2)]);
+        }
+      }
+
+      elsif($options{stream})
+      {
+        # we get here if we need to replot AND if we're streaming
+        next unless $haveNewData;
+        $haveNewData = undef;
+
+        if( $options{xlen} )
+        {
+          pruneOldData($domain[0] - $options{xlen});
+          plotStoredData($domain[0] - $options{xlen}, $domain[0]);
+        }
+        else
+        { plotStoredData(); }
+      }
+    }
+
+    # finished reading in all. Plot what we have
+    plotStoredData();
+
+    if ( $options{hardcopy})
+    {
+      print PIPE "set output\n";
+      # sleep until the plot file exists, and it is closed. Sometimes the output is
+      # still being written at this point
+      usleep(100_000) until -e $outputfile;
+      usleep(100_000) until(system("fuser -s \"$outputfile\""));
+
+      print "Wrote output to $outputfile\n";
+      return;
+    }
+
+    # we persist gnuplot, so we shouldn't need this sleep. However, once
+    # gnuplot exits, but the persistent window sticks around, you can no
+    # longer interactively zoom the plot. So we still sleep
+    sleep(100000) unless $options{dump};
+}
+
+sub pruneOldData
+{
+  my ($oldestx) = @_;
+
+  foreach my $curve (@curves)
+  {
+    if( @$curve > 1 )
+    {
+      if( my $firstInWindow = first {$curve->[$_][0] >= $oldestx} 1..$#$curve )
+      { splice( @$curve, 1, $firstInWindow-1 ); }
+      else
+      { splice( @$curve, 1); }
+    }
+  }
+}
+
+sub plotStoredData
+{
+  my ($xmin, $xmax) = @_;
+  print PIPE "set xrange [$xmin:$xmax]\n" if defined $xmin;
+
+  # get the options for those curves that have any data
+  my @nonemptyCurves = grep {@$_ > 1} @curves;
+  my @extraopts = map {$_->[0]{options}} @nonemptyCurves;
+
+  my $body = join(', ' , map({ "'-' $_" } @extraopts) );
+  if($options{'3d'}) { print PIPE "splot $body\n"; }
+  else               { print PIPE  "plot $body\n"; }
+
+  foreach my $buf (@nonemptyCurves)
+  {
+    # send each point to gnuplot. Ignore the first "point" since it's the
+    # curve options
+    for my $elem (@{$buf}[1..$#$buf])
+    {
+      print PIPE "@$elem\n";
+    }
+    print PIPE "e\n";
+  }
+}
+
+sub updateCurveOptions
+{
+  # generates the 'options' string for a curve, based on its legend title and its other options
+  # These could be integrated into a single string, but that raises an issue in the no-title
+  # case. When no title is specified, gnuplot will still add a legend entry with an unhelpful '-'
+  # label. Thus I explicitly do 'notitle' for that case
+
+  my ($curveoptions, $id) = @_;
+
+  # use the given title, unless we're generating a legend automatically. Given titles
+  # override autolegend
+  my $title;
+  if(defined $curveoptions->{title})
+  { $title = $curveoptions->{title}; }
+  elsif( $options{autolegend} )
+  { $title = $id; }
+
+  my $titleoption = defined $title ? "title \"$title\"" : "notitle";
+  my $extraoption = defined $options{curvestyleall} ? $options{curvestyleall} : '';
+  my $histoptions = $curveoptions->{histoptions} || '';
+
+  $curveoptions->{options} = "$histoptions $titleoption $curveoptions->{extraoptions} $extraoption";
+}
+
+sub getCurve
+{
+  # This function returns the curve corresponding to a particular label, creating a new curve if
+  # necessary
+
+  if(scalar @curves >= $options{maxcurves})
+  {
+    print STDERR "Tried to exceed the --maxcurves setting.\n";
+    print STDERR "Invoke with a higher --maxcurves limit if you really want to do this.\n";
+    exit;
+  }
+
+  my ($id) = @_;
+
+  if( !exists $curveIndices{$id} )
+  {
+    push @curves, [{extraoptions => ' '}]; # push a curve with no data and no options
+    $curveIndices{$id} =  $#curves;
+
+    updateCurveOptions($curves[$#curves][0], $id);
+  }
+  return $curves[$curveIndices{$id}];
+}
+
+sub addCurveOption
+{
+  my ($id, $str) = @_;
+
+  my $curve = getCurve($id);
+  $curve->[0]{extraoptions} .= "$str ";
+  updateCurveOptions($curve->[0], $id);
+}
+
+sub setCurveLabel
+{
+  my ($id, $str) = @_;
+
+  my $curve = getCurve($id);
+  $curve->[0]{title} = $str;
+  updateCurveOptions($curve->[0], $id);
+}
+
+sub setCurveAsHistogram
+{
+  my ($id, $str) = @_;
+
+  my $curve = getCurve($id);
+  $curve->[0]{histoptions} = 'using (histbin($2)):(1.0) smooth ' . $options{histstyle};
+
+  updateCurveOptions($curve->[0], $id);
+}
+
+# remove all the curve data
+sub clearCurves
+{
+  foreach my $curve(@curves)
+  { splice( @$curve, 1 ); }
+}
+
+# function to add a point to the plot. Assumes that the curve indexed by $idx already exists
+sub pushPoint
+{
+  my ($curve, $xy) = @_;
+  push @$curve, $xy;
+}

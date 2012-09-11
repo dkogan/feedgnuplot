@@ -1,0 +1,7 @@
+Makefile.PL
+MANIFEST
+bin/feedgnuplot
+bin/feedgnuplot.pod
+t/00-load.t
+t/manifest.t
+Changes
