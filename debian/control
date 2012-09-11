@@ -4,7 +4,7 @@ Priority: extra
 Build-Depends: debhelper (>= 7), libtest-script-run-perl, perl
 Maintainer: Dima Kogan <dima@secretsauce.net>
 Uploaders: Dima Kogan <dima@secretsauce.net>
-Standards-Version: 3.9.2
+Standards-Version: 3.9.3
 Homepage: https://github.com/dkogan/feedgnuplot
 Vcs-Git: git://github.com/dkogan/feedgnuplot.git
 Vcs-Browser: https://github.com/dkogan/feedgnuplot
