@@ -1,6 +1,6 @@
 feedgnuplot (1.22-1) experimental; urgency=low
 
-  * debian packaging cleanup
+  * debianization split from the upstream source
   * package now uploaded to Debian (Closes: #686413)
 
  -- Dima Kogan <dima@secretsauce.net>  Tue, 11 Sep 2012 11:32:30 -0700
