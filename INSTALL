@@ -1,8 +1,9 @@
 If running on a Debian-based OS (this includes Ubuntu), it is highly recommended
 to install this program as a package by doing
 
+   ln -fs package_definitions/debian debian
    dpkg-buildpackage -us -uc -b
-   sudo dpkg -i feedgnuplot*.deb
+   sudo dpkg -i ../feedgnuplot*.deb
 
 This builds a debian package and installs it.
 
