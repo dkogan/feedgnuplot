@@ -1,7 +1,7 @@
 Source: feedgnuplot
 Section: science
 Priority: extra
-Build-Depends: debhelper (>= 7), libtest-script-run-perl, perl
+Build-Depends: debhelper (>= 7.0.50~), libtest-script-run-perl, perl
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Dima Kogan <dima@secretsauce.net>
 Standards-Version: 3.9.3
