@@ -8,6 +8,7 @@ Standards-Version: 3.9.3
 Homepage: https://github.com/dkogan/feedgnuplot
 Vcs-Git: git://github.com/dkogan/feedgnuplot.git
 Vcs-Browser: https://github.com/dkogan/feedgnuplot
+DM-Upload-Allowed: yes
 
 Package: feedgnuplot
 Architecture: all
