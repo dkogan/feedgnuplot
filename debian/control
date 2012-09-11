@@ -2,7 +2,7 @@ Source: feedgnuplot
 Section: science
 Priority: extra
 Build-Depends: debhelper (>= 7), libtest-script-run-perl, perl
-Maintainer: Dima Kogan <dima@secretsauce.net>
+Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Dima Kogan <dima@secretsauce.net>
 Standards-Version: 3.9.3
 Homepage: https://github.com/dkogan/feedgnuplot
