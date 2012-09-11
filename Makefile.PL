@@ -4,14 +4,14 @@ use ExtUtils::MakeMaker;
 
 sub parseversion
 {
-# grab the version number from the debian changelog file. I look for lines line
+# grab the version number from the changelog. I look for lines line
 #
-# libpackage-perl (0.02) unstable; urgency=low
+# libpackage-perl (0.02)
 #
 # I parse out the 0.02 part
-  open DCH, 'debian/changelog' or die "Couldn't open debian/changelog";
+  open DCH, 'Changes' or die "Couldn't open 'Changes'";
   my ($version) = <DCH> =~ /^\S+ \s* \( ([0-9\.]+) \)/x
-    or die "Couldn't parse version from debian/changelog";
+    or die "Couldn't parse version from 'Changes'";
   close DCH;
 
   return $version;
