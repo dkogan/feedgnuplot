@@ -1,3 +1,10 @@
+feedgnuplot (1.22-2) experimental; urgency=low
+
+  * added Anton Gladky as an Uploader
+  * added doc-base definition
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 14 Sep 2012 01:31:34 -0700
+
 feedgnuplot (1.22-1) experimental; urgency=low
 
   * debianization split from the upstream source
