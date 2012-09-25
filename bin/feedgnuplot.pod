@@ -326,8 +326,7 @@ As an example, if line 3 of the input is "0 9 1 20"
   --curvestyleall xxx  Additional styles for ALL curves.
 
   --extracmds xxx      Additional commands. These could contain extra global styles
-                       for instance. Can be passed multiple times, or passed a comma-
-                       separated list
+                       for instance. Can be passed multiple times.
 
   --square             Plot data with aspect ratio 1. For 3D plots, this controls the
                        aspect ratio for all 3 axes

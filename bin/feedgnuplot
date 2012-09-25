@@ -118,7 +118,7 @@ sub interpretCommandline
   $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
 
   # expand options that are given as comma-separated lists
-  for my $listkey (qw(extracmds histogram y2))
+  for my $listkey (qw(histogram y2))
   {
     @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
       if defined $options{$listkey};
