@@ -95,8 +95,9 @@ sub interpretCommandline
 
   # Previously I was using 'legend=s%' and 'curvestyle=s%' for curve addressing. This had cleaner
   # syntax, but disregarded the order of the given options. This resulted in arbitrarily ordered
-  # curves.
-  # needed for these to be parsed into a ref to a list
+  # curves. I thus make parse these into lists, and then also make hashes, for later use
+
+  # needed for these to be parsed into an array-ref
   $options{legend}     = [];
   $options{curvestyle} = [];
   $options{histogram}  = [];
@@ -118,10 +119,25 @@ sub interpretCommandline
   $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
 
   # expand options that are given as comma-separated lists
-  for my $listkey (qw(extracmds histogram y2))
+  for my $listkey (qw(histogram y2))
   {
     @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
       if defined $options{$listkey};
+  }
+
+  # --legend and --curvestyle options are conceptually hashes, but are parsed as
+  # arrays in order to preserve the ordering. I parse both of these into hashes
+  # because those are useful to have later. After this I can access individual
+  # legends with $options{legend_hash}{curveid}
+  for my $listkey (qw(legend curvestyle))
+  {
+    $options{"${listkey}_hash"} = {};
+
+    my $n = scalar @{$options{$listkey}}/2;
+    foreach my $idx (0..$n-1)
+    {
+      $options{"${listkey}_hash"}{$options{$listkey}[$idx*2]} = $options{$listkey}[$idx*2 + 1];
+    }
   }
 
   # parse stream option. Allowed only numbers >= 0 or 'trigger'
@@ -376,7 +392,10 @@ sub mainThread
 # For the specified values, set the legend entries to 'title "blah blah"'
     if(@{$options{legend}})
     {
-      # @{$options{legend}} is a list where consecutive pairs are (curveID, legend)
+      # @{$options{legend}} is a list where consecutive pairs are (curveID,
+      # legend). I use $options{legend} here instead of $options{legend_hash}
+      # because I create a new curve when I see a new one, and the hash is
+      # unordered, thus messing up the ordering
       my $n = scalar @{$options{legend}}/2;
       foreach my $idx (0..$n-1)
       {
@@ -388,7 +407,10 @@ sub mainThread
 # add the extra curve options
     if(@{$options{curvestyle}})
     {
-      # @{$options{curvestyle}} is a list where consecutive pairs are (curveID, style)
+      # @{$options{curvestyle}} is a list where consecutive pairs are (curveID,
+      # style). I use $options{curvestyle} here instead of
+      # $options{curvestyle_hash} because I create a new curve when I see a new
+      # one, and the hash is unordered, thus messing up the ordering
       my $n = scalar @{$options{curvestyle}}/2;
       foreach my $idx (0..$n-1)
       {
@@ -598,10 +620,14 @@ sub updateCurveOptions
   { $title = $id; }
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
-  my $extraoption = defined $options{curvestyleall} ? $options{curvestyleall} : '';
+
+  my $curvestyleall = '';
+  $curvestyleall = $options{curvestyleall}
+    if defined $options{curvestyleall} && !defined $options{curvestyle_hash}{$id};
+
   my $histoptions = $curveoptions->{histoptions} || '';
 
-  $curveoptions->{options} = "$histoptions $titleoption $curveoptions->{extraoptions} $extraoption";
+  $curveoptions->{options} = "$histoptions $titleoption $curveoptions->{extraoptions} $curvestyleall";
 }
 
 sub getCurve
