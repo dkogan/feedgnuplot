@@ -1,3 +1,11 @@
+feedgnuplot (1.23-1) experimental; urgency=low
+
+  * New upstream update
+    - --extracmds no longer accepts comma-separated lists
+    - --curvestyle no longer adds on top of --curvestyleall
+
+ -- Dima Kogan <dima@secretsauce.net>  Sat, 29 Sep 2012 16:41:01 -0700
+
 feedgnuplot (1.22-2) experimental; urgency=low
 
   * added Anton Gladky as an Uploader
