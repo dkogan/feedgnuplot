@@ -46,7 +46,8 @@ passed in with C<--extracmds>. For example, to turn off the grid, pass in
 C<--extracmds 'unset grid'>. As many of these options as needed can be passed
 in. To add arbitrary curve styles, use C<--curvestyle curveID extrastyle>. Pass
 these more than once to affect more than one curve. To apply an extra style to
-I<all> the curves, pass in C<--curvestyleall extrastyle>.
+I<all> the curves that lack an explicit C<--curvestyle>, pass in
+C<--curvestyleall extrastyle>.
 
 =head2 Data formats
 
@@ -319,11 +320,13 @@ As an example, if line 3 of the input is "0 9 1 20"
                        'cumulative', but rescaled to end up at 1.0.
 
   --curvestyle curveID style
-                       Additional styles per curve. With --dataid, curveID is the
-                       ID. Otherwise, it's the index of the curve, starting at 0. Use
-                       this option multiple times for multiple curves
+                       Additional styles per curve. With --dataid, curveID is
+                       the ID. Otherwise, it's the index of the curve, starting
+                       at 0. Use this option multiple times for multiple curves.
+                       --curvestylall does NOT apply to curves that have a
+                       --curvestyle
 
-  --curvestyleall xxx  Additional styles for ALL curves.
+  --curvestyleall xxx  Additional styles for all curves that have no --curvestyle
 
   --extracmds xxx      Additional commands. These could contain extra global styles
                        for instance. Can be passed multiple times.
