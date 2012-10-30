@@ -1,14 +1,13 @@
 Source: feedgnuplot
 Section: science
 Priority: extra
-Build-Depends: debhelper (>= 7.0.50~), libtest-script-run-perl, perl
+Build-Depends: debhelper (>= 9), libtest-script-run-perl, perl
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Dima Kogan <dima@secretsauce.net>, Anton Gladky <gladky.anton@gmail.com>
-Standards-Version: 3.9.3
+Standards-Version: 3.9.4
 Homepage: https://github.com/dkogan/feedgnuplot
 Vcs-Git: git://git.debian.org/git/debian-science/packages/feedgnuplot.git
 Vcs-Browser: http://git.debian.org/?p=debian-science/packages/feedgnuplot.git
-DM-Upload-Allowed: yes
 
 Package: feedgnuplot
 Architecture: all
