@@ -488,9 +488,10 @@ sub mainThread
           {
             if( defined $latestX && $domain[0] < $latestX )
             {
-              # the x-coordinate of the new point is in the past, so I wipe out all the data for this curve
-              # and start anew
+              # the x-coordinate of the new point is in the past, so I wipe out
+              # all the data and start anew
               clearCurves();
+              $latestX = undef;
             }
             else
             { $latestX = $domain[0]; }
