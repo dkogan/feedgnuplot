@@ -1,2 +1,4 @@
-version = 3
-https://github.com/dkogan/feedgnuplot/tags .*/feedgnuplot/archive/v(\d[\d\.]+).tar.gz
+version=3
+opts=uversionmangle=s/(\d)[_\.\-\+]?((RC|rc|pre|dev|beta|alpha|b|a)\d*)$/$1~$2/,dversionmangle=s/\+(debian|dfsg|ds|deb)\d*$// \
+https://github.com/dkogan/feedgnuplot/tags .*/v?(\d.*)\.(?:tgz|tbz2|txz|tar\.(?:gz|bz2|xz))
+# Bart Martens <bartm@debian.org>  Sat, 22 Dec 2012 12:54:18 +0000
