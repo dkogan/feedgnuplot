@@ -109,11 +109,18 @@ sub interpretCommandline
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
              'extraValuesPerPoint=i', 'help', 'dump',
-             'geometry=s') or pod2usage(1);
+             'geometry=s') or pod2usage( -exitval => 1,
+                                         -verbose => 1, # synopsis and args
+                                         -output  => \*STDERR );
+
 
   # handle various cmdline-option errors
   if ( $options->{help} )
-  { pod2usage(0); }
+  {
+    pod2usage( -exitval => 0,
+               -verbose => 1, # synopsis and args
+               -output  => \*STDOUT );
+  }
 
   # no global style if one isn't given
   $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
