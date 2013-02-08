@@ -1079,10 +1079,12 @@ As an example, if line 3 of the input is "0 9 1 20"
                        automatically set it. This option is ONLY needed if unknown styles are
                        used, with --curvestyleall for instance
 
-  --dump               Instead of printing to gnuplot, print to STDOUT. For
-                       debugging.
+  --dump               Instead of printing to gnuplot, print to STDOUT. Very useful for
+                       debugging. It is possible to send the output produced this way to
+                       gnuplot directly.
 
   --geometry           If using X11, specifies the size, position of the plot window
+
   --version            Print the version and exit
 
 =head1 ACKNOWLEDGEMENT
