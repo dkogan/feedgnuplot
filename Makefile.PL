@@ -9,12 +9,28 @@ sub parseversion
 # libpackage-perl (0.02)
 #
 # I parse out the 0.02 part
-  open DCH, 'Changes' or die "Couldn't open 'Changes'";
+  open DCH, '<', 'Changes' or die "Couldn't open 'Changes'";
   my ($version) = <DCH> =~ /^\S+ \s* \( ([0-9\.]+) \)/x
     or die "Couldn't parse version from 'Changes'";
   close DCH;
 
-  return $version;
+  # The version is also stored in the script itself. Here I extract that version
+  # number and make sure the two match
+  open PL, '<', 'bin/feedgnuplot' or die "Couldn't open 'bin/feedgnuplot'";
+
+  while(<PL>)
+  {
+    if( /VERSION = ([0-9\.]+)/ )
+    {
+      if ( $1 != $version )
+      {
+        die "Version mismatch. Changes says version is '$version', but 'bin/feedgnuplot' says it is '$1'";
+      }
+
+      return $version;
+    }
+  }
+  die "Couldn't parse version from 'bin/feedgnuplot'";
 }
 
 sub MY::libscan
@@ -42,13 +58,11 @@ WriteMakefile
    NAME                       => 'feedgnuplot',
    AUTHOR                     => q{Dima Kogan <dima@secretsauce.net>},
    VERSION                    => parseversion(),
-   ABSTRACT_FROM              => 'bin/feedgnuplot.pod',
    ($ExtUtils::MakeMaker::VERSION >= 6.3002
     ? ('LICENSE'              => 'perl')
     : ()),
    PL_FILES                   => {},
    EXE_FILES                  => [ 'bin/feedgnuplot' ],
-   MAN1PODS                   => { 'bin/feedgnuplot.pod' => 'blib/man1/feedgnuplot.1' },
    PREREQ_PM                  => { 'Test::Script::Run' => 0},
    dist                       => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
    clean                      => { FILES => 'feedgnuplot-*' },

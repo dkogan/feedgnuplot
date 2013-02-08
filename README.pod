@@ -1,1 +1,1 @@
-bin/feedgnuplot.pod
+bin/feedgnuplot

@@ -1,5 +1,10 @@
 If running on a Debian-based OS (this includes Ubuntu), it is highly recommended
-to install this program as a package by doing
+to install this program as a package. In debian/unstable feedgnuplot is in the
+official repos, so all you need to do is
+
+   sudo apt-get install feedgnuplot
+
+Otherwise a package can be built with
 
    ln -fs package_definitions/debian debian
    dpkg-buildpackage -us -uc -b
