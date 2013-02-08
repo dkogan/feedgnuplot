@@ -12,6 +12,8 @@ use threads::shared;
 use Thread::Queue;
 use Pod::Usage;
 
+my $VERSION = 1.24;
+
 my %options;
 interpretCommandline(\%options);
 
@@ -108,7 +110,7 @@ sub interpretCommandline
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
-             'extraValuesPerPoint=i', 'help', 'dump',
+             'extraValuesPerPoint=i', 'help', 'dump', 'version',
              'geometry=s') or pod2usage( -exitval => 1,
                                          -verbose => 1, # synopsis and args
                                          -output  => \*STDERR );
@@ -120,6 +122,12 @@ sub interpretCommandline
     pod2usage( -exitval => 0,
                -verbose => 1, # synopsis and args
                -output  => \*STDOUT );
+  }
+
+  if( $options->{version} )
+  {
+    print "feedgnuplot version $VERSION\n";
+    exit 0;
   }
 
   # no global style if one isn't given
@@ -1075,6 +1083,7 @@ As an example, if line 3 of the input is "0 9 1 20"
                        debugging.
 
   --geometry           If using X11, specifies the size, position of the plot window
+  --version            Print the version and exit
 
 =head1 ACKNOWLEDGEMENT
 
