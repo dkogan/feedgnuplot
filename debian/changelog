@@ -1,3 +1,14 @@
+feedgnuplot (1.24-1) unstable; urgency=low
+
+  * Fixed regression in --monotonic. This works again now
+  * moved POD back into the main source file. This fixes the broken usage
+    messages
+  * added --version
+  * fixed watchfile to work with newer github pages
+  * priority now optional
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 08 Feb 2013 02:01:32 -0800
+
 feedgnuplot (1.23-2) unstable; urgency=low
 
   * Initial Debian release (Closes: #686413)
