@@ -42,13 +42,11 @@ WriteMakefile
    NAME                       => 'feedgnuplot',
    AUTHOR                     => q{Dima Kogan <dima@secretsauce.net>},
    VERSION                    => parseversion(),
-   ABSTRACT_FROM              => 'bin/feedgnuplot.pod',
    ($ExtUtils::MakeMaker::VERSION >= 6.3002
     ? ('LICENSE'              => 'perl')
     : ()),
    PL_FILES                   => {},
    EXE_FILES                  => [ 'bin/feedgnuplot' ],
-   MAN1PODS                   => { 'bin/feedgnuplot.pod' => 'blib/man1/feedgnuplot.1' },
    PREREQ_PM                  => { 'Test::Script::Run' => 0},
    dist                       => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
    clean                      => { FILES => 'feedgnuplot-*' },
