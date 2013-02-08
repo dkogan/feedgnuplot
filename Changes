@@ -1,3 +1,12 @@
+feedgnuplot (1.24) unstable; urgency=low
+
+  * Fixed regression in --monotonic. This works again now
+  * moved POD back into the main source file. This fixes the broken usage
+    messages
+  * added --version
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 08 Feb 2013 01:53:47 -0800
+
 feedgnuplot (1.23)
 
   * --extracmds no longer accepts comma-separated lists
