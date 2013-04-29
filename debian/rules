@@ -5,7 +5,7 @@
 
 override_dh_auto_build:
 	dh_auto_build
-	pod2html --title=feedgnuplot bin/feedgnuplot.pod > feedgnuplot.html
+	pod2html --title=feedgnuplot bin/feedgnuplot > feedgnuplot.html
 
 override_dh_auto_clean:
 	rm -rf feedgnuplot.html pod2htm*
