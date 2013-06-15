@@ -34,18 +34,14 @@ my $dataQueue;
 my $latestX;
 
 my $streamingFinished : shared = undef;
+
 if($options{stream})
 {
-  if( $options{hardcopy})
-  {
-    $options{stream} = undef;
-  }
-
   $dataQueue  = Thread::Queue->new();
   my $addThr  = threads->create(\&mainThread);
 
   # spawn the plot updating thread. If I'm replotting from a data trigger, I don't need this
-  my $plotThr = threads->create(\&plotUpdateThread) unless $options{stream} < 0;
+  my $plotThr = threads->create(\&plotUpdateThread) if $options{stream} > 0;
 
   while(<>)
   {
@@ -155,14 +151,21 @@ sub interpretCommandline
     }
   }
 
-  # parse stream option. Allowed only numbers >= 0 or 'trigger'
+  if ( defined $options->{hardcopy} && defined $options->{stream} )
+  {
+    print STDERR "Warning: since we're making a hardcopy, I'm disabling streaming\n";
+    delete $options->{stream};
+  }
+
+  # parse stream option. Allowed only numbers >= 0 or 'trigger'. After this code
+  # $options->{stream} is
+  #  -1 for triggered replotting
+  #  >0 for timed replotting
+  #  undef if not streaming
   if(defined $options->{stream})
   {
-    if ( $options->{stream} eq '')
-    {
-      # if no streaming period is given, default to 1Hz.
-      $options->{stream} = 1;
-    }
+    # if no streaming period is given, default to 1Hz.
+    $options->{stream} = 1 if $options->{stream} eq '';
 
     if( !looks_like_number $options->{stream} )
     {
@@ -969,7 +972,7 @@ As an example, if line 3 of the input is "0 9 1 20"
   --stream [period]    Plot the data as it comes in, in realtime. If period is given,
                        replot every period seconds. If no period is given, replot at
                        1Hz. If the period is given as 0 or 'trigger', replot ONLY when
-                       the incoming data dictates this . See the "Real-time streaming
+                       the incoming data dictates this. See the "Real-time streaming
                        data" section of the man page.
 
   --[no]lines          Do [not] draw lines to connect consecutive points
