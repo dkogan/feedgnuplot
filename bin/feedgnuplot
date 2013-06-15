@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use Time::HiRes qw( usleep );
+use Time::HiRes qw( usleep gettimeofday tv_interval );
 use IO::Handle;
 use List::Util qw( first );
 use Scalar::Util qw( looks_like_number );
@@ -32,6 +32,18 @@ my $dataQueue;
 
 # latest domain variable present in our data
 my $latestX;
+
+# The domain of the current point
+my @domain;
+
+# Whether any new data has arrived since the last replot
+my $haveNewData;
+
+# when the last replot happened
+my $last_replot_time = [gettimeofday];
+
+# whether the previous replot was timer based
+my $last_replot_is_from_timer = 1;
 
 my $streamingFinished : shared = undef;
 
@@ -283,11 +295,12 @@ sub plotUpdateThread
   while(! $streamingFinished)
   {
     usleep( $options{stream} * 1e6 );
-    $dataQueue->enqueue('replot');
+
+    # indicate that the timer was the replot source
+    $dataQueue->enqueue('replot timertick');
   }
 
   $dataQueue->enqueue(undef);
-
 }
 
 sub mainThread
@@ -470,18 +483,20 @@ sub mainThread
     $pointRE .= '(' . join('\s+', ($numRE) x $valuesPerPoint) . ')';
     $pointRE = qr/$pointRE/;
 
-    my @domain;
-    my $haveNewData;
-
     # I should be using the // operator, but I'd like to be compatible with perl 5.8
     while( $_ = (defined $dataQueue ? $dataQueue->dequeue() : <>))
     {
       next if /^#/o;
 
-      if( $options{stream} && /^clear/o )
+      if(    $options{stream} && /^clear/o )
       { clearCurves(); }
 
-      if(! /^replot/o)
+      elsif( $options{stream} && /^replot/o )
+      {
+        # /timertick/ determines if the timer was the source of the replot
+        replot( /timertick/ );
+      }
+      elsif(! /^replot/o)
       {
         # parse the incoming data lines. The format is
         # x id0 dat0 id1 dat1 ....
@@ -507,7 +522,9 @@ sub mainThread
             if( defined $latestX && $domain[0] < $latestX )
             {
               # the x-coordinate of the new point is in the past, so I wipe out
-              # all the data and start anew
+              # all the data and start anew. Before I wipe the old data, I
+              # replot the old data
+              replot();
               clearCurves();
               $latestX = undef;
             }
@@ -537,25 +554,9 @@ sub mainThread
           if($1 ne '') {$id = $1;}
           else         {$id++;   }
 
-          $haveNewData = 1;
           pushPoint(getCurve($id),
                     [@domain, split( /\s+/, $2)]);
         }
-      }
-
-      elsif($options{stream})
-      {
-        # we get here if we need to replot AND if we're streaming
-        next unless $haveNewData;
-        $haveNewData = undef;
-
-        if( $options{xlen} )
-        {
-          pruneOldData($domain[0] - $options{xlen});
-          plotStoredData($domain[0] - $options{xlen}, $domain[0]);
-        }
-        else
-        { plotStoredData(); }
       }
     }
 
@@ -708,11 +709,66 @@ sub clearCurves
   { splice( @$curve, 1 ); }
 }
 
+sub replot
+{
+  return unless $haveNewData;
+  $haveNewData = undef;
+
+  return if !$options{stream};
+
+
+  # The logic involving domain rollover replotting due to --monotonic is a bit
+  # tricky. I want this:
+
+  # if( domain rolls over slowly )
+  # {
+  #   should update on a timer;
+  #   when the domain rolls over, --monotonic should force a replot
+  # }
+  # if( domain rolls over quickly )
+  # {
+  #   should update when the domain rolls over,
+  #     at most as quickly as the timer indicates
+  # }
+
+
+  my ($replot_is_from_timer) = @_;
+
+  my $now = [gettimeofday];
+
+  if( # If there is no replot timer at all, replot at any indication
+      $options{stream} < 0 ||
+
+      # if the last replot was timer-based, but this one isn't, force a replot.
+      # This makes sure that a replot happens for a domain rollover shortly
+      # after a timer replot
+      !$replot_is_from_timer && $last_replot_is_from_timer ||
+
+      # if enough time has elapsed since the last replot, it's ok to replot
+      tv_interval ( $last_replot_time, $now ) > 0.8*$options{stream} )
+  {
+    # tests passed; do replot
+    if ( $options{xlen} )
+    {
+      pruneOldData($domain[0] - $options{xlen});
+      plotStoredData($domain[0] - $options{xlen}, $domain[0]);
+    }
+    else
+    { plotStoredData(); }
+
+
+    # update replot state
+    $last_replot_time          = $now;
+    $last_replot_is_from_timer = $replot_is_from_timer;
+  }
+}
+
 # function to add a point to the plot. Assumes that the curve indexed by $idx already exists
 sub pushPoint
 {
   my ($curve, $xy) = @_;
   push @$curve, $xy;
+  $haveNewData = 1;
 }
 
 
@@ -1072,7 +1128,8 @@ As an example, if line 3 of the input is "0 9 1 20"
                        If a given x-variable is in the past, all data currently
                        cached for this curve is purged. Without --monotonic, all
                        data is kept. Does not make sense with 3d plots.
-                       No --monotonic by default.
+                       No --monotonic by default. The data is replotted before being
+                       purged
 
   --extraValuesPerPoint xxx
                        How many extra values are given for each data point. Normally this
