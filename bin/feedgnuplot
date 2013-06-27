@@ -774,11 +774,11 @@ sub pushPoint
 
 =head1 NAME
 
-feedgnuplot - Pipe-oriented frontend to Gnuplot
+feedgnuplot - General purpose pipe-oriented plotting tool
 
 =head1 SYNOPSIS
 
-Simple plotting of stored data:
+Simple plotting of piped data:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}'
  2 1
@@ -1146,6 +1146,49 @@ As an example, if line 3 of the input is "0 9 1 20"
   --geometry           If using X11, specifies the size, position of the plot window
 
   --version            Print the version and exit
+
+=head1 RECIPES
+
+=head2 Basic plotting of piped data
+
+ $ seq 5 | awk '{print 2*$1, $1*$1}'
+ 2 1
+ 4 4
+ 6 9
+ 8 16
+ 10 25
+
+ $ seq 5 | awk '{print 2*$1, $1*$1}' |
+   feedgnuplot --lines --points --legend 0 "data 0" --title "Test plot" --y2 1
+
+=head2 Realtime plot of network throughput
+
+Looks at wlan0 on Linux.
+
+ $ while true; do sleep 1; cat /proc/net/dev; done |
+   gawk '/wlan0/ {if(b) {print $2-b; fflush()} b=$2}' |
+   feedgnuplot --lines --stream --xlen 10 --ylabel 'Bytes/sec' --xlabel seconds
+
+=head2 Realtime plot of battery charge
+
+Uses the result of the C<acpi> command.
+
+ $ while true; do acpi; sleep 15; done |
+   perl -nE 'BEGIN{ $| = 1; } /([0-9]*)%/; say join(" ", $./4, $1);' |
+   feedgnuplot --stream --ymin 0 --ymax 100 --domain --xlabel 'Time (seconds)' --ylabel "Battery charge (%)"
+
+=head2 Realtime plot of temperatures in an IBM Thinkpad
+
+Uses C</proc/acpi/ibm/thermal>, which reports temperatures at various locations
+in a Thinkpad.
+
+ $ while true; do cat /proc/acpi/ibm/thermal | awk '{$1=""; print}' ; sleep 1; done |
+   feedgnuplot --stream --xlen 100 --lines --autolegend --ymax 100 --ymin 20 --ylabel 'Temperature (deg C)'
+
+=head2 Plotting a histogram of file sizes in a directory
+
+ $ ls -l | awk '{print $5/1e6}' |
+   feedgnuplot --histogram 0 --curvestyleall 'with boxes' --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
 
 =head1 ACKNOWLEDGEMENT
 
