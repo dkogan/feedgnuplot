@@ -118,7 +118,7 @@ sub interpretCommandline
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
-             'extraValuesPerPoint=i', 'help', 'dump', 'version',
+             'extraValuesPerPoint=i', 'help', 'dump', 'exit', 'version',
              'geometry=s') or pod2usage( -exitval => 1,
                                          -verbose => 1, # synopsis and args
                                          -output  => \*STDERR );
@@ -578,7 +578,7 @@ sub mainThread
     # we persist gnuplot, so we shouldn't need this sleep. However, once
     # gnuplot exits, but the persistent window sticks around, you can no
     # longer interactively zoom the plot. So we still sleep
-    sleep(100000) unless $options{dump};
+    sleep(100000) unless $options{dump} || $options{exit};
 }
 
 sub pruneOldData
@@ -1142,6 +1142,10 @@ As an example, if line 3 of the input is "0 9 1 20"
   --dump               Instead of printing to gnuplot, print to STDOUT. Very useful for
                        debugging. It is possible to send the output produced this way to
                        gnuplot directly.
+
+  --exit               Exit the feedgnuplot process after passing data to gnuplot. With
+                       gnuplot versions >= 4.3 the window will persist but will not be
+                       interactive.
 
   --geometry           If using X11, specifies the size, position of the plot window
 
