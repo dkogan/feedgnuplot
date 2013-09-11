@@ -115,7 +115,7 @@ sub interpretCommandline
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
-             'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!',
+             'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
              'extraValuesPerPoint=i', 'help', 'dump', 'exit', 'version',
@@ -218,6 +218,12 @@ sub interpretCommandline
       exit -1;
     }
 
+    if ( $options->{timefmt} )
+    {
+      print STDERR "--3d makes no sense with --timefmt\n";
+      exit -1;
+    }
+
     if ( defined $options->{y2min} || defined $options->{y2max} || defined $options->{y2} )
     {
       print STDERR "--3d does not make sense with --y2...\n";
@@ -244,6 +250,12 @@ sub interpretCommandline
   }
   else
   {
+    if ( $options->{timefmt} && !$options->{domain} )
+    {
+      print STDERR "--timefmt makes sense only with --domain\n";
+      exit -1;
+    }
+
     if(!$options->{colormap})
     {
       if ( defined $options->{zmin} || defined $options->{zmax} || defined $options->{zlabel} )
@@ -273,6 +285,22 @@ sub interpretCommandline
   {
     print STDERR "unknown histstyle. Allowed are 'freq...', 'cum...', 'uniq...', 'cnorm...'\n";
     exit -1;
+  }
+
+  # deal with timefmt
+  if ( $options->{timefmt} )
+  {
+    # I need to compute a regex to match the time field and I need to count how
+    # many whilespace-separated fields there are.
+
+    # strip leading and trailing whitespace
+    $options->{timefmt} =~ s/^\s*//;
+    $options->{timefmt} =~ s/\s*$//;
+
+    my $Nfields = scalar split( ' ', $options->{timefmt});
+    $options->{timefmt_Ncols} = $Nfields;
+    my $regex_str = join( '\s+', ('\S+') x $Nfields );
+    $options->{timefmt_regex} = qr/$regex_str/;
   }
 }
 
@@ -456,6 +484,13 @@ sub mainThread
       addCurveOption($_, 'axes x1y2 linewidth 3');
     }
 
+# timefmt
+    if( $options{timefmt} )
+    {
+      print(PIPE "set timefmt '$options{timefmt}'\n");
+      print(PIPE "set xdata time\n");
+    }
+
 # add the extra global options
     if($options{extracmds})
     {
@@ -477,6 +512,8 @@ sub mainThread
 
     # regexp for a possibly floating point, possibly scientific notation number
     my $numRE   = '-?\d*\.?\d+(?:[Ee][-+]?\d+)?';
+    my $domainRE = $options{timefmt_regex} || $numRE;
+
 
     # a point may be preceded by an id
     my $pointRE = $options{dataid} ? '(\S+)\s+' : '()';
@@ -510,7 +547,7 @@ sub mainThread
 
         if($options{domain})
         {
-          /($numRE)/go or next;
+          /($domainRE)/go or next;
           $domain[0] = $1;
           if($options{'3d'})
           {
@@ -647,7 +684,13 @@ sub updateCurveOptions
 
   my $histoptions = $curveoptions->{histoptions} || '';
 
-  $curveoptions->{options} = "$histoptions $titleoption $curveoptions->{extraoptions} $curvestyleall";
+  my $usingoptions = '';
+  if( $options{timefmt} )
+  {
+    $usingoptions = "using 1:" . ($options{timefmt_Ncols}+1);
+  }
+
+  $curveoptions->{options} = "$histoptions $usingoptions $titleoption $curveoptions->{extraoptions} $curvestyleall";
 }
 
 sub getCurve
