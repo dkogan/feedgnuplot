@@ -15,7 +15,7 @@ use Pod::Usage;
 my $VERSION = 1.24;
 
 my %options;
-interpretCommandline(\%options);
+interpretCommandline();
 
 my $gnuplotVersion = getGnuplotVersion();
 
@@ -93,8 +93,6 @@ sub interpretCommandline
     unshift @ARGV, shellwords shift @ARGV;
   }
 
-  my $options = shift;
-
   # everything off by default:
   # do not stream in the data by default
   # point plotting by default.
@@ -111,7 +109,7 @@ sub interpretCommandline
   $options{legend}     = [];
   $options{curvestyle} = [];
   $options{histogram}  = [];
-  GetOptions($options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
+  GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
@@ -125,21 +123,21 @@ sub interpretCommandline
 
 
   # handle various cmdline-option errors
-  if ( $options->{help} )
+  if ( $options{help} )
   {
     pod2usage( -exitval => 0,
                -verbose => 1, # synopsis and args
                -output  => \*STDOUT );
   }
 
-  if( $options->{version} )
+  if( $options{version} )
   {
     print "feedgnuplot version $VERSION\n";
     exit 0;
   }
 
   # no global style if one isn't given
-  $options->{curvestyleall} = '' unless defined $options->{curvestyleall};
+  $options{curvestyleall} = '' unless defined $options{curvestyleall};
 
   # expand options that are given as comma-separated lists
   for my $listkey (qw(histogram y2))
@@ -163,27 +161,27 @@ sub interpretCommandline
     }
   }
 
-  if ( defined $options->{hardcopy} && defined $options->{stream} )
+  if ( defined $options{hardcopy} && defined $options{stream} )
   {
     print STDERR "Warning: since we're making a hardcopy, I'm disabling streaming\n";
-    delete $options->{stream};
+    delete $options{stream};
   }
 
   # parse stream option. Allowed only numbers >= 0 or 'trigger'. After this code
-  # $options->{stream} is
+  # $options{stream} is
   #  -1 for triggered replotting
   #  >0 for timed replotting
   #  undef if not streaming
-  if(defined $options->{stream})
+  if(defined $options{stream})
   {
     # if no streaming period is given, default to 1Hz.
-    $options->{stream} = 1 if $options->{stream} eq '';
+    $options{stream} = 1 if $options{stream} eq '';
 
-    if( !looks_like_number $options->{stream} )
+    if( !looks_like_number $options{stream} )
     {
-      if($options->{stream} eq 'trigger')
+      if($options{stream} eq 'trigger')
       {
-        $options->{stream} = 0;
+        $options{stream} = 0;
       }
       else
       {
@@ -192,57 +190,57 @@ sub interpretCommandline
       }
     }
 
-    if ( $options->{stream} == 0 )
+    if ( $options{stream} == 0 )
     {
-      $options->{stream} = -1;
+      $options{stream} = -1;
     }
-    elsif ( $options->{stream} <= 0)
+    elsif ( $options{stream} <= 0)
     {
       print STDERR "--stream can only take in values >=0 or 'trigger'\n";
       exit -1;
     }
   }
 
-  if ($options->{colormap})
+  if ($options{colormap})
   {
     # colormap styles all curves with palette. Seems like there should be a way to do this with a
     # global setting, but I can't get that to work
-    $options->{curvestyleall} .= ' palette';
+    $options{curvestyleall} .= ' palette';
   }
 
-  if ( $options->{'3d'} )
+  if ( $options{'3d'} )
   {
-    if ( !$options->{domain} )
+    if ( !$options{domain} )
     {
       print STDERR "--3d only makes sense with --domain\n";
       exit -1;
     }
 
-    if ( $options->{timefmt} )
+    if ( $options{timefmt} )
     {
       print STDERR "--3d makes no sense with --timefmt\n";
       exit -1;
     }
 
-    if ( defined $options->{y2min} || defined $options->{y2max} || defined $options->{y2} )
+    if ( defined $options{y2min} || defined $options{y2max} || defined $options{y2} )
     {
       print STDERR "--3d does not make sense with --y2...\n";
       exit -1;
     }
 
-    if ( defined $options->{xlen} )
+    if ( defined $options{xlen} )
     {
       print STDERR "--3d does not make sense with --xlen\n";
       exit -1;
     }
 
-    if ( defined $options->{monotonic} )
+    if ( defined $options{monotonic} )
     {
       print STDERR "--3d does not make sense with --monotonic\n";
       exit -1;
     }
 
-    if ( defined $options->{binwidth} || @{$options->{histogram}} )
+    if ( defined $options{binwidth} || @{$options{histogram}} )
     {
       print STDERR "--3d does not make sense with histograms\n";
       exit -1;
@@ -250,22 +248,22 @@ sub interpretCommandline
   }
   else
   {
-    if ( $options->{timefmt} && !$options->{domain} )
+    if ( $options{timefmt} && !$options{domain} )
     {
       print STDERR "--timefmt makes sense only with --domain\n";
       exit -1;
     }
 
-    if(!$options->{colormap})
+    if(!$options{colormap})
     {
-      if ( defined $options->{zmin} || defined $options->{zmax} || defined $options->{zlabel} )
+      if ( defined $options{zmin} || defined $options{zmax} || defined $options{zlabel} )
       {
         print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
         exit -1;
       }
     }
 
-    if ( defined $options->{square_xy} )
+    if ( defined $options{square_xy} )
     {
       print STDERR "--square_xy only makes sense with --3d\n";
       exit -1;
@@ -288,19 +286,19 @@ sub interpretCommandline
   }
 
   # deal with timefmt
-  if ( $options->{timefmt} )
+  if ( $options{timefmt} )
   {
     # I need to compute a regex to match the time field and I need to count how
     # many whilespace-separated fields there are.
 
     # strip leading and trailing whitespace
-    $options->{timefmt} =~ s/^\s*//;
-    $options->{timefmt} =~ s/\s*$//;
+    $options{timefmt} =~ s/^\s*//;
+    $options{timefmt} =~ s/\s*$//;
 
-    my $Nfields = scalar split( ' ', $options->{timefmt});
-    $options->{timefmt_Ncols} = $Nfields;
+    my $Nfields = scalar split( ' ', $options{timefmt});
+    $options{timefmt_Ncols} = $Nfields;
     my $regex_str = join( '\s+', ('\S+') x $Nfields );
-    $options->{timefmt_regex} = qr/$regex_str/;
+    $options{timefmt_regex} = qr/$regex_str/;
   }
 }
 
