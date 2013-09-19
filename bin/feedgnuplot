@@ -276,6 +276,13 @@ sub interpretCommandline
     exit -1;
   }
 
+  if($options{stream} && $options{xlen} &&
+     ( defined $options{xmin} || defined $options{xmax}))
+  {
+    print STDERR "With --stream and --xlen the X bounds are set, so neither --xmin nor --xmax make sense\n";
+    exit -1;
+  }
+
   # --xlen implies an order to the data, so I force monotonicity
   $options{monotonic} = 1 if defined $options{xlen};
 
