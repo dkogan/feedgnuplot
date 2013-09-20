@@ -595,7 +595,7 @@ sub mainThread
           else         {$id++;   }
 
           pushPoint(getCurve($id),
-                    [@domain, split( /\s+/, $2)]);
+                    [@domain, $2]);
         }
       }
     }
