@@ -17,8 +17,6 @@ my $VERSION = 1.24;
 my %options;
 interpretCommandline();
 
-my $gnuplotVersion = getGnuplotVersion();
-
 # list containing the plot data. Each element is a reference to a list, representing the data for
 # one curve. The first 'point' is a hash describing various curve parameters. The rest are all
 # references to lists of (x,y) tuples
@@ -346,9 +344,9 @@ sub mainThread
     local *PIPE;
     my $dopersist = '';
 
-    if($gnuplotVersion >= 4.3)
+    if( !$options{stream} && getGnuplotVersion() >= 4.3)
     {
-      $dopersist = '--persist' if(!$options{stream});
+      $dopersist = '--persist';
     }
 
     if(exists $options{dump})
