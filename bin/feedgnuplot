@@ -17,9 +17,9 @@ my $VERSION = 1.24;
 my %options;
 interpretCommandline();
 
-# list containing the plot data. Each element is a reference to a list, representing the data for
-# one curve. The first 'point' is a hash describing various curve parameters. The rest are all
-# references to lists of (x,y) tuples
+# list containing the plot data. Each element is a hashref of parameters.
+# $curve->{data} is a list of the points. Each point is a listref representing
+# the tuple
 my @curves = ();
 
 # list mapping curve names to their indices in the @curves list
@@ -627,12 +627,23 @@ sub pruneOldData
 
   foreach my $curve (@curves)
   {
-    if( @$curve > 1 )
+    # get the data listref. Each reference is a listref representing the tuple
+    my $data = $curve->{data};
+    if( @$data )
     {
-      if( my $firstInWindow = first {$curve->[$_][0] >= $oldestx} 1..$#$curve )
-      { splice( @$curve, 1, $firstInWindow-1 ); }
-      else
-      { splice( @$curve, 1); }
+      my $firstInWindow = first {$data->[$_][0] >= $oldestx} 0..$#$data;
+      if( !defined $firstInWindow )
+      {
+        # everything is too old. Clear out all the data
+        $curve->{data} = [];
+      }
+      elsif( $firstInWindow >= 2 )
+      {
+        # clear out everything that's too old, except for one point. This point
+        # will be off the plot, but if we're plotting lines there will be a
+        # connecting line to it. Some of the line will be visible
+        splice( @$data, 0, $firstInWindow-1 );
+      }
     }
   }
 }
@@ -643,18 +654,18 @@ sub plotStoredData
   print PIPE "set xrange [$xmin:$xmax]\n" if defined $xmin;
 
   # get the options for those curves that have any data
-  my @nonemptyCurves = grep {@$_ > 1} @curves;
-  my @extraopts = map {$_->[0]{options}} @nonemptyCurves;
+  my @nonemptyCurves = grep { @{$_->{data}} } @curves;
+  my @extraopts = map {$_->{options}} @nonemptyCurves;
 
   my $body = join(', ' , map({ "'-' $_" } @extraopts) );
   if($options{'3d'}) { print PIPE "splot $body\n"; }
   else               { print PIPE  "plot $body\n"; }
 
-  foreach my $buf (@nonemptyCurves)
+  foreach my $curve (@nonemptyCurves)
   {
     # send each point to gnuplot. Ignore the first "point" since it's the
     # curve options
-    for my $elem (@{$buf}[1..$#$buf])
+    for my $elem (@{$curve->{data}})
     {
       print PIPE "@$elem\n";
     }
@@ -669,13 +680,13 @@ sub updateCurveOptions
   # case. When no title is specified, gnuplot will still add a legend entry with an unhelpful '-'
   # label. Thus I explicitly do 'notitle' for that case
 
-  my ($curveoptions, $id) = @_;
+  my ($curve, $id) = @_;
 
   # use the given title, unless we're generating a legend automatically. Given titles
   # override autolegend
   my $title;
-  if(defined $curveoptions->{title})
-  { $title = $curveoptions->{title}; }
+  if(defined $curve->{title})
+  { $title = $curve->{title}; }
   elsif( $options{autolegend} )
   { $title = $id; }
 
@@ -685,7 +696,7 @@ sub updateCurveOptions
   $curvestyleall = $options{curvestyleall}
     if defined $options{curvestyleall} && !defined $options{curvestyle_hash}{$id};
 
-  my $histoptions = $curveoptions->{histoptions} || '';
+  my $histoptions = $curve->{histoptions} || '';
 
   my $usingoptions = '';
   if( $options{timefmt} )
@@ -693,7 +704,7 @@ sub updateCurveOptions
     $usingoptions = "using 1:" . ($options{timefmt_Ncols}+1);
   }
 
-  $curveoptions->{options} = "$histoptions $usingoptions $titleoption $curveoptions->{extraoptions} $curvestyleall";
+  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions} $curvestyleall";
 }
 
 sub getCurve
@@ -712,10 +723,10 @@ sub getCurve
 
   if( !exists $curveIndices{$id} )
   {
-    push @curves, [{extraoptions => ' '}]; # push a curve with no data and no options
+    push @curves, {extraoptions => ' ', data => []}; # push a curve with no data and no options
     $curveIndices{$id} =  $#curves;
 
-    updateCurveOptions($curves[$#curves][0], $id);
+    updateCurveOptions($curves[$#curves], $id);
   }
   return $curves[$curveIndices{$id}];
 }
@@ -725,8 +736,8 @@ sub addCurveOption
   my ($id, $str) = @_;
 
   my $curve = getCurve($id);
-  $curve->[0]{extraoptions} .= "$str ";
-  updateCurveOptions($curve->[0], $id);
+  $curve->{extraoptions} .= "$str ";
+  updateCurveOptions($curve, $id);
 }
 
 sub setCurveLabel
@@ -734,8 +745,8 @@ sub setCurveLabel
   my ($id, $str) = @_;
 
   my $curve = getCurve($id);
-  $curve->[0]{title} = $str;
-  updateCurveOptions($curve->[0], $id);
+  $curve->{title} = $str;
+  updateCurveOptions($curve, $id);
 }
 
 sub setCurveAsHistogram
@@ -743,16 +754,16 @@ sub setCurveAsHistogram
   my ($id, $str) = @_;
 
   my $curve = getCurve($id);
-  $curve->[0]{histoptions} = 'using (histbin($2)):(1.0) smooth ' . $options{histstyle};
+  $curve->{histoptions} = 'using (histbin($2)):(1.0) smooth ' . $options{histstyle};
 
-  updateCurveOptions($curve->[0], $id);
+  updateCurveOptions($curve, $id);
 }
 
 # remove all the curve data
 sub clearCurves
 {
   foreach my $curve(@curves)
-  { splice( @$curve, 1 ); }
+  { $curve->{data} = []; }
 }
 
 sub replot
@@ -813,7 +824,7 @@ sub replot
 sub pushPoint
 {
   my ($curve, $xy) = @_;
-  push @$curve, $xy;
+  push @{$curve->{data}}, $xy;
   $haveNewData = 1;
 }
 
