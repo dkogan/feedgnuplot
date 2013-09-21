@@ -10,10 +10,12 @@ complete -W               \
     --dataid              \
     --domain              \
     --dump                \
+    --exit                \
     --extraValuesPerPoint \
     --extracmds           \
     --geometry            \
     --hardcopy            \
+    --help                \
     --histogram           \
     --histstyle           \
     --legend              \
@@ -25,7 +27,9 @@ complete -W               \
     --square_xy           \
     --stream              \
     --terminal            \
+    --timefmt             \
     --title               \
+    --version             \
     --xlabel              \
     --xlen                \
     --xmax                \
