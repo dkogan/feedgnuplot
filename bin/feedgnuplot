@@ -1023,8 +1023,8 @@ C<--timefmt>. This option takes a single argument: the format to use to parse
 the data. The format is documented in 'set timefmt' in gnuplot, although the
 common flags that L<strftime> understands are generally supported. The backslash
 sequences in the format are I<not> supported, so if you want a tab, put in a tab
-instead of \t. When this flag is given, some other options act a little bit
-differently:
+instead of \t. Whitespace in the format I<is> supported. When this flag is
+given, some other options act a little bit differently:
 
 =over
 
@@ -1038,6 +1038,19 @@ C<--xmin> and C<--xmax> I<must> use the format passed in to C<--timefmt>
 
 =back
 
+Using this option changes both the way the input is parsed I<and> the way the
+x-axis tics are labelled. Gnuplot tries to be intelligent in this labelling, but
+it doesn't always to what the user wants. The labelling can be controlled with
+the gnuplot C<set format> command, which takes the same type of format string as
+C<--timefmt>. Example:
+
+ $ sar 1 -1 |
+   awk '$1 ~ /..:..:../ && $8 ~/^[0-9\.]*$/ {print $1,$8; fflush()}' |
+   feedgnuplot --stream --domain
+                --lines --timefmt '%H:%M:%S'
+                --extracmds 'set format x "%H:%M:%S"'
+
+This plots the 'idle' CPU consumption against time.
 
 =head2 Real-time streaming data
 
