@@ -1140,168 +1140,348 @@ it to the plotter.
 
 =head1 ARGUMENTS
 
-  --[no]domain         If enabled, the first element of each line is the
-                       domain variable.  If not, the point index is used
+=over
 
-  --[no]dataid         If enabled, each data point is preceded by the ID
-                       of the data set that point corresponds to. This ID is
-                       interpreted as a string, NOT as just a number. If not
-                       enabled, the order of the point is used.
+=item
 
-As an example, if line 3 of the input is "0 9 1 20"
- '--nodomain --nodataid' would parse the 4 numbers as points in 4
-   different curves at x=3
+--[no]domain
 
- '--domain --nodataid' would parse the 4 numbers as points in 3 different
-   curves at x=0. Here, 0 is the x-variable and 9,1,20 are the data values
+If enabled, the first element of each line is the domain variable. If not, the
+point index is used
 
- '--nodomain --dataid' would parse the 4 numbers as points in 2 different
-   curves at x=3. Here 0 and 1 are the data IDs and 9 and 20 are the
-   data values
+=item
 
- '--domain --dataid' would parse the 4 numbers as a single point at
-   x=0. Here 9 is the data ID and 1 is the data value. 20 is an extra
-   value, so it is ignored. If another value followed 20, we'd get another
-   point in curve ID 20
+--[no]dataid
 
-  --[no]3d             Do [not] plot in 3D. This only makes sense with --domain.
-                       Each domain here is an (x,y) tuple
+If enabled, each data point is preceded by the ID of the data set that point
+corresponds to. This ID is interpreted as a string, NOT as just a number. If not
+enabled, the order of the point is used.
 
-  --timefmt [format]   Interpret the X data as a time/date, parsed with the given
-                       format
+As an example, if line 3 of the input is "0 9 1 20" then
 
-  --colormap           Show a colormapped xy plot. Requires extra data for the color.
-                       zmin/zmax can be used to set the extents of the colors.
-                       Automatically increments extraValuesPerPoint
+=over
 
-  --stream [period]    Plot the data as it comes in, in realtime. If period is given,
-                       replot every period seconds. If no period is given, replot at
-                       1Hz. If the period is given as 0 or 'trigger', replot ONLY when
-                       the incoming data dictates this. See the "Real-time streaming
-                       data" section of the man page.
+=item
 
-  --[no]lines          Do [not] draw lines to connect consecutive points
-  --[no]points         Do [not] draw points
-  --circles            Plot with circles. This requires a radius be specified for
-                       each point. Automatically increments extraValuesPerPoint
+'--nodomain --nodataid' would parse the 4 numbers as points in 4 different
+curves at x=3
 
-  --xlabel xxx         Set x-axis label
-  --ylabel xxx         Set y-axis label
-  --y2label xxx        Set y2-axis label. Does not apply to 3d plots
-  --zlabel xxx         Set y-axis label. Only applies to 3d plots
+=item
 
-  --title  xxx         Set the title of the plot
+'--domain --nodataid' would parse the 4 numbers as points in 3 different
+curves at x=0. Here, 0 is the x-variable and 9,1,20 are the data values
 
-  --legend curveID legend
-                       Set the label for a curve plot. Use this option multiple times
-                       for multiple curves. With --dataid, curveID is the ID. Otherwise,
-                       it's the index of the curve, starting at 0
+=item
 
-  --autolegend         Use the curve IDs for the legend. Titles given with --legend
-                       override these
+'--nodomain --dataid' would parse the 4 numbers as points in 2 different
+curves at x=3. Here 0 and 1 are the data IDs and 9 and 20 are the
+data values
 
-  --xlen xxx           When using --stream, sets the size of the x-window to plot.
-                       Omit this or set it to 0 to plot ALL the data. Does not
-                       make sense with 3d plots. Implies --monotonic
+=item
 
-  --xmin  xxx          Set the range for the x axis. These are ignored in a
-                       streaming plot
-  --xmax  xxx          Set the range for the x axis. These are ignored in a
-                       streaming plot
-  --ymin  xxx          Set the range for the y axis.
-  --ymax  xxx          Set the range for the y axis.
-  --y2min xxx          Set the range for the y2 axis. Does not apply to 3d plots.
-  --y2max xxx          Set the range for the y2 axis. Does not apply to 3d plots.
-  --zmin  xxx          Set the range for the z axis. Only applies to 3d plots or colormaps.
-  --zmax  xxx          Set the range for the z axis. Only applies to 3d plots or colormaps.
+'--domain --dataid' would parse the 4 numbers as a single point at
+x=0. Here 9 is the data ID and 1 is the data value. 20 is an extra
+value, so it is ignored. If another value followed 20, we'd get another
+point in curve ID 20
 
-  --y2    xxx          Plot the data specified by this curve ID on the y2 axis.
-                       Without --dataid, the ID is just an ordered 0-based index.
-                       Does not apply to 3d plots. Can be passed multiple times, or passed a
-                       comma-separated list
+=back
 
-  --histogram  curveID
-                       Set up a this specific curve to plot a histogram. The bin
-                       width is given with the --binwidth option (assumed 1.0 if
-                       omitted). --histogram does NOT touch the drawing style.
-                       It is often desired to plot these with boxes, and this
-                       MUST be explicitly requested with --curvestyleall 'with
-                       boxes'. This works with --domain and/or --stream, but in
-                       those cases the x-value is used ONLY to cull old data
-                       because of --xlen or --monotonic. I.e. the x-values are
-                       NOT drawn in any way. Can be passed multiple times, or passed a comma-
-                       separated list
-  --binwidth width     The width of bins when making histograms. This setting applies to ALL
-                       histograms in the plot. Defaults to 1.0 if not given.
-  --histstyle style    Normally, histograms are generated with the 'smooth freq'
-                       gnuplot style. --histstyle can be used to select
-                       different 'smooth' settings. Allowed are 'unique',
-                       'cumulative' and 'cnormal'. 'unique' indicates whether a
-                       bin has at least one item in it: instead of counting the
-                       items, it'll always report 0 or 1. 'cumulative' is the
-                       integral of the "normal" histogram. 'cnormal' is like
-                       'cumulative', but rescaled to end up at 1.0.
+=item
 
-  --curvestyle curveID style
-                       Additional styles per curve. With --dataid, curveID is
-                       the ID. Otherwise, it's the index of the curve, starting
-                       at 0. Use this option multiple times for multiple curves.
-                       --curvestylall does NOT apply to curves that have a
-                       --curvestyle
+--[no]3d
 
-  --curvestyleall xxx  Additional styles for all curves that have no --curvestyle
+Do [not] plot in 3D. This only makes sense with --domain. Each domain here is an
+(x,y) tuple
 
-  --extracmds xxx      Additional commands. These could contain extra global styles
-                       for instance. Can be passed multiple times.
+=item
 
-  --square             Plot data with aspect ratio 1. For 3D plots, this controls the
-                       aspect ratio for all 3 axes
+--timefmt [format]
 
-  --square_xy          For 3D plots, set square aspect ratio for ONLY the x,y axes
+Interpret the X data as a time/date, parsed with the given format
 
-  --hardcopy xxx       If not streaming, output to a file specified here. Format
-                       inferred from filename, unless specified by --terminal
-  --terminal xxx       String passed to 'set terminal'. No attempts are made to
-                       validate this. --hardcopy sets this to some sensible
-                       defaults if --hardcopy is given .png, .pdf, .ps, .eps or
-                       .svg. If any other file type is desired, use both
-                       --hardcopy and --terminal
+=item
 
-  --maxcurves xxx      The maximum allowed number of curves. This is 100 by default,
-                       but can be reset with this option. This exists purely to
-                       prevent perl from allocating all of the system's memory when
-                       reading bogus data
+--colormap
 
-  --monotonic          If --domain is given, checks to make sure that the x-
-                       coordinate in the input data is monotonically increasing.
-                       If a given x-variable is in the past, all data currently
-                       cached for this curve is purged. Without --monotonic, all
-                       data is kept. Does not make sense with 3d plots.
-                       No --monotonic by default. The data is replotted before being
-                       purged
+Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
+used to set the extents of the colors. Automatically increments
+extraValuesPerPoint
 
-  --extraValuesPerPoint xxx
-                       How many extra values are given for each data point. Normally this
-                       is 0, and does not need to be specified, but sometimes we want
-                       extra data, like for colors or point sizes or error bars, etc.
-                       feedgnuplot options that require this (colormap, circles)
-                       automatically set it. This option is ONLY needed if unknown styles are
-                       used, with --curvestyleall for instance
+=item
 
-  --dump               Instead of printing to gnuplot, print to STDOUT. Very useful for
-                       debugging. It is possible to send the output produced this way to
-                       gnuplot directly.
+--stream [period]
 
-  --exit               Terminate the feedgnuplot process after passing data to
-                       gnuplot. The window will persist but will not be
-                       interactive. Without this option feedgnuplot keeps running
-                       and must be killed by the user. Note that this option works
-                       only with later versions of gnuplot and only with some
-                       gnuplot terminals.
+Plot the data as it comes in, in realtime. If period is given, replot every
+period seconds. If no period is given, replot at 1Hz. If the period is given as
+0 or 'trigger', replot ONLY when the incoming data dictates this. See the
+"Real-time streaming data" section of the man page.
 
-  --geometry           If using X11, specifies the size, position of the plot window
+=item
 
-  --version            Print the version and exit
+--[no]lines
+
+Do [not] draw lines to connect consecutive points
+
+=item
+
+--[no]points
+
+Do [not] draw points
+
+=item
+
+--circles
+
+Plot with circles. This requires a radius be specified for each point.
+Automatically increments extraValuesPerPoint
+
+=item
+
+--xlabel xxx
+
+Set x-axis label
+
+=item
+
+--ylabel xxx
+
+Set y-axis label
+
+=item
+
+--y2label xxx
+
+Set y2-axis label. Does not apply to 3d plots
+
+=item
+
+--zlabel xxx
+
+Set y-axis label. Only applies to 3d plots
+
+=item
+
+--title  xxx
+
+Set the title of the plot
+
+=item
+
+--legend curveID lege
+
+nd Set the label for a curve plot. Use this option multiple times for multiple
+curves. With --dataid, curveID is the ID. Otherwise, it's the index of the
+curve, starting at 0
+
+=item
+
+--autolegend
+
+Use the curve IDs for the legend. Titles given with --legend override these
+
+=item
+
+--xlen xxx
+
+When using --stream, sets the size of the x-window to plot. Omit this or set it
+to 0 to plot ALL the data. Does not make sense with 3d plots. Implies
+--monotonic
+
+=item
+
+--xmin  xxx
+
+Set the range for the x axis. These are ignored in a streaming plot
+
+=item
+
+--xmax  xxx
+
+Set the range for the x axis. These are ignored in a streaming plot
+
+=item
+
+--ymin  xxx
+
+Set the range for the y axis.
+
+=item
+
+--ymax  xxx
+
+Set the range for the y axis.
+
+=item
+
+--y2min xxx
+
+Set the range for the y2 axis. Does not apply to 3d plots.
+
+=item
+
+--y2max xxx
+
+Set the range for the y2 axis. Does not apply to 3d plots.
+
+=item
+
+--zmin  xxx
+
+Set the range for the z axis. Only applies to 3d plots or colormaps.
+
+=item
+
+--zmax  xxx
+
+Set the range for the z axis. Only applies to 3d plots or colormaps.
+
+=item
+
+--y2    xxx
+
+Plot the data specified by this curve ID on the y2 axis. Without --dataid, the
+ID is just an ordered 0-based index. Does not apply to 3d plots. Can be passed
+multiple times, or passed a comma-separated list
+
+=item
+
+--histogram  curveID
+
+
+Set up a this specific curve to plot a histogram. The bin width is given with
+the --binwidth option (assumed 1.0 if omitted). --histogram does NOT touch the
+drawing style. It is often desired to plot these with boxes, and this MUST be
+explicitly requested with --curvestyleall 'with boxes'. This works with --domain
+and/or --stream, but in those cases the x-value is used ONLY to cull old data
+because of --xlen or --monotonic. I.e. the x-values are NOT drawn in any way.
+Can be passed multiple times, or passed a comma- separated list
+
+=item
+
+--binwidth width
+
+The width of bins when making histograms. This setting applies to ALL histograms
+in the plot. Defaults to 1.0 if not given.
+
+=item
+
+--histstyle style
+
+Normally, histograms are generated with the 'smooth freq' gnuplot style.
+--histstyle can be used to select different 'smooth' settings. Allowed are
+'unique', 'cumulative' and 'cnormal'. 'unique' indicates whether a bin has at
+least one item in it: instead of counting the items, it'll always report 0 or 1.
+'cumulative' is the integral of the "normal" histogram. 'cnormal' is like
+'cumulative', but rescaled to end up at 1.0.
+
+=item
+
+--curvestyle curveID
+
+style Additional styles per curve. With --dataid, curveID is the ID. Otherwise,
+it's the index of the curve, starting at 0. Use this option multiple times for
+multiple curves. --curvestylall does NOT apply to curves that have a
+--curvestyle
+
+=item
+
+--curvestyleall xxx
+
+Additional styles for all curves that have no --curvestyle
+
+=item
+
+--extracmds xxx
+
+Additional commands. These could contain extra global styles for instance. Can
+be passed multiple times.
+
+=item
+
+--square
+
+Plot data with aspect ratio 1. For 3D plots, this controls the aspect ratio for
+all 3 axes
+
+=item
+
+--square_xy
+
+For 3D plots, set square aspect ratio for ONLY the x,y axes
+
+=item
+
+--hardcopy xxx
+
+If not streaming, output to a file specified here. Format inferred from
+filename, unless specified by --terminal
+
+=item
+
+--terminal xxx
+
+String passed to 'set terminal'. No attempts are made to validate this.
+--hardcopy sets this to some sensible defaults if --hardcopy is given .png,
+.pdf, .ps, .eps or .svg. If any other file type is desired, use both --hardcopy
+and --terminal
+
+=item
+
+--maxcurves xxx
+
+The maximum allowed number of curves. This is 100 by default, but can be reset
+with this option. This exists purely to prevent perl from allocating all of the
+system's memory when reading bogus data
+
+=item
+
+--monotonic
+
+If --domain is given, checks to make sure that the x- coordinate in the input
+data is monotonically increasing. If a given x-variable is in the past, all data
+currently cached for this curve is purged. Without --monotonic, all data is
+kept. Does not make sense with 3d plots. No --monotonic by default. The data is
+replotted before being purged
+
+=item
+
+--extraValuesPerPoint
+
+xxx How many extra values are given for each data point. Normally this is 0, and
+does not need to be specified, but sometimes we want extra data, like for colors
+or point sizes or error bars, etc. feedgnuplot options that require this
+(colormap, circles) automatically set it. This option is ONLY needed if unknown
+styles are used, with --curvestyleall for instance
+
+=item
+
+--dump
+
+Instead of printing to gnuplot, print to STDOUT. Very useful for debugging. It
+is possible to send the output produced this way to gnuplot directly.
+
+=item
+
+--exit
+
+Terminate the feedgnuplot process after passing data to gnuplot. The window will
+persist but will not be interactive. Without this option feedgnuplot keeps
+running and must be killed by the user. Note that this option works only with
+later versions of gnuplot and only with some gnuplot terminals.
+
+=item
+
+--geometry
+
+If using X11, specifies the size, position of the plot window
+
+=item
+
+--version
+
+Print the version and exit
+
+=back
 
 =head1 RECIPES
 
