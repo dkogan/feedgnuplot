@@ -18,8 +18,15 @@ my %options;
 interpretCommandline();
 
 # list containing the plot data. Each element is a hashref of parameters.
-# $curve->{data} is a list of the points. Each point is a listref representing
-# the tuple
+# $curve->{datastring} is a string of all the data in this curve that can be
+# sent directly to gnuplot. $curve->{datastring_meta} is a hashref {domain =>
+# ..., offset_start => ...}. offset_start represents a position in the
+# datastring where this particular data element begins. As the data is culled
+# with --xlen, the offsets are preserved by using $curve->{datastring_offset} to
+# represent the offset IN THE ORIGINAL STRING of the current start of the
+# datastring
+
+
 my @curves = ();
 
 # list mapping curve names to their indices in the @curves list
@@ -27,12 +34,6 @@ my %curveIndices = ();
 
 # now start the data acquisition and plotting threads
 my $dataQueue;
-
-# latest domain variable present in our data
-my $latestX;
-
-# The domain of the current point
-my @domain;
 
 # Whether any new data has arrived since the last replot
 my $haveNewData;
@@ -109,7 +110,7 @@ sub interpretCommandline
   $options{histogram}  = [];
   GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
-             'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=f', 'xmax=f', 'y2min=f', 'y2max=f',
+             'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=s', 'xmax=s', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
@@ -274,7 +275,7 @@ sub interpretCommandline
     exit -1;
   }
 
-  if($options{stream} && $options{xlen} &&
+  if($options{stream} && defined $options{xlen} &&
      ( defined $options{xmin} || defined $options{xmax}))
   {
     print STDERR "With --stream and --xlen the X bounds are set, so neither --xmin nor --xmax make sense\n";
@@ -334,6 +335,26 @@ sub plotUpdateThread
   $dataQueue->enqueue(undef);
 }
 
+sub sendRangeCommand
+{
+  my ($name, $min, $max) = @_;
+
+  return unless defined $min || defined $max;
+
+  if( defined $min )
+  { $min = "\"$min\""; }
+  else
+  { $min = ''; }
+
+  if( defined $max )
+  { $max = "\"$max\""; }
+  else
+  { $max = ''; }
+
+  my $cmd = "set $name [$min:$max]\n";
+  print PIPE $cmd;
+}
+
 sub mainThread
 {
     my $valuesPerPoint = 1;
@@ -388,22 +409,13 @@ sub mainThread
 
     # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
     # gnuplot
-    $options{xmin}  = '' unless defined $options{xmin};
-    $options{xmax}  = '' unless defined $options{xmax};
-    $options{ymin}  = '' unless defined $options{ymin};
-    $options{ymax}  = '' unless defined $options{ymax};
-    $options{y2min} = '' unless defined $options{y2min};
-    $options{y2max} = '' unless defined $options{y2max};
-    $options{zmin}  = '' unless defined $options{zmin};
-    $options{zmax}  = '' unless defined $options{zmax};
-
     print PIPE "set xtics\n";
     if($options{y2})
     {
       print PIPE "set ytics nomirror\n";
       print PIPE "set y2tics\n";
       # if any of the ranges are given, set the range
-      print PIPE "set y2range [$options{y2min}:$options{y2max}]\n" if length( $options{y2min} . $options{y2max} );
+      sendRangeCommand( "y2range", $options{y2min}, $options{y2max} );
     }
 
     # set up plotting style
@@ -416,9 +428,10 @@ sub mainThread
     }
 
     # if any of the ranges are given, set the range
-    print PIPE "set xrange [$options{xmin}:$options{xmax}]\n" if length( $options{xmin} . $options{xmax} );
-    print PIPE "set yrange [$options{ymin}:$options{ymax}]\n" if length( $options{ymin} . $options{ymax} );
-    print PIPE "set zrange [$options{zmin}:$options{zmax}]\n" if length( $options{zmin} . $options{zmax} );
+    sendRangeCommand( "xrange", $options{xmin}, $options{xmax} );
+    sendRangeCommand( "yrange", $options{ymin}, $options{ymax} );
+    sendRangeCommand( "zrange", $options{zmin}, $options{zmax} );
+
     print PIPE "set style data $style\n" if $style;
     print PIPE "set grid\n";
 
@@ -448,7 +461,7 @@ sub mainThread
 
     if($options{colormap})
     {
-      print PIPE "set cbrange [$options{zmin}:$options{zmax}]\n" if length( $options{zmin} . $options{zmax} );
+      sendRangeCommand( "cbrange", $options{zmin}, $options{zmax} );
     }
 
 # For the specified values, set the legend entries to 'title "blah blah"'
@@ -523,6 +536,15 @@ sub mainThread
     $pointRE .= '(' . join('\s+', ($numRE) x $valuesPerPoint) . ')';
     $pointRE = qr/$pointRE/;
 
+
+
+    # latest domain variable present in our data
+    my $latestX;
+
+    # The domain of the current point
+    my @domain;
+
+
     # I should be using the // operator, but I'd like to be compatible with perl 5.8
     while( $_ = (defined $dataQueue ? $dataQueue->dequeue() : <>))
     {
@@ -534,7 +556,7 @@ sub mainThread
       elsif( $options{stream} && /^replot/o )
       {
         # /timertick/ determines if the timer was the source of the replot
-        replot( /timertick/ );
+        replot( $domain[0], /timertick/ );
       }
       elsif(! /^replot/o)
       {
@@ -564,7 +586,7 @@ sub mainThread
               # the x-coordinate of the new point is in the past, so I wipe out
               # all the data and start anew. Before I wipe the old data, I
               # replot the old data
-              replot();
+              replot( $domain[0] );
               clearCurves();
               $latestX = undef;
             }
@@ -595,7 +617,7 @@ sub mainThread
           else         {$id++;   }
 
           pushPoint(getCurve($id),
-                    [@domain, $2]);
+                    "@domain $2\n", $domain[0]);
         }
       }
     }
@@ -623,38 +645,40 @@ sub mainThread
 
 sub pruneOldData
 {
-  my ($oldestx) = @_;
+  my ($x, $xlen) = @_;
+  my $oldestx = $x - $xlen;
 
   foreach my $curve (@curves)
   {
-    # get the data listref. Each reference is a listref representing the tuple
-    my $data = $curve->{data};
-    if( @$data )
+    next unless $curve->{datastring};
+
+    my $meta = $curve->{datastring_meta};
+
+    my $firstInWindow = first {$meta->[$_]{domain} >= $oldestx} 0..$#$meta;
+    if ( !defined $firstInWindow )
     {
-      my $firstInWindow = first {$data->[$_][0] >= $oldestx} 0..$#$data;
-      if( !defined $firstInWindow )
-      {
-        # everything is too old. Clear out all the data
-        $curve->{data} = [];
-      }
-      elsif( $firstInWindow >= 2 )
-      {
-        # clear out everything that's too old, except for one point. This point
-        # will be off the plot, but if we're plotting lines there will be a
-        # connecting line to it. Some of the line will be visible
-        splice( @$data, 0, $firstInWindow-1 );
-      }
+      # everything is too old. Clear out all the data
+      $curve->{datastring}        = '';
+      $curve->{datastring_meta}   = [];
+      $curve->{datastring_offset} = 0;
+    }
+    elsif ( $firstInWindow >= 2 )
+    {
+      # clear out everything that's too old, except for one point. This point
+      # will be off the plot, but if we're plotting lines there will be a
+      # connecting line to it. Some of the line will be visible
+      substr( $curve->{datastring}, 0,
+              $meta->[$firstInWindow-1]{offset_start} - $curve->{datastring_offset},
+              '' );
+      $curve->{datastring_offset} = $meta->[$firstInWindow-1]{offset_start};
     }
   }
 }
 
 sub plotStoredData
 {
-  my ($xmin, $xmax) = @_;
-  print PIPE "set xrange [$xmin:$xmax]\n" if defined $xmin;
-
-  # get the options for those curves that have any data
-  my @nonemptyCurves = grep { @{$_->{data}} } @curves;
+  # get the options for those curves that havse any data
+  my @nonemptyCurves = grep { $_->{datastring} } @curves;
   my @extraopts = map {$_->{options}} @nonemptyCurves;
 
   my $body = join(', ' , map({ "'-' $_" } @extraopts) );
@@ -663,12 +687,7 @@ sub plotStoredData
 
   foreach my $curve (@nonemptyCurves)
   {
-    # send each point to gnuplot. Ignore the first "point" since it's the
-    # curve options
-    for my $elem (@{$curve->{data}})
-    {
-      print PIPE "@$elem\n";
-    }
+    print PIPE $curve->{datastring};
     print PIPE "e\n";
   }
 }
@@ -723,7 +742,10 @@ sub getCurve
 
   if( !exists $curveIndices{$id} )
   {
-    push @curves, {extraoptions => ' ', data => []}; # push a curve with no data and no options
+    push @curves, {extraoptions      => ' ',
+                   datastring        => '',
+                   datastring_meta   => [],
+                   datastring_offset => 0}; # push a curve with no data and no options
     $curveIndices{$id} =  $#curves;
 
     updateCurveOptions($curves[$#curves], $id);
@@ -763,7 +785,11 @@ sub setCurveAsHistogram
 sub clearCurves
 {
   foreach my $curve(@curves)
-  { $curve->{data} = []; }
+  {
+    $curve->{datastring}        = '';
+    $curve->{datastring_meta}   = [];
+    $curve->{datastring_offset} = 0;
+  }
 }
 
 sub replot
@@ -789,7 +815,7 @@ sub replot
   # }
 
 
-  my ($replot_is_from_timer) = @_;
+  my ($domain0, $replot_is_from_timer) = @_;
 
   my $now = [gettimeofday];
 
@@ -804,14 +830,17 @@ sub replot
       # if enough time has elapsed since the last replot, it's ok to replot
       tv_interval ( $last_replot_time, $now ) > 0.8*$options{stream} )
   {
-    # tests passed; do replot
-    if ( $options{xlen} )
+    # ok, then. We really need to replot
+    if ( defined $options{xlen} )
     {
-      pruneOldData($domain[0] - $options{xlen});
-      plotStoredData($domain[0] - $options{xlen}, $domain[0]);
+      # we have an --xlen, so we need to clean out the old data
+      pruneOldData( $domain0, $options{xlen} );
+
+      my ($xmin, $xmax) = ($domain0 - $options{xlen}, $domain0);
+      sendRangeCommand( "xrange", $xmin, $xmax );
     }
-    else
-    { plotStoredData(); }
+
+    plotStoredData();
 
 
     # update replot state
@@ -823,8 +852,12 @@ sub replot
 # function to add a point to the plot. Assumes that the curve indexed by $idx already exists
 sub pushPoint
 {
-  my ($curve, $xy) = @_;
-  push @{$curve->{data}}, $xy;
+  my ($curve, $datastring, $domain0) = @_;
+
+  push @{$curve->{datastring_meta}}, { offset_start => length( $curve->{datastring} ) + $curve->{datastring_offset},
+                                       domain       => $domain0 };
+  $curve->{datastring} .= $datastring;
+
   $haveNewData = 1;
 }
 
