@@ -1016,6 +1016,29 @@ C<replot> and we're plotting in realtime with C<--stream>, the plot will be
 refreshed immediately. If a line of data begins with C<clear>, the plot is
 cleared, to be re-filled with any data following the C<clear>.
 
+=head3 Time/date data
+
+If the input data domain is a time/date, this can be interpreted with
+C<--timefmt>. This option takes a single argument: the format to use to parse
+the data. The format is documented in 'set timefmt' in gnuplot, although the
+common flags that L<strftime> understands are generally supported. The backslash
+sequences in the format are I<not> supported, so if you want a tab, put in a tab
+instead of \t. When this flag is given, some other options act a little bit
+differently:
+
+=over
+
+=item
+
+C<--xlen> is in seconds
+
+=item
+
+C<--xmin> and C<--xmax> I<must> use the format passed in to C<--timefmt>
+
+=back
+
+
 =head2 Real-time streaming data
 
 To plot real-time data, pass in the C<--stream [refreshperiod]> option. Data
@@ -1030,7 +1053,8 @@ To plot only the most recent data (instead of I<all> the data), C<--xlen
 windowsize> can be given. This will create an constantly-updating, scrolling
 view of the recent past. C<windowsize> should be replaced by the desired length
 of the domain window to plot, in domain units (passed-in values if C<--domain>
-or line numbers otherwise).
+or line numbers otherwise). If the domain is a time/date via C<--timefmt>, then
+C<windowsize> is in seconds.
 
 =head2 Hardcopy output
 
@@ -1142,6 +1166,9 @@ As an example, if line 3 of the input is "0 9 1 20"
 
   --[no]3d             Do [not] plot in 3D. This only makes sense with --domain.
                        Each domain here is an (x,y) tuple
+
+  --timefmt [format]   Interpret the X data as a time/date, parsed with the given
+                       format
 
   --colormap           Show a colormapped xy plot. Requires extra data for the color.
                        zmin/zmax can be used to set the extents of the colors.
