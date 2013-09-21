@@ -11,6 +11,7 @@ use threads;
 use threads::shared;
 use Thread::Queue;
 use Pod::Usage;
+use Time::Piece;
 
 my $VERSION = 1.24;
 
@@ -355,6 +356,21 @@ sub sendRangeCommand
   print PIPE $cmd;
 }
 
+sub makeDomainNumeric
+{
+  my ($domain0) = @_;
+
+  if ( $options{timefmt} )
+  {
+    my $timepiece = Time::Piece->strptime( $domain0, $options{timefmt} )
+      or die "Couldn't parse time format. String '$domain0' doesn't fit format '$options{timefmt}'";
+
+    return $timepiece->epoch();
+  }
+
+  return $domain0;
+}
+
 sub mainThread
 {
     my $valuesPerPoint = 1;
@@ -406,18 +422,6 @@ sub mainThread
     print PIPE "set terminal $options{terminal}\n" if $options{terminal};
     print PIPE "set output \"$outputfile\"\n"      if $outputfile;
 
-
-    # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
-    # gnuplot
-    print PIPE "set xtics\n";
-    if($options{y2})
-    {
-      print PIPE "set ytics nomirror\n";
-      print PIPE "set y2tics\n";
-      # if any of the ranges are given, set the range
-      sendRangeCommand( "y2range", $options{y2min}, $options{y2max} );
-    }
-
     # set up plotting style
     my $style = '';
     if($options{lines})  { $style .= 'lines';}
@@ -426,11 +430,6 @@ sub mainThread
     {
       $options{curvestyleall} = "with circles $options{curvestyleall}";
     }
-
-    # if any of the ranges are given, set the range
-    sendRangeCommand( "xrange", $options{xmin}, $options{xmax} );
-    sendRangeCommand( "yrange", $options{ymin}, $options{ymax} );
-    sendRangeCommand( "zrange", $options{zmin}, $options{zmax} );
 
     print PIPE "set style data $style\n" if $style;
     print PIPE "set grid\n";
@@ -459,13 +458,8 @@ sub mainThread
       print(PIPE "set view equal xy\n");
     }
 
-    if($options{colormap})
-    {
-      sendRangeCommand( "cbrange", $options{zmin}, $options{zmax} );
-    }
-
 # For the specified values, set the legend entries to 'title "blah blah"'
-    if(@{$options{legend}})
+    if(defined $options{legend} && @{$options{legend}})
     {
       # @{$options{legend}} is a list where consecutive pairs are (curveID,
       # legend). I use $options{legend} here instead of $options{legend_hash}
@@ -480,7 +474,7 @@ sub mainThread
     }
 
 # add the extra curve options
-    if(@{$options{curvestyle}})
+    if(defined $options{curvestyle} && @{$options{curvestyle}})
     {
       # @{$options{curvestyle}} is a list where consecutive pairs are (curveID,
       # style). I use $options{curvestyle} here instead of
@@ -495,9 +489,12 @@ sub mainThread
     }
 
 # For the values requested to be printed on the y2 axis, set that
-    foreach (@{$options{y2}})
+    if( defined $options{y2} )
     {
-      addCurveOption($_, 'axes x1y2 linewidth 3');
+      foreach (@{$options{y2}})
+      {
+        addCurveOption($_, 'axes x1y2 linewidth 3');
+      }
     }
 
 # timefmt
@@ -508,7 +505,7 @@ sub mainThread
     }
 
 # add the extra global options
-    if($options{extracmds})
+    if(defined $options{extracmds})
     {
       foreach (@{$options{extracmds}})
       {
@@ -517,13 +514,16 @@ sub mainThread
     }
 
 # set up histograms
-    $options{binwidth} ||= 1; # if no binwidth given, set it to 1
-    print PIPE
-      "set boxwidth $options{binwidth}\n" .
-      "histbin(x) = $options{binwidth} * floor(0.5 + x/$options{binwidth})\n";
-    foreach (@{$options{histogram}})
+    if( defined $options{histogram} )
     {
-      setCurveAsHistogram( $_ );
+      $options{binwidth} ||= 1; # if no binwidth given, set it to 1
+      print PIPE
+        "set boxwidth $options{binwidth}\n" .
+        "histbin(x) = $options{binwidth} * floor(0.5 + x/$options{binwidth})\n";
+      foreach (@{$options{histogram}})
+      {
+        setCurveAsHistogram( $_ );
+      }
     }
 
     # regexp for a possibly floating point, possibly scientific notation number
@@ -536,6 +536,26 @@ sub mainThread
     $pointRE .= '(' . join('\s+', ($numRE) x $valuesPerPoint) . ')';
     $pointRE = qr/$pointRE/;
 
+# set all the axis ranges
+    # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
+    # gnuplot
+    print PIPE "set xtics\n";
+
+    if($options{y2})
+    {
+      print PIPE "set ytics nomirror\n";
+      print PIPE "set y2tics\n";
+      # if any of the ranges are given, set the range
+      sendRangeCommand( "y2range", $options{y2min}, $options{y2max} );
+    }
+
+    # if any of the ranges are given, set the range
+    sendRangeCommand( "xrange",  $options{xmin}, $options{xmax} );
+    sendRangeCommand( "yrange",  $options{ymin}, $options{ymax} );
+    sendRangeCommand( "zrange",  $options{zmin}, $options{zmax} );
+    sendRangeCommand( "cbrange", $options{zmin}, $options{zmax} ) if($options{colormap});
+
+
 
 
     # latest domain variable present in our data
@@ -544,6 +564,10 @@ sub mainThread
     # The domain of the current point
     my @domain;
 
+    # The x-axis domain represented as a number. This is exactly the same as
+    # $domain[0] unless the x-axis domain uses a timefmt. Then this is the
+    # number of seconds since the UNIX epoch.
+    my $domain0_numeric;
 
     # I should be using the // operator, but I'd like to be compatible with perl 5.8
     while( $_ = (defined $dataQueue ? $dataQueue->dequeue() : <>))
@@ -556,7 +580,7 @@ sub mainThread
       elsif( $options{stream} && /^replot/o )
       {
         # /timertick/ determines if the timer was the source of the replot
-        replot( $domain[0], /timertick/ );
+        replot( $domain0_numeric, /timertick/ );
       }
       elsif(! /^replot/o)
       {
@@ -574,6 +598,8 @@ sub mainThread
         {
           /($domainRE)/go or next;
           $domain[0] = $1;
+          $domain0_numeric = makeDomainNumeric( $domain[0] );
+
           if($options{'3d'})
           {
             /($numRE)/go or next;
@@ -581,17 +607,17 @@ sub mainThread
           }
           elsif( $options{monotonic} )
           {
-            if( defined $latestX && $domain[0] < $latestX )
+            if( defined $latestX && $domain0_numeric < $latestX )
             {
               # the x-coordinate of the new point is in the past, so I wipe out
               # all the data and start anew. Before I wipe the old data, I
               # replot the old data
-              replot( $domain[0] );
+              replot( $domain0_numeric );
               clearCurves();
               $latestX = undef;
             }
             else
-            { $latestX = $domain[0]; }
+            { $latestX = $domain0_numeric; }
           }
 
         }
@@ -608,6 +634,7 @@ sub mainThread
           {
             $domain[0] = $.;
           }
+          $domain0_numeric = makeDomainNumeric( $domain[0] );
         }
 
         my $id = -1;
@@ -617,7 +644,7 @@ sub mainThread
           else         {$id++;   }
 
           pushPoint(getCurve($id),
-                    "@domain $2\n", $domain[0]);
+                    "@domain $2\n", $domain0_numeric);
         }
       }
     }
@@ -645,8 +672,7 @@ sub mainThread
 
 sub pruneOldData
 {
-  my ($x, $xlen) = @_;
-  my $oldestx = $x - $xlen;
+  my ($oldestx) = @_;
 
   foreach my $curve (@curves)
   {
@@ -815,7 +841,7 @@ sub replot
   # }
 
 
-  my ($domain0, $replot_is_from_timer) = @_;
+  my ($domain0_numeric, $replot_is_from_timer) = @_;
 
   my $now = [gettimeofday];
 
@@ -834,9 +860,15 @@ sub replot
     if ( defined $options{xlen} )
     {
       # we have an --xlen, so we need to clean out the old data
-      pruneOldData( $domain0, $options{xlen} );
+      pruneOldData( $domain0_numeric - $options{xlen} );
 
-      my ($xmin, $xmax) = ($domain0 - $options{xlen}, $domain0);
+      my ($xmin, $xmax) = ($domain0_numeric - $options{xlen}, $domain0_numeric);
+      if ( defined $options{timefmt} )
+      {
+        # if we're using a timefmt, I need to convert my xmin range from
+        # seconds-since-the-epoch BACK to the timefmt. Sheesh
+        ($xmin, $xmax) = map {Time::Piece->strptime( $_, '%s' )->strftime( $options{timefmt} ) } ($xmin, $xmax);
+      }
       sendRangeCommand( "xrange", $xmin, $xmax );
     }
 
@@ -852,10 +884,10 @@ sub replot
 # function to add a point to the plot. Assumes that the curve indexed by $idx already exists
 sub pushPoint
 {
-  my ($curve, $datastring, $domain0) = @_;
+  my ($curve, $datastring, $domain0_numeric) = @_;
 
   push @{$curve->{datastring_meta}}, { offset_start => length( $curve->{datastring} ) + $curve->{datastring_offset},
-                                       domain       => $domain0 };
+                                       domain       => $domain0_numeric };
   $curve->{datastring} .= $datastring;
 
   $haveNewData = 1;
