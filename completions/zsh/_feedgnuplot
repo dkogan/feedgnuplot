@@ -1,44 +1,48 @@
 #compdef feedgnuplot
 
-_arguments -S                                                                           \
-    '()--domain[first element of each line is the domain variable]'                     \
-    '--dataid[each data point is preceded by the corresponding ID]'                     \
-    '(--monotonic --xlen --histogram)--3d'                                              \
-    '--colormap[show a colormapped xy plot]'                                            \
-    '--stream[Plot the data in realtime]::period in s:'                                 \
-    '--lines'                                                                           \
-    '--points'                                                                          \
-    '--circles'                                                                         \
-    '--xlabel:X-axis label:'                                                            \
-    '--ylabel:Y-axis label:'                                                            \
-    '--y2label:Y2-axis label:'                                                          \
-    '--zlabel:Z-axis label:'                                                            \
-    '--zlabel:Z-axis label:'                                                            \
-    '--title:Plot title:'                                                               \
-    '--autolegend[Label each plot with its data ID]'                                    \
-    '(--3d)--xlen[the size of the x-window to plot]::window size:'                      \
-    '--xmin:min X:'                                                                     \
-    '--xmax:max X:'                                                                     \
-    '--ymin:min Y:'                                                                     \
-    '--ymax:max Y:'                                                                     \
-    '--y2min:min Y2:'                                                                   \
-    '--y2max:max Y2:'                                                                   \
-    '--zmin:min Z:'                                                                     \
-    '--zmax:max Z:'                                                                     \
-    '*--y2:plot to place on the Y2 axis:'                                               \
-    '--curvestyleall[Additional styles for ALL curves]:'                                \
-    '*--extracmds[Additional gnuplot commands]:'                                        \
-    '--square[Plot data with square aspect ratio]'                                      \
-    '--square_xy[For 3D plots, set square aspect ratio for ONLY the x,y axes]'          \
-    '--hardcopy[Plot to a file]:'                                                       \
-    '--maxcurves[The maximum allowed number of curves]:'                                \
-    '(--3d)--monotonic[Resets plot if an X in the past is seen]'                        \
-    '--extraValuesPerPoint[How many extra values are given for each data point]:'       \
-    '--dump[Instead of printing to gnuplot, print to STDOUT]'                           \
-    '--geometry[The X11 geometry string]:geometry string:'                              \
-    '*--curvestyle[Additional styles for a curve]:curve id: :style:'                    \
-    '(--3d)*--histogram:plot to treat as a histogram:'                                  \
-    '--binwidth:Histogram bin width:'                                                   \
-    '--histstyle:Style of histogram:(frequency unique cumulative cnormal)'              \
-    '--terminal:Terminal options to set with "set terminal":'                           \
-    '*--legend[Legend for a curve]:curve id: :legend:'
+_arguments -S                                                                     \
+    '()--domain[first element of each line is the domain variable]'               \
+    '--dataid[each data point is preceded by the corresponding ID]'               \
+    '(--monotonic --xlen --histogram)--3d'                                        \
+    '--colormap[show a colormapped xy plot]'                                      \
+    '--stream[Plot the data in realtime]::period in s:'                           \
+    '--lines'                                                                     \
+    '--points'                                                                    \
+    '--circles'                                                                   \
+    '--xlabel:X-axis label:'                                                      \
+    '--ylabel:Y-axis label:'                                                      \
+    '--y2label:Y2-axis label:'                                                    \
+    '--zlabel:Z-axis label:'                                                      \
+    '--zlabel:Z-axis label:'                                                      \
+    '--title:Plot title:'                                                         \
+    '--autolegend[Label each plot with its data ID]'                              \
+    '(--3d)--xlen[the size of the x-window to plot]::window size:'                \
+    '(--xlen)--xmin:min X:'                                                       \
+    '(--xlen)--xmax:max X:'                                                       \
+    '--ymin:min Y:'                                                               \
+    '--ymax:max Y:'                                                               \
+    '--y2min:min Y2:'                                                             \
+    '--y2max:max Y2:'                                                             \
+    '--zmin:min Z:'                                                               \
+    '--zmax:max Z:'                                                               \
+    '*--y2:plot to place on the Y2 axis:'                                         \
+    '--curvestyleall[Additional styles for ALL curves]:style'                     \
+    '*--extracmds[Additional gnuplot commands]:command'                           \
+    '--square[Plot data with square aspect ratio]'                                \
+    '--square_xy[For 3D plots, set square aspect ratio for ONLY the x,y axes]'    \
+    '--hardcopy[Plot to a file]:filename'                                         \
+    '--maxcurves[The maximum allowed number of curves]:number of curves'          \
+    '(--3d)--monotonic[Resets plot if an X in the past is seen]'                  \
+    '--extraValuesPerPoint[How many extra values are given for each data point]:N'\
+    '--dump[Instead of printing to gnuplot, print to STDOUT]'                     \
+    '--geometry[The X11 geometry string]:geometry string:'                        \
+    '*--curvestyle[Additional styles for a curve]:curve id: :style:'              \
+    '(--3d)*--histogram:plot to treat as a histogram:'                            \
+    '--binwidth:Histogram bin width:'                                             \
+    '--histstyle:Style of histogram:(frequency unique cumulative cnormal)'        \
+    '--terminal:Terminal options to set with "set terminal":'                     \
+    '*--legend[Legend for a curve]:curve id: :legend:'                            \
+    '--exit[Exit gnuplot after making the plot]'                                  \
+    '--version'                                                                   \
+    '--help'                                                                      \
+    '--timefmt[Format for time/date data]:time format'
