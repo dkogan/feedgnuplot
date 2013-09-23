@@ -1,3 +1,15 @@
+feedgnuplot (1.25-1~1.gbpbbd2a4) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @bbd2a44bf90b80eda10d00d1ed5963b3e7284183 **
+
+  * Better error coder reporting: I now always 'exit -1' on error
+  * better handling of non-timer-based replots
+  * added --exit option for feedgnuplot to exit as soon as the plot is done
+  * added preliminary support for time/date domain plotting
+  * Simpler data storage, manipulation. Should improve performance
+
+ -- Dima Kogan <dima@secretsauce.net>  Mon, 23 Sep 2013 06:11:32 -0700
+
 feedgnuplot (1.24-2) unstable; urgency=low
 
   * Now building the html documentation from the correct POD source
