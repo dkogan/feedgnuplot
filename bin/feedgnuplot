@@ -1518,13 +1518,13 @@ Looks at wlan0 on Linux.
    gawk '/wlan0/ {if(b) {print $2-b; fflush()} b=$2}' |
    feedgnuplot --lines --stream --xlen 10 --ylabel 'Bytes/sec' --xlabel seconds
 
-=head2 Realtime plot of battery charge
+=head2 Realtime plot of battery charge in respect to time
 
 Uses the result of the C<acpi> command.
 
  $ while true; do acpi; sleep 15; done |
-   perl -nE 'BEGIN{ $| = 1; } /([0-9]*)%/; say join(" ", $./4, $1);' |
-   feedgnuplot --stream --ymin 0 --ymax 100 --domain --xlabel 'Time (seconds)' --ylabel "Battery charge (%)"
+   perl -nE 'BEGIN{ $| = 1; } /([0-9]*)%/; say join(" ", time(), $1);' |
+   feedgnuplot --stream --ymin 0 --ymax 100 --lines --domain --xlabel 'Time' --timefmt '%s' --ylabel "Battery charge (%)"
 
 =head2 Realtime plot of temperatures in an IBM Thinkpad
 
