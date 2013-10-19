@@ -245,6 +245,12 @@ sub interpretCommandline
       print STDERR "--3d does not make sense with histograms\n";
       exit -1;
     }
+
+    if ( defined $options{circles} )
+    {
+      print STDERR "--3d does not make sense with circles (gnuplot doesn't support this)\n";
+      exit -1;
+    }
   }
   else
   {
@@ -1218,7 +1224,7 @@ Interpret the X data as a time/date, parsed with the given format
 
 Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
 used to set the extents of the colors. Automatically increments
-extraValuesPerPoint
+C<--extraValuesPerPoint>
 
 =item
 
@@ -1246,7 +1252,8 @@ Do [not] draw points
 --circles
 
 Plot with circles. This requires a radius be specified for each point.
-Automatically increments extraValuesPerPoint
+Automatically increments C<--extraValuesPerPoint). C<Not> supported for 3d
+plots.
 
 =item
 
