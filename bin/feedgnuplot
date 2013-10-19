@@ -1250,39 +1250,15 @@ Automatically increments extraValuesPerPoint
 
 =item
 
---xlabel xxx
-
-Set x-axis label
-
-=item
-
---ylabel xxx
-
-Set y-axis label
-
-=item
-
---y2label xxx
-
-Set y2-axis label. Does not apply to 3d plots
-
-=item
-
---zlabel xxx
-
-Set y-axis label. Only applies to 3d plots
-
-=item
-
 --title xxx
 
 Set the title of the plot
 
 =item
 
---legend curveID lege
+--legend curveID legend
 
-nd Set the label for a curve plot. Use this option multiple times for multiple
+Set the label for a curve plot. Use this option multiple times for multiple
 curves. With --dataid, curveID is the ID. Otherwise, it's the index of the
 curve, starting at 0
 
@@ -1306,7 +1282,14 @@ to 0 to plot ALL the data. Does not make sense with 3d plots. Implies
 
 Set the range for the given axis. These x-axis bounds are ignored in a streaming
 plot. The y2-axis bound do not apply in 3d plots. The z-axis bounds apply
-I<ONLY> to 3d plots or colormaps.
+I<only> to 3d plots or colormaps.
+
+=item
+
+--xlabel/ylabel/y2label/zlabel xxx
+
+Label the given axis. The y2-axis label does not apply to 3d plots while the
+z-axis label applies I<only> to 3d plots.
 
 =item
 
