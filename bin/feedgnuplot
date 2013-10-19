@@ -1274,7 +1274,7 @@ Set y-axis label. Only applies to 3d plots
 
 =item
 
---title  xxx
+--title xxx
 
 Set the title of the plot
 
@@ -1302,55 +1302,15 @@ to 0 to plot ALL the data. Does not make sense with 3d plots. Implies
 
 =item
 
---xmin  xxx
+--xmin/xmax/ymin/ymax/y2min/y2max/zmin/zmax xxx
 
-Set the range for the x axis. These are ignored in a streaming plot
-
-=item
-
---xmax  xxx
-
-Set the range for the x axis. These are ignored in a streaming plot
+Set the range for the given axis. These x-axis bounds are ignored in a streaming
+plot. The y2-axis bound do not apply in 3d plots. The z-axis bounds apply
+I<ONLY> to 3d plots or colormaps.
 
 =item
 
---ymin  xxx
-
-Set the range for the y axis.
-
-=item
-
---ymax  xxx
-
-Set the range for the y axis.
-
-=item
-
---y2min xxx
-
-Set the range for the y2 axis. Does not apply to 3d plots.
-
-=item
-
---y2max xxx
-
-Set the range for the y2 axis. Does not apply to 3d plots.
-
-=item
-
---zmin  xxx
-
-Set the range for the z axis. Only applies to 3d plots or colormaps.
-
-=item
-
---zmax  xxx
-
-Set the range for the z axis. Only applies to 3d plots or colormaps.
-
-=item
-
---y2    xxx
+--y2 xxx
 
 Plot the data specified by this curve ID on the y2 axis. Without --dataid, the
 ID is just an ordered 0-based index. Does not apply to 3d plots. Can be passed
@@ -1358,7 +1318,7 @@ multiple times, or passed a comma-separated list
 
 =item
 
---histogram  curveID
+--histogram curveID
 
 
 Set up a this specific curve to plot a histogram. The bin width is given with
