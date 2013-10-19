@@ -499,7 +499,7 @@ sub mainThread
     {
       foreach (@{$options{y2}})
       {
-        addCurveOption($_, 'axes x1y2 linewidth 3');
+        addCurveOption($_, 'axes x1y2');
       }
     }
 
@@ -1304,7 +1304,14 @@ z-axis label applies I<only> to 3d plots.
 
 Plot the data specified by this curve ID on the y2 axis. Without --dataid, the
 ID is just an ordered 0-based index. Does not apply to 3d plots. Can be passed
-multiple times, or passed a comma-separated list
+multiple times, or passed a comma-separated list. By default the y2-axis curves
+look the same as the y-axis ones. I.e. the viewer of the resulting plot has to
+be told which is which via an axes label, legend, etc. Prior to version 1.25 of
+feedgnuplot the curves plotted on the y2 axis were drawn with a thicker line.
+This is no longer the case, but that behavior can be brought back by passing
+something like
+
+ --y2 curveid --curvestyle curveid 'linewidth 3'
 
 =item
 
