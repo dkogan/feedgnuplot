@@ -1,3 +1,17 @@
+feedgnuplot (1.25) unstable; urgency=low
+
+  * Added test suite
+  * Added initial support for --timefmt. Currently time/date data is
+    supported only at the x-axis domain
+  * Added --exit option for force feedgnuplot to return even if gnuplot
+    may not yet be done rendering (patch by Eric Schulte)
+  * Reformatted the documentation
+  * y2-axis curves no longer have a thicker line by default
+  * --hardcopy now handles piped output (gnuplot 'set output |process'
+    syntax)
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 20 Oct 2013 00:09:36 -0700
+
 feedgnuplot (1.24) unstable; urgency=low
 
   * Fixed regression in --monotonic. This works again now
