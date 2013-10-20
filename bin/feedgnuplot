@@ -13,7 +13,7 @@ use Thread::Queue;
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.24;
+my $VERSION = 1.25;
 
 my %options;
 interpretCommandline();
@@ -58,6 +58,8 @@ if($options{stream})
   while(<>)
   {
     chomp;
+
+    last if /^exit/;
 
     # place every line of input to the queue, so that the plotting thread can process it. if we are
     # using an implicit domain (x = line number), then we send it on the data queue also, since
@@ -163,8 +165,8 @@ sub interpretCommandline
 
   if ( defined $options{hardcopy} && defined $options{stream} )
   {
-    print STDERR "Warning: since we're making a hardcopy, I'm disabling streaming\n";
-    delete $options{stream};
+    print STDERR "--stream doesn't make sense together with --hardcopy\n";
+    exit -1;
   }
 
   # parse stream option. Allowed only numbers >= 0 or 'trigger'. After this code
@@ -245,6 +247,12 @@ sub interpretCommandline
       print STDERR "--3d does not make sense with histograms\n";
       exit -1;
     }
+
+    if ( defined $options{circles} )
+    {
+      print STDERR "--3d does not make sense with circles (gnuplot doesn't support this)\n";
+      exit -1;
+    }
   }
   else
   {
@@ -306,6 +314,17 @@ sub interpretCommandline
     $options{timefmt_Ncols} = $Nfields;
     my $regex_str = join( '\s+', ('\S+') x $Nfields );
     $options{timefmt_regex} = qr/$regex_str/;
+
+    # make sure --xlen is an integer. With a timefmt xlen goes through strptime
+    # and strftime, and those are integer-only
+    if( defined $options{xlen} )
+    {
+      if( $options{xlen} - int($options{xlen}) )
+      {
+        say STDERR "When streaming --xlen MUST be an integer. Rounding up to the nearest second";
+        $options{xlen} = 1 + int($options{xlen});
+      }
+    }
   }
 }
 
@@ -400,11 +419,15 @@ sub mainThread
 
     my $outputfile;
     my $outputfileType;
-    if( $options{hardcopy})
+    if( defined $options{hardcopy})
     {
       $outputfile = $options{hardcopy};
-      $outputfile =~ /\.(eps|ps|pdf|png|svg)$/i;
-      $outputfileType = $1 ? lc $1 : '';
+      if( $outputfile =~ /^[^|]                       # starts with anything other than |
+                          .*                          # stuff in the middle
+                          \.(eps|ps|pdf|png|svg)$/ix) # ends with a known extension
+      {
+        $outputfileType = lc $1;
+      }
 
       my %terminalOpts =
       ( eps  => 'postscript solid color enhanced eps',
@@ -413,8 +436,12 @@ sub mainThread
         png  => 'png size 1280,1024',
         svg  => 'svg');
 
-      $options{terminal} ||= $terminalOpts{$outputfileType}
-        if $terminalOpts{$outputfileType};
+      if( !defined $options{terminal} &&
+           defined $outputfileType    &&
+           $terminalOpts{$outputfileType} )
+      {
+        $options{terminal} = $terminalOpts{$outputfileType};
+      }
 
       die "Asked to plot to file '$outputfile', but I don't know which terminal to use, and no --terminal given"
         unless $options{terminal};
@@ -493,7 +520,7 @@ sub mainThread
     {
       foreach (@{$options{y2}})
       {
-        addCurveOption($_, 'axes x1y2 linewidth 3');
+        addCurveOption($_, 'axes x1y2');
       }
     }
 
@@ -574,15 +601,25 @@ sub mainThread
     {
       next if /^#/o;
 
-      if(    $options{stream} && /^clear/o )
-      { clearCurves(); }
-
-      elsif( $options{stream} && /^replot/o )
+      if( $options{stream} )
       {
-        # /timertick/ determines if the timer was the source of the replot
-        replot( $domain0_numeric, /timertick/ );
+        if(/^clear/o )
+        {
+          clearCurves();
+          next;
+        }
+
+        if(/^replot/o )
+        {
+          # /timertick/ determines if the timer was the source of the replot
+          replot( $domain0_numeric, /timertick/ );
+          next;
+        }
+
+        # /exit/ is handled in the data-reading thread
       }
-      elsif(! /^replot/o)
+
+      if(! /^replot/o)
       {
         # parse the incoming data lines. The format is
         # x id0 dat0 id1 dat1 ....
@@ -649,16 +686,29 @@ sub mainThread
       }
     }
 
+    # if we were streaming, we're now done!
+    if( $options{stream} )
+    {
+      return;
+    }
+
     # finished reading in all. Plot what we have
     plotStoredData();
 
-    if ( $options{hardcopy})
+    if ( defined $options{hardcopy})
     {
       print PIPE "set output\n";
-      # sleep until the plot file exists, and it is closed. Sometimes the output is
-      # still being written at this point
-      usleep(100_000) until -e $outputfile;
-      usleep(100_000) until(system("fuser -s \"$outputfile\""));
+
+      # sleep until the plot file exists, and it is closed. Sometimes the output
+      # is still being written at this point. If the output filename starts with
+      # '|', gnuplot pipes the output to that process, instead of writing to a
+      # file. In that case I don't make sure the file exists, since there IS not
+      # file
+      if( $options{hardcopy} !~ /^\|/ )
+      {
+        usleep(100_000) until -e $outputfile;
+        usleep(100_000) until(system("fuser -s \"$outputfile\""));
+      }
 
       print "Wrote output to $outputfile\n";
       return;
@@ -1008,14 +1058,6 @@ instead of I<Y> as a function of I<X>). Thus the first 2 values on each line are
 interpreted as the domain instead of just 1. The rest of the processing happens
 the same way as before.
 
-=head3 Special data commands
-
-Other than the raw data, 2 special commands are interpreted if they appear in
-the input. These are C<replot> and C<clear>. If a line of data begins with
-C<replot> and we're plotting in realtime with C<--stream>, the plot will be
-refreshed immediately. If a line of data begins with C<clear>, the plot is
-cleared, to be re-filled with any data following the C<clear>.
-
 =head3 Time/date data
 
 If the input data domain is a time/date, this can be interpreted with
@@ -1030,7 +1072,7 @@ given, some other options act a little bit differently:
 
 =item
 
-C<--xlen> is in seconds
+C<--xlen> is an I<integer> in seconds
 
 =item
 
@@ -1052,6 +1094,10 @@ C<--timefmt>. Example:
 
 This plots the 'idle' CPU consumption against time.
 
+Note that while gnuplot supports the time/date on any axis, I<feedgnuplot>
+currently supports it I<only> as the x-axis domain. This may change in the
+future.
+
 =head2 Real-time streaming data
 
 To plot real-time data, pass in the C<--stream [refreshperiod]> option. Data
@@ -1060,14 +1106,41 @@ C<refreshperiod> seconds. If the period isn't specified, a 1Hz refresh rate is
 used. To refresh at specific intervals indicated by the data, set the
 refreshperiod to 0 or to 'trigger'. The plot will then I<only> be refreshed when
 a data line 'replot' is received. This 'replot' command works in both triggered
-and timed modes, but in triggered mode, it's the only way to replot.
+and timed modes, but in triggered mode, it's the only way to replot. Look in
+L<Special data commands> for more information.
 
 To plot only the most recent data (instead of I<all> the data), C<--xlen
 windowsize> can be given. This will create an constantly-updating, scrolling
 view of the recent past. C<windowsize> should be replaced by the desired length
 of the domain window to plot, in domain units (passed-in values if C<--domain>
 or line numbers otherwise). If the domain is a time/date via C<--timefmt>, then
-C<windowsize> is in seconds.
+C<windowsize> is and I<integer> in seconds.
+
+=head3 Special data commands
+
+If we are reading streaming data, the input stream can contain special commands
+in addition to the raw data. Feedgnuplot looks for these at the start of every
+input line. If a command is detected, the rest of the line is discarded. These
+commands are
+
+=over
+
+=item C<replot>
+
+This command refreshes the plot right now, instead of waiting for the next
+refresh time indicated by the timer. This command works in addition to the timed
+refresh, as indicated by C<--stream [refreshperiod]>.
+
+=item C<clear>
+
+This command clears out the current data in the plot. The plotting process
+continues, however, to any data following the C<clear>.
+
+=item C<exit>
+
+This command causes feedgnuplot to exit.
+
+=back
 
 =head2 Hardcopy output
 
@@ -1218,7 +1291,7 @@ Interpret the X data as a time/date, parsed with the given format
 
 Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
 used to set the extents of the colors. Automatically increments
-extraValuesPerPoint
+C<--extraValuesPerPoint>
 
 =item
 
@@ -1226,8 +1299,8 @@ extraValuesPerPoint
 
 Plot the data as it comes in, in realtime. If period is given, replot every
 period seconds. If no period is given, replot at 1Hz. If the period is given as
-0 or 'trigger', replot ONLY when the incoming data dictates this. See the
-"Real-time streaming data" section of the man page.
+0 or 'trigger', replot I<only> when the incoming data dictates this. See the
+L<Real-time streaming data> section of the man page.
 
 =item
 
@@ -1246,43 +1319,20 @@ Do [not] draw points
 --circles
 
 Plot with circles. This requires a radius be specified for each point.
-Automatically increments extraValuesPerPoint
+Automatically increments C<--extraValuesPerPoint). C<Not> supported for 3d
+plots.
 
 =item
 
---xlabel xxx
-
-Set x-axis label
-
-=item
-
---ylabel xxx
-
-Set y-axis label
-
-=item
-
---y2label xxx
-
-Set y2-axis label. Does not apply to 3d plots
-
-=item
-
---zlabel xxx
-
-Set y-axis label. Only applies to 3d plots
-
-=item
-
---title  xxx
+--title xxx
 
 Set the title of the plot
 
 =item
 
---legend curveID lege
+--legend curveID legend
 
-nd Set the label for a curve plot. Use this option multiple times for multiple
+Set the label for a curve plot. Use this option multiple times for multiple
 curves. With --dataid, curveID is the ID. Otherwise, it's the index of the
 curve, starting at 0
 
@@ -1302,63 +1352,37 @@ to 0 to plot ALL the data. Does not make sense with 3d plots. Implies
 
 =item
 
---xmin  xxx
+--xmin/xmax/ymin/ymax/y2min/y2max/zmin/zmax xxx
 
-Set the range for the x axis. These are ignored in a streaming plot
-
-=item
-
---xmax  xxx
-
-Set the range for the x axis. These are ignored in a streaming plot
+Set the range for the given axis. These x-axis bounds are ignored in a streaming
+plot. The y2-axis bound do not apply in 3d plots. The z-axis bounds apply
+I<only> to 3d plots or colormaps.
 
 =item
 
---ymin  xxx
+--xlabel/ylabel/y2label/zlabel xxx
 
-Set the range for the y axis.
-
-=item
-
---ymax  xxx
-
-Set the range for the y axis.
+Label the given axis. The y2-axis label does not apply to 3d plots while the
+z-axis label applies I<only> to 3d plots.
 
 =item
 
---y2min xxx
-
-Set the range for the y2 axis. Does not apply to 3d plots.
-
-=item
-
---y2max xxx
-
-Set the range for the y2 axis. Does not apply to 3d plots.
-
-=item
-
---zmin  xxx
-
-Set the range for the z axis. Only applies to 3d plots or colormaps.
-
-=item
-
---zmax  xxx
-
-Set the range for the z axis. Only applies to 3d plots or colormaps.
-
-=item
-
---y2    xxx
+--y2 xxx
 
 Plot the data specified by this curve ID on the y2 axis. Without --dataid, the
 ID is just an ordered 0-based index. Does not apply to 3d plots. Can be passed
-multiple times, or passed a comma-separated list
+multiple times, or passed a comma-separated list. By default the y2-axis curves
+look the same as the y-axis ones. I.e. the viewer of the resulting plot has to
+be told which is which via an axes label, legend, etc. Prior to version 1.25 of
+feedgnuplot the curves plotted on the y2 axis were drawn with a thicker line.
+This is no longer the case, but that behavior can be brought back by passing
+something like
+
+ --y2 curveid --curvestyle curveid 'linewidth 3'
 
 =item
 
---histogram  curveID
+--histogram curveID
 
 
 Set up a this specific curve to plot a histogram. The bin width is given with
@@ -1518,13 +1542,13 @@ Looks at wlan0 on Linux.
    gawk '/wlan0/ {if(b) {print $2-b; fflush()} b=$2}' |
    feedgnuplot --lines --stream --xlen 10 --ylabel 'Bytes/sec' --xlabel seconds
 
-=head2 Realtime plot of battery charge
+=head2 Realtime plot of battery charge in respect to time
 
 Uses the result of the C<acpi> command.
 
  $ while true; do acpi; sleep 15; done |
-   perl -nE 'BEGIN{ $| = 1; } /([0-9]*)%/; say join(" ", $./4, $1);' |
-   feedgnuplot --stream --ymin 0 --ymax 100 --domain --xlabel 'Time (seconds)' --ylabel "Battery charge (%)"
+   perl -nE 'BEGIN{ $| = 1; } /([0-9]*)%/; say join(" ", time(), $1);' |
+   feedgnuplot --stream --ymin 0 --ymax 100 --lines --domain --xlabel 'Time' --timefmt '%s' --ylabel "Battery charge (%)"
 
 =head2 Realtime plot of temperatures in an IBM Thinkpad
 

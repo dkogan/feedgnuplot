@@ -1,7 +1,7 @@
 Makefile.PL
 MANIFEST
 bin/feedgnuplot
-t/00-load.t
 t/manifest.t
+t/plots.t
 Changes
 LICENSE
