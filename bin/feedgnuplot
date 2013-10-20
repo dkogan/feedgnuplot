@@ -314,6 +314,17 @@ sub interpretCommandline
     $options{timefmt_Ncols} = $Nfields;
     my $regex_str = join( '\s+', ('\S+') x $Nfields );
     $options{timefmt_regex} = qr/$regex_str/;
+
+    # make sure --xlen is an integer. With a timefmt xlen goes through strptime
+    # and strftime, and those are integer-only
+    if( defined $options{xlen} )
+    {
+      if( $options{xlen} - int($options{xlen}) )
+      {
+        say STDERR "When streaming --xlen MUST be an integer. Rounding up to the nearest second";
+        $options{xlen} = 1 + int($options{xlen});
+      }
+    }
   }
 }
 
@@ -1061,7 +1072,7 @@ given, some other options act a little bit differently:
 
 =item
 
-C<--xlen> is in seconds
+C<--xlen> is an I<integer> in seconds
 
 =item
 
@@ -1103,7 +1114,7 @@ windowsize> can be given. This will create an constantly-updating, scrolling
 view of the recent past. C<windowsize> should be replaced by the desired length
 of the domain window to plot, in domain units (passed-in values if C<--domain>
 or line numbers otherwise). If the domain is a time/date via C<--timefmt>, then
-C<windowsize> is in seconds.
+C<windowsize> is and I<integer> in seconds.
 
 =head3 Special data commands
 
