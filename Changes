@@ -1,4 +1,10 @@
-feedgnuplot (1.25) unstable; urgency=low
+feedgnuplot (1.26)
+
+  * Minor POD fixes
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 20 Oct 2013 01:17:57 -0700
+
+feedgnuplot (1.25)
 
   * Added test suite
   * Added initial support for --timefmt. Currently time/date data is
@@ -12,7 +18,7 @@ feedgnuplot (1.25) unstable; urgency=low
 
  -- Dima Kogan <dima@secretsauce.net>  Sun, 20 Oct 2013 00:09:36 -0700
 
-feedgnuplot (1.24) unstable; urgency=low
+feedgnuplot (1.24)
 
   * Fixed regression in --monotonic. This works again now
   * moved POD back into the main source file. This fixes the broken usage
