@@ -59,6 +59,8 @@ if($options{stream})
   {
     chomp;
 
+    last if /^exit/;
+
     # place every line of input to the queue, so that the plotting thread can process it. if we are
     # using an implicit domain (x = line number), then we send it on the data queue also, since
     # $. is not meaningful in the plotting thread
@@ -588,15 +590,25 @@ sub mainThread
     {
       next if /^#/o;
 
-      if(    $options{stream} && /^clear/o )
-      { clearCurves(); }
-
-      elsif( $options{stream} && /^replot/o )
+      if( $options{stream} )
       {
-        # /timertick/ determines if the timer was the source of the replot
-        replot( $domain0_numeric, /timertick/ );
+        if(/^clear/o )
+        {
+          clearCurves();
+          next;
+        }
+
+        if(/^replot/o )
+        {
+          # /timertick/ determines if the timer was the source of the replot
+          replot( $domain0_numeric, /timertick/ );
+          next;
+        }
+
+        # /exit/ is handled in the data-reading thread
       }
-      elsif(! /^replot/o)
+
+      if(! /^replot/o)
       {
         # parse the incoming data lines. The format is
         # x id0 dat0 id1 dat1 ....
@@ -661,6 +673,12 @@ sub mainThread
                     "@domain $2\n", $domain0_numeric);
         }
       }
+    }
+
+    # if we were streaming, we're now done!
+    if( $options{stream} )
+    {
+      return;
     }
 
     # finished reading in all. Plot what we have
@@ -1029,14 +1047,6 @@ instead of I<Y> as a function of I<X>). Thus the first 2 values on each line are
 interpreted as the domain instead of just 1. The rest of the processing happens
 the same way as before.
 
-=head3 Special data commands
-
-Other than the raw data, 2 special commands are interpreted if they appear in
-the input. These are C<replot> and C<clear>. If a line of data begins with
-C<replot> and we're plotting in realtime with C<--stream>, the plot will be
-refreshed immediately. If a line of data begins with C<clear>, the plot is
-cleared, to be re-filled with any data following the C<clear>.
-
 =head3 Time/date data
 
 If the input data domain is a time/date, this can be interpreted with
@@ -1081,7 +1091,8 @@ C<refreshperiod> seconds. If the period isn't specified, a 1Hz refresh rate is
 used. To refresh at specific intervals indicated by the data, set the
 refreshperiod to 0 or to 'trigger'. The plot will then I<only> be refreshed when
 a data line 'replot' is received. This 'replot' command works in both triggered
-and timed modes, but in triggered mode, it's the only way to replot.
+and timed modes, but in triggered mode, it's the only way to replot. Look in
+L<Special data commands> for more information.
 
 To plot only the most recent data (instead of I<all> the data), C<--xlen
 windowsize> can be given. This will create an constantly-updating, scrolling
@@ -1089,6 +1100,32 @@ view of the recent past. C<windowsize> should be replaced by the desired length
 of the domain window to plot, in domain units (passed-in values if C<--domain>
 or line numbers otherwise). If the domain is a time/date via C<--timefmt>, then
 C<windowsize> is in seconds.
+
+=head3 Special data commands
+
+If we are reading streaming data, the input stream can contain special commands
+in addition to the raw data. Feedgnuplot looks for these at the start of every
+input line. If a command is detected, the rest of the line is discarded. These
+commands are
+
+=over
+
+=item C<replot>
+
+This command refreshes the plot right now, instead of waiting for the next
+refresh time indicated by the timer. This command works in addition to the timed
+refresh, as indicated by C<--stream [refreshperiod]>.
+
+=item C<clear>
+
+This command clears out the current data in the plot. The plotting process
+continues, however, to any data following the C<clear>.
+
+=item C<exit>
+
+This command causes feedgnuplot to exit.
+
+=back
 
 =head2 Hardcopy output
 
@@ -1247,8 +1284,8 @@ C<--extraValuesPerPoint>
 
 Plot the data as it comes in, in realtime. If period is given, replot every
 period seconds. If no period is given, replot at 1Hz. If the period is given as
-0 or 'trigger', replot ONLY when the incoming data dictates this. See the
-"Real-time streaming data" section of the man page.
+0 or 'trigger', replot I<only> when the incoming data dictates this. See the
+L<Real-time streaming data> section of the man page.
 
 =item
 
