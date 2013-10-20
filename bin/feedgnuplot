@@ -1083,6 +1083,10 @@ C<--timefmt>. Example:
 
 This plots the 'idle' CPU consumption against time.
 
+Note that while gnuplot supports the time/date on any axis, I<feedgnuplot>
+currently supports it I<only> as the x-axis domain. This may change in the
+future.
+
 =head2 Real-time streaming data
 
 To plot real-time data, pass in the C<--stream [refreshperiod]> option. Data
