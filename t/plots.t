@@ -2,8 +2,9 @@
 
 # This tests various features of feedgnuplot. Note that the tests look at actual
 # plot output using the 'dumb' terminal, so any changes in gnuplot itself that
-# change the way the output looks will show up as test failures. Hopefully this
-# will not be a big deal
+# change the way the output looks will show up as test failures. Currently the
+# reference plots come from gnuplot 4.6.4, and I make sure this is the version
+# we're testing with
 
 
 # require a threaded perl for my tests. This block lifted verbatim from the cpantesters wiki
@@ -14,9 +15,18 @@ BEGIN {
     exit(0);
   }
 
-  unless( open( my $pipe, '|-', 'gnuplot' ))
+  open(my $pipe, 'gnuplot --version |');
+  if( !$pipe )
   {
-    print("1..0 # Skip: gnuplot not installed. This is required for feedgnuplot to be useful\n");
+    print("1..0 # Skip: gnuplot not installed. Tests require ver. 4.6.4; feedgnuplot works with any.\n");
+    exit(0);
+  }
+
+  my $gnuplotVersion = <$pipe>;
+  chomp $gnuplotVersion;
+  if ($gnuplotVersion ne "gnuplot 4.6 patchlevel 4")
+  {
+    print("1..0 # Skip: tests require gnuplot 4.6.4. Instead I detected '$gnuplotVersion'.\n");
     exit(0);
   }
 }
@@ -318,8 +328,8 @@ tryplot( testname => 'lines on both axes with labels, legends, titles',
                                             Test plot
                                                                                               y2
   10 ++---------+----------+---------+----------+----------+----------+---------+---------*A 30
-     +          +          +         +          +          +          +         +       ** +
-     |                                                                       data 0 **A*** |
+     +          +          +         +          +          +          +      data 0 **A*** +
+     |                                                                               ***   |
      |                                                                            ***      |
    9 ++                                                                         **         |
      |                                                                       ***          #B 25
@@ -368,8 +378,8 @@ tryplot( testname => 'lines on both axes with labels, legends, titles; different
                                             Test plot
                                                                                               y2
   10 ++---------+----------+---------+----------+----------+----------+---------+---------** 30
-     +          +          +         +          +          +          +         +       ** +
-     |                                                                       data 0 ****** |
+     +          +          +         +          +          +          +      data 0 ****** +
+     |                                                                               ***   |
      |                                                                            ***      |
    9 ++                                                                         **         |
      |                                                                       ***          +G 25
@@ -460,12 +470,12 @@ tryplot( testname => 'dataid plot',
 
 
   25 ++---------+-----------+----------+-----------+----------+----------+-----------+---------+E
-     +          +           +          +           +          +          +           +          +
-     |                                                                                 2 **A*** |
+     +          +           +          +           +          +          +           + 2 **A*** +
      |                                                                                 4 ##B### |
      |                                                                                 6 $$C$$$ |
      |                                                                                 8 %%D%%% |
      |                                                                                10 @@E@@@ |
+     |                                                                                          |
   20 ++                                                                                        ++
      |                                                                                          |
      |                                                                                          |
@@ -695,7 +705,7 @@ tryplot( testname => 'Circles',
          refplot  => <<'EOF' );
 
 
-    5 ++-------+--------+--------+--------+--------+--------+--------+--------*--------+-------**
+    5 ++-------+--------+--------+--------+--------+--------+--------+--------*******************
       +        +        +        +        +        +        +        +        *        +       *+
       |                                                              *        *                *|
       |                                                          ********     *                *|
@@ -742,14 +752,14 @@ tryplot( testname => 'Error bars (using extraValuesPerPoint)',
          refplot  => <<'EOF' );
 
 
-  5.5 ++---------+-----------+----------+----------+----------+-----------+----------+---------***
+  5.5 ++---------+-----------+----------+----------+----------+-----------+----------+---------**
       +          +           +          +          +          +           +          +          *
       |                                                                                         *
     5 ++                                                                                       +A
       |                                                                                         *
       |                                                                                         *
       |                                                                                         *
-  4.5 ++                                                                                       ***
+  4.5 ++                                                                                       **
       |                                                                  ***                    |
       |                                                                   *                     |
     4 ++                                                                  A                    ++
@@ -773,8 +783,8 @@ tryplot( testname => 'Error bars (using extraValuesPerPoint)',
   1.5 ++                                                                                       ++
       |                                                                                         |
       |                                                                                         |
-    1*A*                                                                                       ++
-     ***                                                                                        |
+    1 A*                                                                                       ++
+      **                                                                                        |
       |                                                                                         |
       +          +           +          +          +          +           +          +          +
   0.5 ++---------+-----------+----------+----------+----------+-----------+----------+---------++
@@ -1775,7 +1785,7 @@ tryplot( testname => '--timefmt streaming plot with --monotonic',
     |   ***                                                                                     |
     + **              +                  +                 +                  +                 +
  -4 A*----------------+------------------+-----------------+------------------+----------------++
-  05:06             05:06              05:06             05:06              05:06             05:07
+  05:06             05:06              05:06             05:06              05:06             05:06
 
 
 
@@ -1975,7 +1985,7 @@ tryplot( testname => '--timefmt streaming plot with --monotonic',
     |   ***                                                                                     |
     + **              +                  +                 +                  +                 +
  -4 A*----------------+------------------+-----------------+------------------+----------------++
-  05:06             05:06              05:06             05:06              05:06             05:07
+  05:06             05:06              05:06             05:06              05:06             05:06
 
 
 
