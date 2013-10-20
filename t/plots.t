@@ -65,6 +65,54 @@ tryplot( testname => 'basic line plot',
 
 EOF
 
+tryplot( testname => 'basic line plot to piped hardcopy',
+         cmd      => 'seq 5',
+         options  => [qw(--lines --points),
+                      '--hardcopy', '|cat'],
+         refplot  => <<'EOF' );
+
+
+    5 ++--+---+--+---+---+---+--+--+A
+      +   +   +  +   +   +   +  +  *+
+      |                           * |
+      |                           * |
+  4.5 ++                         * ++
+      |                         *   |
+      |                        *    |
+      |                        *    |
+      |                       *     |
+    4 ++                     A     ++
+      |                     *       |
+      |                    *        |
+      |                   *         |
+  3.5 ++                 *         ++
+      |                 *           |
+      |                *            |
+      |               *             |
+    3 ++             A             ++
+      |             *               |
+      |            *                |
+      |            *                |
+      |           *                 |
+  2.5 ++         *                 ++
+      |         *                   |
+      |         *                   |
+      |        *                    |
+    2 ++      A                    ++
+      |      *                      |
+      |     *                       |
+      |    *                        |
+      |   *                         |
+  1.5 ++  *                        ++
+      |  *                          |
+      | *                           |
+      +*  +   +  +   +   +   +  +   +
+    1 A+--+---+--+---+---+---+--+--++
+      1  1.5  2 2.5  3  3.5  4 4.5  5
+
+Wrote output to |cat
+EOF
+
 tryplot( testname => 'basic lines-only plot',
          cmd      => 'seq 5',
          options  => [qw(--lines)],
