@@ -15,9 +15,11 @@ BEGIN {
   }
 }
 
-use Test::More tests => 16;
-use Test::Script::Run 'is_script_output';
+use Test::More tests => 32;
 use File::Temp 'tempfile';
+use IPC::Run 'run';
+use String::ShellQuote;
+use File::Basename;
 
 tryplot( testname => 'basic line plot',
          cmd      => 'seq 5',
@@ -820,24 +822,28 @@ tryplot( testname => 'Monotonicity check',
 
 EOF
 
+
+
+
+
 sub tryplot
 {
   my %args = @_;
 
-  my ($fh, $input_filename) = tempfile( UNLINK => 1);
-  open IN, '-|', $args{cmd};
-  print $fh <IN>;
-  close IN;
-  close $fh;
-
   my @options = ('--exit',
                  '--extracmds', 'unset grid',
-                 '--terminal', 'dumb 40,40',
-                 $input_filename);
+                 '--terminal', 'dumb 40,40');
 
   unshift @options, @{$args{options}};
 
-  is_script_output( 'feedgnuplot', \@options,
-                    [$args{refplot} =~ /(.*)\n/g], [],
-                    $args{testname});
+  my $out = '';
+  my $err = '';
+  open IN, '-|', $args{cmd} or die "Couldn't open pipe to $args{cmd}";
+  run [dirname($0) . "/../bin/feedgnuplot",, @options],
+    \*IN, \$out, \$err;
+
+  note( "Running test '$args{testname}'. Running: $args{cmd} | feedgnuplot " .
+        shell_quote(@options));
+  is($err, '',             "$args{testname} stderr" );
+  is($out, $args{refplot}, "$args{testname} stdout");
 }
