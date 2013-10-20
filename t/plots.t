@@ -2143,16 +2143,16 @@ sub tryplot
   my @options = ('--exit',
                  '--extracmds', 'unset grid',
                  '--terminal', 'dumb 40,40');
-
   unshift @options, @{$args{options}};
 
+  my $feedgnuplot = dirname($0) . "/../bin/feedgnuplot";
   my $out = '';
   my $err = '';
   open IN, '-|', $args{cmd} or die "Couldn't open pipe to $args{cmd}";
-  run [dirname($0) . "/../bin/feedgnuplot",, @options],
+  run [$feedgnuplot, @options],
     \*IN, \$out, \$err;
 
-  note( "Running test '$args{testname}'. Running: $args{cmd} | feedgnuplot " .
+  note( "Running test '$args{testname}'. Running: $args{cmd} | $feedgnuplot " .
         shell_quote(@options));
   is($err, '',             "$args{testname} stderr" );
   is($out, $args{refplot}, "$args{testname} stdout");
