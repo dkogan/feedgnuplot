@@ -1063,7 +1063,7 @@ the same way as before.
 If the input data domain is a time/date, this can be interpreted with
 C<--timefmt>. This option takes a single argument: the format to use to parse
 the data. The format is documented in 'set timefmt' in gnuplot, although the
-common flags that L<strftime> understands are generally supported. The backslash
+common flags that C<strftime> understands are generally supported. The backslash
 sequences in the format are I<not> supported, so if you want a tab, put in a tab
 instead of \t. Whitespace in the format I<is> supported. When this flag is
 given, some other options act a little bit differently:
@@ -1107,7 +1107,7 @@ used. To refresh at specific intervals indicated by the data, set the
 refreshperiod to 0 or to 'trigger'. The plot will then I<only> be refreshed when
 a data line 'replot' is received. This 'replot' command works in both triggered
 and timed modes, but in triggered mode, it's the only way to replot. Look in
-L<Special data commands> for more information.
+L</"Special data commands"> for more information.
 
 To plot only the most recent data (instead of I<all> the data), C<--xlen
 windowsize> can be given. This will create an constantly-updating, scrolling
@@ -1300,7 +1300,7 @@ C<--extraValuesPerPoint>
 Plot the data as it comes in, in realtime. If period is given, replot every
 period seconds. If no period is given, replot at 1Hz. If the period is given as
 0 or 'trigger', replot I<only> when the incoming data dictates this. See the
-L<Real-time streaming data> section of the man page.
+L</"Real-time streaming data"> section of the man page.
 
 =item
 
@@ -1319,7 +1319,7 @@ Do [not] draw points
 --circles
 
 Plot with circles. This requires a radius be specified for each point.
-Automatically increments C<--extraValuesPerPoint). C<Not> supported for 3d
+Automatically increments C<--extraValuesPerPoint>). C<Not> supported for 3d
 plots.
 
 =item
