@@ -13,6 +13,12 @@ BEGIN {
     print("1..0 # Skip: Perl not compiled with 'useithreads'\n");
     exit(0);
   }
+
+  unless( open( my $pipe, '|-', 'gnuplot' ))
+  {
+    print("1..0 # Skip: gnuplot not installed. This is required for feedgnuplot to be useful\n");
+    exit(0);
+  }
 }
 
 use Test::More tests => 52;
