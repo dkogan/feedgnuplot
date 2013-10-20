@@ -406,11 +406,15 @@ sub mainThread
 
     my $outputfile;
     my $outputfileType;
-    if( $options{hardcopy})
+    if( defined $options{hardcopy})
     {
       $outputfile = $options{hardcopy};
-      $outputfile =~ /\.(eps|ps|pdf|png|svg)$/i;
-      $outputfileType = $1 ? lc $1 : '';
+      if( $outputfile =~ /^[^|]                       # starts with anything other than |
+                          .*                          # stuff in the middle
+                          \.(eps|ps|pdf|png|svg)$/ix) # ends with a known extension
+      {
+        $outputfileType = lc $1;
+      }
 
       my %terminalOpts =
       ( eps  => 'postscript solid color enhanced eps',
@@ -419,8 +423,12 @@ sub mainThread
         png  => 'png size 1280,1024',
         svg  => 'svg');
 
-      $options{terminal} ||= $terminalOpts{$outputfileType}
-        if $terminalOpts{$outputfileType};
+      if( !defined $options{terminal} &&
+           defined $outputfileType    &&
+           $terminalOpts{$outputfileType} )
+      {
+        $options{terminal} = $terminalOpts{$outputfileType};
+      }
 
       die "Asked to plot to file '$outputfile', but I don't know which terminal to use, and no --terminal given"
         unless $options{terminal};
@@ -658,13 +666,20 @@ sub mainThread
     # finished reading in all. Plot what we have
     plotStoredData();
 
-    if ( $options{hardcopy})
+    if ( defined $options{hardcopy})
     {
       print PIPE "set output\n";
-      # sleep until the plot file exists, and it is closed. Sometimes the output is
-      # still being written at this point
-      usleep(100_000) until -e $outputfile;
-      usleep(100_000) until(system("fuser -s \"$outputfile\""));
+
+      # sleep until the plot file exists, and it is closed. Sometimes the output
+      # is still being written at this point. If the output filename starts with
+      # '|', gnuplot pipes the output to that process, instead of writing to a
+      # file. In that case I don't make sure the file exists, since there IS not
+      # file
+      if( $options{hardcopy} !~ /^\|/ )
+      {
+        usleep(100_000) until -e $outputfile;
+        usleep(100_000) until(system("fuser -s \"$outputfile\""));
+      }
 
       print "Wrote output to $outputfile\n";
       return;
