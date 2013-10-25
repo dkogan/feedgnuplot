@@ -1,11 +1,6 @@
 feedgnuplot (1.26-1) unstable; urgency=low
 
   * Minor POD update
-
- -- Dima Kogan <dima@secretsauce.net>  Sun, 20 Oct 2013 01:19:51 -0700
-
-feedgnuplot (1.25-1) unstable; urgency=low
-
   * Added test suite
   * Added initial support for --timefmt. Currently time/date data is
     supported only at the x-axis domain
@@ -16,7 +11,7 @@ feedgnuplot (1.25-1) unstable; urgency=low
   * --hardcopy now handles piped output (gnuplot 'set output |process'
     syntax)
 
- -- Dima Kogan <dima@secretsauce.net>  Sun, 20 Oct 2013 00:57:23 -0700
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 20 Oct 2013 01:19:51 -0700
 
 feedgnuplot (1.24-2) unstable; urgency=low
 
