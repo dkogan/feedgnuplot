@@ -1,5 +1,6 @@
 feedgnuplot (1.26-1) unstable; urgency=low
 
+  [ Dima Kogan ]
   * Minor POD update
   * Added test suite
   * Added initial support for --timefmt. Currently time/date data is
@@ -10,6 +11,9 @@ feedgnuplot (1.26-1) unstable; urgency=low
   * y2-axis curves no longer have a thicker line by default
   * --hardcopy now handles piped output (gnuplot 'set output |process'
     syntax)
+
+  [ Anton Gladky ]
+  * Add libipc-run-perl to Build-Depends to execute tests
 
  -- Dima Kogan <dima@secretsauce.net>  Sun, 20 Oct 2013 01:19:51 -0700
 
