@@ -1,6 +1,7 @@
 Makefile.PL
 MANIFEST
 bin/feedgnuplot
+lib/App/feedgnuplot.pm
 t/manifest.t
 t/plots.t
 Changes

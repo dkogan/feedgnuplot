@@ -42,14 +42,30 @@ sub MY::libscan
     # Don't install any symlinks (i.e. README.pod)
     return undef if -l $file;
 
+    # Don't install any feedgnuplot.pm. This exists only to make CPAN index this
+    # distribution
+    return undef if $file =~ /feedgnuplot.pm/;
+
     return $self->SUPER::libscan ($file);
 }
 
 # I want my manpage to go into the man section '1', NOT '1p'. Here I add a
 # snippet to the end of the generated Makefile to force this
+#
+# I also generate the feedgnuplot.pm. This exists only to make CPAN index this
+# distribution
 sub MY::postamble
 {
-  return "MAN1EXT := 1\n";
+  return <<'EOF'
+MAN1EXT := 1
+lib/App/feedgnuplot.pm: bin/feedgnuplot
+	mkdir -p lib/App
+	echo 'package App::feedgnuplot;' > $@
+	cat $^ >> $@
+	echo '1;' >> $@
+
+dist: lib/App/feedgnuplot.pm
+EOF
 }
 
 
@@ -65,5 +81,5 @@ WriteMakefile
    EXE_FILES                  => [ 'bin/feedgnuplot' ],
    BUILD_REQUIRES             => { 'String::ShellQuote' => 0},
    dist                       => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-   clean                      => { FILES => 'feedgnuplot-*' },
+   clean                      => { FILES => 'feedgnuplot-* lib' },
   );
