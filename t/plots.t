@@ -5,7 +5,9 @@
 # change the way the output looks will show up as test failures. Currently the
 # reference plots come from gnuplot 4.6.4, and I make sure this is the version
 # we're testing with
-
+#
+# Note that some tests are only executed when the RUN_ALL_TESTS environment
+# variable is set.
 
 # require a threaded perl for my tests. This block lifted verbatim from the cpantesters wiki
 BEGIN {
@@ -839,6 +841,24 @@ tryplot( testname => 'Error bars (using extraValuesPerPoint)',
       1         1.5          2         2.5         3         3.5          4         4.5         5
 
 EOF
+
+
+SKIP:
+{
+
+# Some tests aren't 100% reliable, so I do not include them in automated testing. These are
+#
+# - Histogram and circle-plotting tests: these have inconsistent round-off
+#   behavior on different arches; specifically 32-bit and 64-bit x86. So both
+#   plots look fine, but not identical, thus the tests fail
+#
+# - Streaming tests. These tests have a temporal component, so the loading of
+#   the host machine can cause a test failure. It's fine pretty much all the
+#   time on my not-too-new laptop, but this is bad for automated testing
+
+skip "Skipping unreliable tests. Set RUN_ALL_TESTS environment variable to run them all", 18 unless $ENV{RUN_ALL_TESTS};
+
+
 tryplot( testname => 'Histogram plot',
          cmd      => q{seq 50 | awk '{print $1*$1}'},
          options  => [qw(--lines --points),
@@ -2148,6 +2168,7 @@ tryplot( testname => '--timefmt streaming plot with --monotonic',
 
 EOF
 
+}
 
 
 
