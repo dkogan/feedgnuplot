@@ -1,3 +1,13 @@
+feedgnuplot (1.28-1) unstable; urgency=low
+
+  * Upstream update:
+    - Removed example debianization
+    - Removed unreliable unit tests from automated testing (Closes: #731080)
+  * gnuplot dependency now favors graphical gnuplot packages
+  * Removed Anton Gladky from the Uploaders
+
+ -- Dima Kogan <dima@secretsauce.net>  Wed, 04 Dec 2013 02:05:08 -0800
+
 feedgnuplot (1.26-1) unstable; urgency=low
 
   [ Dima Kogan ]
