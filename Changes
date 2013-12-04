@@ -1,3 +1,11 @@
+feedgnuplot (1.27)
+
+  * Disabled tests that can fail on some arches (can be re-enabled with
+    environment variable)
+  * Removed sample debianization; this program is now in Debian proper
+
+ -- Dima Kogan <dima@secretsauce.net>  Tue, 03 Dec 2013 23:37:40 -0800
+
 feedgnuplot (1.26)
 
   * Minor POD fixes
