@@ -1222,10 +1222,10 @@ data file can be plotted simply with
 
  $ ./data
 
-The caveats here are that on Linux the whole #! line is limited to 127 charaters
-and that the full path to feedgnuplot must be given. The 127 character limit is
-a serious limitation, but this can likely be resolved with a kernel patch. I
-have only tried on Linux 2.6.
+The caveats here are that on Linux the whole #! line is limited to 127
+characters and that the full path to feedgnuplot must be given. The 127
+character limit is a serious limitation, but this can likely be resolved with a
+kernel patch. I have only tried on Linux 2.6.
 
 =head3 Self-plotting data with perl inline data
 
