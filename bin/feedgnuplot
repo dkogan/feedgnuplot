@@ -1085,7 +1085,7 @@ interpreted as the I<X>-value for the rest of the data on that line. Without
 C<--domain> the I<X>-value is the line number, and the first value on a line is
 a plain data point like the others. Default is C<--nodomain>. Thus the original
 example above produces 2 curves, with B<1,2,3,4,5> as the I<X>-values. If we run
-the same command with --domain:
+the same command with C<--domain>:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' | feedgnuplot --domain
 
@@ -1305,14 +1305,14 @@ it to the plotter.
 
 =item
 
---[no]domain
+--C<[no]domain>
 
 If enabled, the first element of each line is the domain variable. If not, the
 point index is used
 
 =item
 
---[no]dataid
+--C<[no]dataid>
 
 If enabled, each data point is preceded by the ID of the data set that point
 corresponds to. This ID is interpreted as a string, NOT as just a number. If not
@@ -1324,23 +1324,23 @@ As an example, if line 3 of the input is "0 9 1 20" then
 
 =item
 
-'--nodomain --nodataid' would parse the 4 numbers as points in 4 different
+C<--nodomain --nodataid> would parse the 4 numbers as points in 4 different
 curves at x=3
 
 =item
 
-'--domain --nodataid' would parse the 4 numbers as points in 3 different
+C<--domain --nodataid> would parse the 4 numbers as points in 3 different
 curves at x=0. Here, 0 is the x-variable and 9,1,20 are the data values
 
 =item
 
-'--nodomain --dataid' would parse the 4 numbers as points in 2 different
+C<--nodomain --dataid> would parse the 4 numbers as points in 2 different
 curves at x=3. Here 0 and 1 are the data IDs and 9 and 20 are the
 data values
 
 =item
 
-'--domain --dataid' would parse the 4 numbers as a single point at
+C<--domain --dataid> would parse the 4 numbers as a single point at
 x=0. Here 9 is the data ID and 1 is the data value. 20 is an extra
 value, so it is ignored. If another value followed 20, we'd get another
 point in curve ID 20
@@ -1349,20 +1349,20 @@ point in curve ID 20
 
 =item
 
---[no]3d
+C<--[no]3d>
 
-Do [not] plot in 3D. This only makes sense with --domain. Each domain here is an
-(x,y) tuple
+Do [not] plot in 3D. This only makes sense with C<--domain>. Each domain here is
+an (x,y) tuple
 
 =item
 
---timefmt [format]
+--C<timefmt [format]>
 
 Interpret the X data as a time/date, parsed with the given format
 
 =item
 
---colormap
+C<--colormap>
 
 Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
 used to set the extents of the colors. Automatically increments
@@ -1370,7 +1370,7 @@ C<--extraValuesPerPoint>
 
 =item
 
---stream [period]
+C<--stream [period]>
 
 Plot the data as it comes in, in realtime. If period is given, replot every
 period seconds. If no period is given, replot at 1Hz. If the period is given as
@@ -1379,19 +1379,19 @@ L</"Real-time streaming data"> section of the man page.
 
 =item
 
---[no]lines
+C<--[no]lines>
 
 Do [not] draw lines to connect consecutive points
 
 =item
 
---[no]points
+C<--[no]points>
 
 Do [not] draw points
 
 =item
 
---circles
+C<--circles>
 
 Plot with circles. This requires a radius be specified for each point.
 Automatically increments C<--extraValuesPerPoint>). C<Not> supported for 3d
@@ -1399,35 +1399,35 @@ plots.
 
 =item
 
---title xxx
+C<--title xxx>
 
 Set the title of the plot
 
 =item
 
---legend curveID legend
+C<--legend curveID legend>
 
 Set the label for a curve plot. Use this option multiple times for multiple
-curves. With --dataid, curveID is the ID. Otherwise, it's the index of the
+curves. With C<--dataid>, curveID is the ID. Otherwise, it's the index of the
 curve, starting at 0
 
 =item
 
---autolegend
+C<--autolegend>
 
-Use the curve IDs for the legend. Titles given with --legend override these
-
-=item
-
---xlen xxx
-
-When using --stream, sets the size of the x-window to plot. Omit this or set it
-to 0 to plot ALL the data. Does not make sense with 3d plots. Implies
---monotonic
+Use the curve IDs for the legend. Titles given with C<--legend> override these
 
 =item
 
---xmin/xmax/ymin/ymax/y2min/y2max/zmin/zmax xxx
+C<--xlen xxx>
+
+When using C<--stream>, sets the size of the x-window to plot. Omit this or set
+it to 0 to plot ALL the data. Does not make sense with 3d plots. Implies
+C<--monotonic>
+
+=item
+
+C<--xmin/xmax/ymin/ymax/y2min/y2max/zmin/zmax xxx>
 
 Set the range for the given axis. These x-axis bounds are ignored in a streaming
 plot. The y2-axis bound do not apply in 3d plots. The z-axis bounds apply
@@ -1435,52 +1435,52 @@ I<only> to 3d plots or colormaps.
 
 =item
 
---xlabel/ylabel/y2label/zlabel xxx
+C<--xlabel/ylabel/y2label/zlabel xxx>
 
 Label the given axis. The y2-axis label does not apply to 3d plots while the
 z-axis label applies I<only> to 3d plots.
 
 =item
 
---y2 xxx
+C<--y2 xxx>
 
-Plot the data specified by this curve ID on the y2 axis. Without --dataid, the
-ID is just an ordered 0-based index. Does not apply to 3d plots. Can be passed
-multiple times, or passed a comma-separated list. By default the y2-axis curves
-look the same as the y-axis ones. I.e. the viewer of the resulting plot has to
-be told which is which via an axes label, legend, etc. Prior to version 1.25 of
-feedgnuplot the curves plotted on the y2 axis were drawn with a thicker line.
-This is no longer the case, but that behavior can be brought back by passing
-something like
+Plot the data specified by this curve ID on the y2 axis. Without C<--dataid>,
+the ID is just an ordered 0-based index. Does not apply to 3d plots. Can be
+passed multiple times, or passed a comma-separated list. By default the y2-axis
+curves look the same as the y-axis ones. I.e. the viewer of the resulting plot
+has to be told which is which via an axes label, legend, etc. Prior to version
+1.25 of feedgnuplot the curves plotted on the y2 axis were drawn with a thicker
+line. This is no longer the case, but that behavior can be brought back by
+passing something like
 
  --y2 curveid --style curveid 'linewidth 3'
 
 =item
 
---histogram curveID
+C<--histogram curveID>
 
 
 Set up a this specific curve to plot a histogram. The bin width is given with
-the --binwidth option (assumed 1.0 if omitted). --histogram does NOT touch the
-drawing style. It is often desired to plot these with boxes, and this MUST be
-explicitly requested by C<--with boxes>. This works with --domain and/or
---stream, but in those cases the x-value is used ONLY to cull old data because
-of --xlen or --monotonic. I.e. the x-values are NOT drawn in any way. Can be
-passed multiple times, or passed a comma- separated list
+the C<--binwidth> option (assumed 1.0 if omitted). C<--histogram> does I<not>
+touch the drawing style. It is often desired to plot these with boxes, and this
+I<must> be explicitly requested by C<--with boxes>. This works with C<--domain>
+and/or C<--stream>, but in those cases the x-value is used I<only> to cull old
+data because of C<--xlen> or C<--monotonic>. I.e. the x-values are I<not> drawn
+in any way. Can be passed multiple times, or passed a comma- separated list
 
 =item
 
---binwidth width
+C<--binwidth width>
 
 The width of bins when making histograms. This setting applies to ALL histograms
 in the plot. Defaults to 1.0 if not given.
 
 =item
 
---histstyle style
+C<--histstyle style>
 
 Normally, histograms are generated with the 'smooth freq' gnuplot style.
---histstyle can be used to select different 'smooth' settings. Allowed are
+C<--histstyle> can be used to select different 'smooth' settings. Allowed are
 'unique', 'cumulative' and 'cnormal'. 'unique' indicates whether a bin has at
 least one item in it: instead of counting the items, it'll always report 0 or 1.
 'cumulative' is the integral of the "normal" histogram. 'cnormal' is like
@@ -1488,34 +1488,35 @@ least one item in it: instead of counting the items, it'll always report 0 or 1.
 
 =item
 
---style curveID style
+C<--style curveID style>
 
-Additional styles per curve. With --dataid, curveID is the ID. Otherwise, it's
-the index of the curve, starting at 0. Use this option multiple times for
-multiple curves. --styleall does I<not> apply to curves that have a --style
+Additional styles per curve. With C<--dataid>, curveID is the ID. Otherwise,
+it's the index of the curve, starting at 0. Use this option multiple times for
+multiple curves. C<--styleall> does I<not> apply to curves that have a
+C<--style>
 
 =item
 
---curvestyle curveID
+C<--curvestyle curveID>
 
 Synonym for C<--style>
 
 =item
 
---styleall xxx
+C<--styleall xxx>
 
 Additional styles for all curves that have no C<--style>. This is overridden by
 any applicable C<--style>. Exclusive with C<--with>.
 
 =item
 
---curvestyleall xxx
+C<--curvestyleall xxx>
 
 Synonym for C<--styleall>
 
 =item
 
---with xxx
+C<--with xxx>
 
 Same as C<--styleall>, but prefixed with "with". Thus
 
@@ -1529,21 +1530,21 @@ Exclusive with C<--styleall>.
 
 =item
 
---extracmds xxx
+C<--extracmds xxx>
 
 Additional commands to pass on to gnuplot verbatim. These could contain extra
 global styles for instance. Can be passed multiple times.
 
 =item
 
---set xxx
+C<--set xxx>
 
 Additional 'set' commands to pass on to gnuplot verbatim. C<--set 'a b c'> will
 result in gnuplot seeing a C<set a b c> command. Can be passed multiple times.
 
 =item
 
---unset xxx
+C<--unset xxx>
 
 Additional 'unset' commands to pass on to gnuplot verbatim. C<--unset 'a b c'>
 will result in gnuplot seeing a C<unset a b c> command. Can be passed multiple
@@ -1551,36 +1552,36 @@ times.
 
 =item
 
---square
+C<--square>
 
 Plot data with aspect ratio 1. For 3D plots, this controls the aspect ratio for
 all 3 axes
 
 =item
 
---square_xy
+C<--square_xy>
 
 For 3D plots, set square aspect ratio for ONLY the x,y axes
 
 =item
 
---hardcopy xxx
+C<--hardcopy xxx>
 
 If not streaming, output to a file specified here. Format inferred from
-filename, unless specified by --terminal
+filename, unless specified by C<--terminal>
 
 =item
 
---terminal xxx
+C<--terminal xxx>
 
 String passed to 'set terminal'. No attempts are made to validate this.
---hardcopy sets this to some sensible defaults if --hardcopy is given .png,
-.pdf, .ps, .eps or .svg. If any other file type is desired, use both --hardcopy
-and --terminal
+C<--hardcopy> sets this to some sensible defaults if --hardcopy is given .png,
+.pdf, .ps, .eps or .svg. If any other file type is desired, use both
+C<--hardcopy> and C<--terminal>
 
 =item
 
---maxcurves xxx
+C<--maxcurves xxx>
 
 The maximum allowed number of curves. This is 100 by default, but can be reset
 with this option. This exists purely to prevent perl from allocating all of the
@@ -1588,17 +1589,17 @@ system's memory when reading bogus data
 
 =item
 
---monotonic
+C<--monotonic>
 
-If --domain is given, checks to make sure that the x- coordinate in the input
+If C<--domain> is given, checks to make sure that the x- coordinate in the input
 data is monotonically increasing. If a given x-variable is in the past, all data
-currently cached for this curve is purged. Without --monotonic, all data is
-kept. Does not make sense with 3d plots. No --monotonic by default. The data is
+currently cached for this curve is purged. Without C<--monotonic>, all data is
+kept. Does not make sense with 3d plots. No C<--monotonic> by default. The data is
 replotted before being purged
 
 =item
 
---extraValuesPerPoint xxx
+C<--extraValuesPerPoint xxx>
 
 How many extra values are given for each data point. Normally this is 0, and
 does not need to be specified, but sometimes we want extra data, like for colors
@@ -1608,14 +1609,14 @@ styles are used, with C<--styleall> or C<--with> for instance
 
 =item
 
---dump
+C<--dump>
 
 Instead of printing to gnuplot, print to STDOUT. Very useful for debugging. It
 is possible to send the output produced this way to gnuplot directly.
 
 =item
 
---exit
+C<--exit>
 
 Terminate the feedgnuplot process after passing data to gnuplot. The window will
 persist but will not be interactive. Without this option feedgnuplot keeps
@@ -1624,13 +1625,13 @@ later versions of gnuplot and only with some gnuplot terminals.
 
 =item
 
---geometry
+C<--geometry>
 
 If using X11, specifies the size, position of the plot window
 
 =item
 
---version
+C<--version>
 
 Print the version and exit
 
