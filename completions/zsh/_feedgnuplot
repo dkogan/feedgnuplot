@@ -26,7 +26,8 @@ _arguments -S                                                                   
     '--zmin:min Z:'                                                               \
     '--zmax:max Z:'                                                               \
     '*--y2:plot to place on the Y2 axis:'                                         \
-    '--curvestyleall[Additional styles for ALL curves]:style'                     \
+    '(--with)--curvestyleall[Additional styles for ALL curves]:style'             \
+    '(--curvestyleall)--with[Additional styles for ALL curves]:style'             \
     '*--extracmds[Additional gnuplot commands]:command'                           \
     '*--set[Additional 'set' gnuplot commands]:set-option'                        \
     '*--unset[Additional 'unset' gnuplot commands]:unset-option'                  \

@@ -116,11 +116,14 @@ sub interpretCommandline
   $options{set}        = [];
   $options{unset}      = [];
 
+  $options{curvestyleall} = '';
+  $options{with}          = '';
+
   GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=s', 'xmax=s', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@',
-             'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@', 'set=s@', 'unset=s@',
+             'curvestyle=s{2}', 'curvestyleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
@@ -143,9 +146,6 @@ sub interpretCommandline
     print "feedgnuplot version $VERSION\n";
     exit 0;
   }
-
-  # no global style if one isn't given
-  $options{curvestyleall} = '' unless defined $options{curvestyleall};
 
   # expand options that are given as comma-separated lists
   for my $listkey (qw(histogram y2))
@@ -207,6 +207,17 @@ sub interpretCommandline
       print STDERR "--stream can only take in values >=0 or 'trigger'\n";
       exit -1;
     }
+  }
+
+  if( $options{curvestyleall} && $options{with} )
+  {
+    print STDERR "--curvestyleall and --with are mutually exclusive. Please just use one.\n";
+    exit -1;
+  }
+  if( $options{with} )
+  {
+    $options{curvestyleall} = "with $options{with}";
+    $options{with} = '';
   }
 
   if ($options{colormap})
@@ -778,9 +789,17 @@ sub updateCurveOptions
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
 
-  my $curvestyleall = '';
-  $curvestyleall = $options{curvestyleall}
-    if defined $options{curvestyleall} && !defined $options{curvestyle_hash}{$id};
+  my ($curvestyleall);
+  if( defined $options{curvestyle_hash}{$id} )
+  {
+    # I have a curve-specific style set with --curvestyle. This style lives in
+    # $curve->{extraoptions}, and it overrides the global styles
+    $curvestyleall = '';
+  }
+  else
+  {
+    $curvestyleall = $options{curvestyleall};
+  }
 
   my $histoptions = $curve->{histoptions} || '';
 
@@ -1025,8 +1044,15 @@ in C<--extracmds 'unset grid'>. Commands C<--set> and C<--unset> exists to
 provide nicer syntax, so this is equivalent to passing C<--unset grid>. As many
 of these options as needed can be passed in. To add arbitrary curve styles, use
 C<--curvestyle curveID extrastyle>. Pass these more than once to affect more
-than one curve. To apply an extra style to I<all> the curves that lack an
-explicit C<--curvestyle>, pass in C<--curvestyleall extrastyle>.
+than one curve.
+
+To apply an extra style to I<all> the curves that lack an explicit
+C<--curvestyle>, pass in C<--curvestyleall extrastyle>. In the most common case,
+the extra style is C<with something>. To support this more simply, you can pass
+in C<--with something> instead of C<--curvestyleall 'with something'>.
+C<--curvestyleall> and C<--with> are mutually exclusive. Furthermore any
+curve-specific C<--curvestyle> overrides the global C<--curvestyleall> or
+C<--with> setting.
 
 =head2 Data formats
 
@@ -1421,10 +1447,10 @@ something like
 Set up a this specific curve to plot a histogram. The bin width is given with
 the --binwidth option (assumed 1.0 if omitted). --histogram does NOT touch the
 drawing style. It is often desired to plot these with boxes, and this MUST be
-explicitly requested with --curvestyleall 'with boxes'. This works with --domain
-and/or --stream, but in those cases the x-value is used ONLY to cull old data
-because of --xlen or --monotonic. I.e. the x-values are NOT drawn in any way.
-Can be passed multiple times, or passed a comma- separated list
+explicitly requested by C<--with boxes>. This works with --domain and/or
+--stream, but in those cases the x-value is used ONLY to cull old data because
+of --xlen or --monotonic. I.e. the x-values are NOT drawn in any way. Can be
+passed multiple times, or passed a comma- separated list
 
 =item
 
@@ -1457,7 +1483,22 @@ multiple curves. --curvestylall does NOT apply to curves that have a
 
 --curvestyleall xxx
 
-Additional styles for all curves that have no --curvestyle
+Additional styles for all curves that have no --curvestyle. This is overridden
+by any applicable C<--curvestyle>. Exclusive with C<--with>.
+
+=item
+
+--with xxx
+
+Same as C<--curvestyleall>, but prefixed with "with". Thus
+
+ --with boxes
+
+is equivalent to
+
+ --curvestyleall 'with boxes'
+
+Exclusive with C<--curvestyleall>.
 
 =item
 
@@ -1530,13 +1571,13 @@ replotted before being purged
 
 =item
 
---extraValuesPerPoint
+--extraValuesPerPoint xxx
 
-xxx How many extra values are given for each data point. Normally this is 0, and
+How many extra values are given for each data point. Normally this is 0, and
 does not need to be specified, but sometimes we want extra data, like for colors
 or point sizes or error bars, etc. feedgnuplot options that require this
 (colormap, circles) automatically set it. This option is ONLY needed if unknown
-styles are used, with --curvestyleall for instance
+styles are used, with C<--curvestyleall> or C<--with> for instance
 
 =item
 
@@ -1609,7 +1650,7 @@ in a Thinkpad.
 =head2 Plotting a histogram of file sizes in a directory
 
  $ ls -l | awk '{print $5/1e6}' |
-   feedgnuplot --histogram 0 --curvestyleall 'with boxes' --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
+   feedgnuplot --histogram 0 --with boxes --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
 
 =head1 ACKNOWLEDGEMENT
 
