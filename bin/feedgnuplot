@@ -110,6 +110,7 @@ sub interpretCommandline
   # needed for these to be parsed into an array-ref, these default to []
   $options{legend}     = [];
   $options{curvestyle} = [];
+  $options{style}      = [];
   $options{histogram}  = [];
   $options{y2}         = [];
   $options{extracmds}  = [];
@@ -117,13 +118,14 @@ sub interpretCommandline
   $options{unset}      = [];
 
   $options{curvestyleall} = '';
+  $options{styleall}      = '';
   $options{with}          = '';
 
   GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=s', 'xmax=s', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@',
-             'curvestyle=s{2}', 'curvestyleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
+             'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
@@ -153,6 +155,22 @@ sub interpretCommandline
     @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
       if defined $options{$listkey};
   }
+
+  # --style and --curvestyle are synonyms, as are --styleall and
+  # --curvestyleall, so fill that in
+  if( $options{styleall} )
+  {
+    if($options{curvestyleall} )
+    {
+      $options{curvestyleall} .= " $options{styleall}";
+    }
+    else
+    {
+      $options{curvestyleall} = $options{styleall};
+    }
+  }
+  push @{$options{curvestyle}}, @{$options{style}};
+
 
   # --legend and --curvestyle options are conceptually hashes, but are parsed as
   # arrays in order to preserve the ordering. I parse both of these into hashes
@@ -1038,21 +1056,20 @@ points. New curves will be created as needed.
 
 The most commonly used functionality of gnuplot is supported directly by the
 script. Anything not directly supported can still be done with options such as
-C<--set>, C<--extracmds> C<--curvestyle>, etc. Arbitrary gnuplot commands can be
+C<--set>, C<--extracmds> C<--style>, etc. Arbitrary gnuplot commands can be
 passed in with C<--extracmds>. For example, to turn off the grid, you can pass
 in C<--extracmds 'unset grid'>. Commands C<--set> and C<--unset> exists to
 provide nicer syntax, so this is equivalent to passing C<--unset grid>. As many
 of these options as needed can be passed in. To add arbitrary curve styles, use
-C<--curvestyle curveID extrastyle>. Pass these more than once to affect more
-than one curve.
+C<--style curveID extrastyle>. Pass these more than once to affect more than one
+curve.
 
-To apply an extra style to I<all> the curves that lack an explicit
-C<--curvestyle>, pass in C<--curvestyleall extrastyle>. In the most common case,
-the extra style is C<with something>. To support this more simply, you can pass
-in C<--with something> instead of C<--curvestyleall 'with something'>.
-C<--curvestyleall> and C<--with> are mutually exclusive. Furthermore any
-curve-specific C<--curvestyle> overrides the global C<--curvestyleall> or
-C<--with> setting.
+To apply an extra style to I<all> the curves that lack an explicit C<--style>,
+pass in C<--styleall extrastyle>. In the most common case, the extra style is
+C<with something>. To support this more simply, you can pass in C<--with
+something> instead of C<--styleall 'with something'>. C<--styleall> and
+C<--with> are mutually exclusive. Furthermore any curve-specific C<--style>
+overrides the global C<--styleall> or C<--with> setting.
 
 =head2 Data formats
 
@@ -1099,14 +1116,13 @@ to represent a single point. For example, the script has support to plot all the
 data with C<--circles>. This requires a radius to be specified for each point in
 addition to the position of the point. Thus, when plotting with C<--circles>, 2
 numbers are read for each data point instead of 1. A similar situation exists
-with C<--colormap> where each point contains the position I<and> the
-color. There are other gnuplot styles that require more data (such as error
-bars), but none of these are directly supported by the script. They can still be
-used, though, by specifying the specific style with C<--curvestyle>, and
-specifying how many extra values are needed for each point with
-C<--extraValuesPerPoint extra>. C<--extraValuesPerPoint> is ONLY needed for the
-styles not explicitly supported; supported styles set that variable
-automatically.
+with C<--colormap> where each point contains the position I<and> the color.
+There are other gnuplot styles that require more data (such as error bars), but
+none of these are directly supported by the script. They can still be used,
+though, by specifying the specific style with C<--style>, and specifying how
+many extra values are needed for each point with C<--extraValuesPerPoint extra>.
+C<--extraValuesPerPoint> is ONLY needed for the styles not explicitly supported;
+supported styles set that variable automatically.
 
 =head3 3D data
 
@@ -1437,7 +1453,7 @@ feedgnuplot the curves plotted on the y2 axis were drawn with a thicker line.
 This is no longer the case, but that behavior can be brought back by passing
 something like
 
- --y2 curveid --curvestyle curveid 'linewidth 3'
+ --y2 curveid --style curveid 'linewidth 3'
 
 =item
 
@@ -1472,33 +1488,44 @@ least one item in it: instead of counting the items, it'll always report 0 or 1.
 
 =item
 
+--style curveID style
+
+Additional styles per curve. With --dataid, curveID is the ID. Otherwise, it's
+the index of the curve, starting at 0. Use this option multiple times for
+multiple curves. --styleall does I<not> apply to curves that have a --style
+
+=item
+
 --curvestyle curveID
 
-style Additional styles per curve. With --dataid, curveID is the ID. Otherwise,
-it's the index of the curve, starting at 0. Use this option multiple times for
-multiple curves. --curvestylall does NOT apply to curves that have a
---curvestyle
+Synonym for C<--style>
+
+=item
+
+--styleall xxx
+
+Additional styles for all curves that have no C<--style>. This is overridden by
+any applicable C<--style>. Exclusive with C<--with>.
 
 =item
 
 --curvestyleall xxx
 
-Additional styles for all curves that have no --curvestyle. This is overridden
-by any applicable C<--curvestyle>. Exclusive with C<--with>.
+Synonym for C<--styleall>
 
 =item
 
 --with xxx
 
-Same as C<--curvestyleall>, but prefixed with "with". Thus
+Same as C<--styleall>, but prefixed with "with". Thus
 
  --with boxes
 
 is equivalent to
 
- --curvestyleall 'with boxes'
+ --styleall 'with boxes'
 
-Exclusive with C<--curvestyleall>.
+Exclusive with C<--styleall>.
 
 =item
 
@@ -1577,7 +1604,7 @@ How many extra values are given for each data point. Normally this is 0, and
 does not need to be specified, but sometimes we want extra data, like for colors
 or point sizes or error bars, etc. feedgnuplot options that require this
 (colormap, circles) automatically set it. This option is ONLY needed if unknown
-styles are used, with C<--curvestyleall> or C<--with> for instance
+styles are used, with C<--styleall> or C<--with> for instance
 
 =item
 
