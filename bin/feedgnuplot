@@ -111,10 +111,14 @@ sub interpretCommandline
   $options{legend}     = [];
   $options{curvestyle} = [];
   $options{histogram}  = [];
+  $options{y2}         = [];
+  $options{extracmds}  = [];
+
   GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=s', 'xmax=s', 'y2min=f', 'y2max=f',
-             'zmin=f', 'zmax=f', 'y2=s@', 'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
+             'zmin=f', 'zmax=f', 'y2=s@',
+             'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
@@ -224,7 +228,7 @@ sub interpretCommandline
       exit -1;
     }
 
-    if ( defined $options{y2min} || defined $options{y2max} || defined $options{y2} )
+    if ( defined $options{y2min} || defined $options{y2max} || @{$options{y2}} )
     {
       print STDERR "--3d does not make sense with --y2...\n";
       exit -1;
@@ -486,7 +490,7 @@ sub mainThread
     }
 
 # For the specified values, set the legend entries to 'title "blah blah"'
-    if(defined $options{legend} && @{$options{legend}})
+    if(@{$options{legend}})
     {
       # @{$options{legend}} is a list where consecutive pairs are (curveID,
       # legend). I use $options{legend} here instead of $options{legend_hash}
@@ -501,7 +505,7 @@ sub mainThread
     }
 
 # add the extra curve options
-    if(defined $options{curvestyle} && @{$options{curvestyle}})
+    if(@{$options{curvestyle}})
     {
       # @{$options{curvestyle}} is a list where consecutive pairs are (curveID,
       # style). I use $options{curvestyle} here instead of
@@ -516,13 +520,7 @@ sub mainThread
     }
 
 # For the values requested to be printed on the y2 axis, set that
-    if( defined $options{y2} )
-    {
-      foreach (@{$options{y2}})
-      {
-        addCurveOption($_, 'axes x1y2');
-      }
-    }
+    addCurveOption($_, 'axes x1y2') foreach (@{$options{y2}});
 
 # timefmt
     if( $options{timefmt} )
@@ -532,26 +530,15 @@ sub mainThread
     }
 
 # add the extra global options
-    if(defined $options{extracmds})
-    {
-      foreach (@{$options{extracmds}})
-      {
-        print(PIPE "$_\n");
-      }
-    }
+    print(PIPE "$_\n")       foreach (@{$options{extracmds}});
 
 # set up histograms
-    if( defined $options{histogram} )
-    {
-      $options{binwidth} ||= 1; # if no binwidth given, set it to 1
-      print PIPE
-        "set boxwidth $options{binwidth}\n" .
-        "histbin(x) = $options{binwidth} * floor(0.5 + x/$options{binwidth})\n";
-      foreach (@{$options{histogram}})
-      {
-        setCurveAsHistogram( $_ );
-      }
-    }
+    $options{binwidth} ||= 1;   # if no binwidth given, set it to 1
+    print PIPE
+      "set boxwidth $options{binwidth}\n" .
+      "histbin(x) = $options{binwidth} * floor(0.5 + x/$options{binwidth})\n";
+
+    setCurveAsHistogram( $_ ) foreach (@{$options{histogram}});
 
     # regexp for a possibly floating point, possibly scientific notation number
     my $numRE   = '-?\d*\.?\d+(?:[Ee][-+]?\d+)?';
@@ -568,7 +555,7 @@ sub mainThread
     # gnuplot
     print PIPE "set xtics\n";
 
-    if($options{y2})
+    if(@{$options{y2}})
     {
       print PIPE "set ytics nomirror\n";
       print PIPE "set y2tics\n";
