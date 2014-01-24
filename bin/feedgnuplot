@@ -107,7 +107,7 @@ sub interpretCommandline
   # syntax, but disregarded the order of the given options. This resulted in arbitrarily ordered
   # curves. I thus make parse these into lists, and then also make hashes, for later use
 
-  # needed for these to be parsed into an array-ref
+  # needed for these to be parsed into an array-ref, these default to []
   $options{legend}     = [];
   $options{curvestyle} = [];
   $options{histogram}  = [];
