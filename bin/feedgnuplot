@@ -113,12 +113,14 @@ sub interpretCommandline
   $options{histogram}  = [];
   $options{y2}         = [];
   $options{extracmds}  = [];
+  $options{set}        = [];
+  $options{unset}      = [];
 
   GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=s', 'xmax=s', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@',
-             'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@',
+             'curvestyle=s{2}', 'curvestyleall=s', 'extracmds=s@', 'set=s@', 'unset=s@',
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
@@ -531,6 +533,8 @@ sub mainThread
 
 # add the extra global options
     print(PIPE "$_\n")       foreach (@{$options{extracmds}});
+    print(PIPE "set $_\n")   foreach (@{$options{set}});
+    print(PIPE "unset $_\n") foreach (@{$options{unset}});
 
 # set up histograms
     $options{binwidth} ||= 1;   # if no binwidth given, set it to 1
@@ -1014,14 +1018,15 @@ plotting. Input parsing is flexible; every line need not have the same number of
 points. New curves will be created as needed.
 
 The most commonly used functionality of gnuplot is supported directly by the
-script. Anything not directly supported can still be done with the
-C<--extracmds> and C<--curvestyle> options. Arbitrary gnuplot commands can be
-passed in with C<--extracmds>. For example, to turn off the grid, pass in
-C<--extracmds 'unset grid'>. As many of these options as needed can be passed
-in. To add arbitrary curve styles, use C<--curvestyle curveID extrastyle>. Pass
-these more than once to affect more than one curve. To apply an extra style to
-I<all> the curves that lack an explicit C<--curvestyle>, pass in
-C<--curvestyleall extrastyle>.
+script. Anything not directly supported can still be done with options such as
+C<--set>, C<--extracmds> C<--curvestyle>, etc. Arbitrary gnuplot commands can be
+passed in with C<--extracmds>. For example, to turn off the grid, you can pass
+in C<--extracmds 'unset grid'>. Commands C<--set> and C<--unset> exists to
+provide nicer syntax, so this is equivalent to passing C<--unset grid>. As many
+of these options as needed can be passed in. To add arbitrary curve styles, use
+C<--curvestyle curveID extrastyle>. Pass these more than once to affect more
+than one curve. To apply an extra style to I<all> the curves that lack an
+explicit C<--curvestyle>, pass in C<--curvestyleall extrastyle>.
 
 =head2 Data formats
 
@@ -1118,7 +1123,7 @@ C<--timefmt>. Example:
    awk '$1 ~ /..:..:../ && $8 ~/^[0-9\.]*$/ {print $1,$8; fflush()}' |
    feedgnuplot --stream --domain
                 --lines --timefmt '%H:%M:%S'
-                --extracmds 'set format x "%H:%M:%S"'
+                --set 'format x "%H:%M:%S"'
 
 This plots the 'idle' CPU consumption against time.
 
@@ -1458,8 +1463,23 @@ Additional styles for all curves that have no --curvestyle
 
 --extracmds xxx
 
-Additional commands. These could contain extra global styles for instance. Can
-be passed multiple times.
+Additional commands to pass on to gnuplot verbatim. These could contain extra
+global styles for instance. Can be passed multiple times.
+
+=item
+
+--set xxx
+
+Additional 'set' commands to pass on to gnuplot verbatim. C<--set 'a b c'> will
+result in gnuplot seeing a C<set a b c> command. Can be passed multiple times.
+
+=item
+
+--unset xxx
+
+Additional 'unset' commands to pass on to gnuplot verbatim. C<--unset 'a b c'>
+will result in gnuplot seeing a C<unset a b c> command. Can be passed multiple
+times.
 
 =item
 

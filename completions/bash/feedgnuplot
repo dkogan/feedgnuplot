@@ -13,6 +13,8 @@ complete -W               \
     --exit                \
     --extraValuesPerPoint \
     --extracmds           \
+    --set                 \
+    --unset               \
     --geometry            \
     --hardcopy            \
     --help                \
