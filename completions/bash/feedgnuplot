@@ -7,12 +7,17 @@ complete -W               \
     --colormap            \
     --curvestyle          \
     --curvestyleall       \
+    --style               \
+    --styleall            \
+    --with                \
     --dataid              \
     --domain              \
     --dump                \
     --exit                \
     --extraValuesPerPoint \
     --extracmds           \
+    --set                 \
+    --unset               \
     --geometry            \
     --hardcopy            \
     --help                \

@@ -1,3 +1,15 @@
+feedgnuplot (1.30) unstable; urgency=low
+
+  * Added --with, --set, --unset, --style, --styleall
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 24 Jan 2014 15:38:07 -0800
+
+feedgnuplot (1.29) unstable; urgency=low
+
+  * added CPAN meta-data to require IPC::Run at build time
+
+ -- Dima Kogan <dima@secretsauce.net>  Wed, 04 Dec 2013 21:12:40 -0800
+
 feedgnuplot (1.28)
 
   * Minor POD update

@@ -26,8 +26,12 @@ _arguments -S                                                                   
     '--zmin:min Z:'                                                               \
     '--zmax:max Z:'                                                               \
     '*--y2:plot to place on the Y2 axis:'                                         \
-    '--curvestyleall[Additional styles for ALL curves]:style'                     \
+    '(--with)--curvestyleall[Additional styles for ALL curves]:style'             \
+    '(--with)--styleall[Additional styles for ALL curves]:style'                  \
+    '(--curvestyleall)--with[Additional styles for ALL curves]:style'             \
     '*--extracmds[Additional gnuplot commands]:command'                           \
+    '*--set[Additional 'set' gnuplot commands]:set-option'                        \
+    '*--unset[Additional 'unset' gnuplot commands]:unset-option'                  \
     '--square[Plot data with square aspect ratio]'                                \
     '--square_xy[For 3D plots, set square aspect ratio for ONLY the x,y axes]'    \
     '--hardcopy[Plot to a file]:filename'                                         \
@@ -37,6 +41,7 @@ _arguments -S                                                                   
     '--dump[Instead of printing to gnuplot, print to STDOUT]'                     \
     '--geometry[The X11 geometry string]:geometry string:'                        \
     '*--curvestyle[Additional styles for a curve]:curve id: :style:'              \
+    '*--style[Additional styles for a curve]:curve id: :style:'                   \
     '(--3d)*--histogram:plot to treat as a histogram:'                            \
     '--binwidth:Histogram bin width:'                                             \
     '--histstyle:Style of histogram:(frequency unique cumulative cnormal)'        \
