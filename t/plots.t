@@ -17,14 +17,20 @@ BEGIN {
     exit(0);
   }
 
-  open(my $pipe, 'gnuplot --version |');
-  if( !$pipe )
+  my $gawkversion = `gawk -V`;
+  if( !$gawkversion || $@ )
+  {
+    print("1..0 # Skip: gawk is required for strftime() in the test suite. Skipping tests.\n");
+    exit(0);
+  }
+
+  my $gnuplotVersion = `gnuplot --version`;
+  if( !$gnuplotVersion || $@)
   {
     print("1..0 # Skip: gnuplot not installed. Tests require ver. 4.6.4; feedgnuplot works with any.\n");
     exit(0);
   }
 
-  my $gnuplotVersion = <$pipe>;
   chomp $gnuplotVersion;
   if ($gnuplotVersion ne "gnuplot 4.6 patchlevel 4")
   {
@@ -320,7 +326,7 @@ tryplot( testname => 'basic line plot with bounds, square aspect ratio',
 EOF
 
 tryplot( testname => 'lines on both axes with labels, legends, titles',
-         cmd      => q{seq 5 | awk '{print 2*$1, $1*$1}'},
+         cmd      => q{seq 5 | gawk '{print 2*$1, $1*$1}'},
          options  => [qw(--lines --points),
                       '--legend', '0', 'data 0',
                       '--title', "Test plot",
@@ -369,7 +375,7 @@ tryplot( testname => 'lines on both axes with labels, legends, titles',
 EOF
 
 tryplot( testname => 'lines on both axes with labels, legends, titles; different styles',
-         cmd      => q{seq 5 | awk '{print 2*$1, $1*$1}'},
+         cmd      => q{seq 5 | gawk '{print 2*$1, $1*$1}'},
          options  => ['--legend', '0', 'data 0',
                       '--title', "Test plot",
                       qw(--y2 1 --y2label y2 --xlabel x --ylabel y --y2max 30),
@@ -419,7 +425,7 @@ tryplot( testname => 'lines on both axes with labels, legends, titles; different
 EOF
 
 tryplot( testname => 'domain plot',
-         cmd      => q{seq 5 | awk '{print 2*$1, $1*$1}'},
+         cmd      => q{seq 5 | gawk '{print 2*$1, $1*$1}'},
          options  => [qw(--lines --points), '--domain'],
          refplot  => <<'EOF' );
 
@@ -465,7 +471,7 @@ tryplot( testname => 'domain plot',
 EOF
 
 tryplot( testname => 'dataid plot',
-         cmd      => q{seq 5 | awk '{print 2*$1, $1*$1}'},
+         cmd      => q{seq 5 | gawk '{print 2*$1, $1*$1}'},
          options  => [qw(--lines --points),
                       qw(--dataid --autolegend)],
          refplot  => <<'EOF' );
@@ -512,7 +518,7 @@ tryplot( testname => 'dataid plot',
 EOF
 
 tryplot( testname => '3d spiral with bounds, labels',
-         cmd      => q{seq 50 | awk '{print 2*cos($1/5), sin($1/5), $1}'},
+         cmd      => q{seq 50 | gawk '{print 2*cos($1/5), sin($1/5), $1}'},
          options  => [qw(--lines --points),
                       qw(--3d --domain --zmin -5 --zmax 45 --zlabel z),
                      '--extracmds', 'set view 60,30'],
@@ -560,7 +566,7 @@ tryplot( testname => '3d spiral with bounds, labels',
 EOF
 
 tryplot( testname => '3d spiral with bounds, labels, square xy aspect ratio',
-         cmd      => q{seq 50 | awk '{print 2*cos($1/5), sin($1/5), $1}'},
+         cmd      => q{seq 50 | gawk '{print 2*cos($1/5), sin($1/5), $1}'},
          options  => [qw(--lines --points),
                       qw(--3d --domain --zmin -5 --zmax 45 --zlabel z),
                      '--extracmds', 'set view 60,30', '--square_xy'],
@@ -608,7 +614,7 @@ tryplot( testname => '3d spiral with bounds, labels, square xy aspect ratio',
 EOF
 
 tryplot( testname => 'Monotonicity check',
-         cmd      => q{seq 10 | awk '{print (NR-1)%5,NR}'},
+         cmd      => q{seq 10 | gawk '{print (NR-1)%5,NR}'},
          options  => [qw(--lines --points --domain --monotonic)],
          refplot  => <<'EOF' );
 
@@ -655,7 +661,7 @@ EOF
 
 
 tryplot( testname => 'basic --timefmt plot',
-         cmd      => q{seq 5 | awk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}'},
+         cmd      => q{seq 5 | gawk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}'},
          options  => ['--domain', '--timefmt', '%d %b %Y %H:%M:%S'],
          refplot  => <<'EOF' );
 
@@ -701,7 +707,7 @@ tryplot( testname => 'basic --timefmt plot',
 EOF
 
 tryplot( testname => '--timefmt plot with bounds',
-         cmd      => q{seq 5 | awk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}'},
+         cmd      => q{seq 5 | gawk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}'},
          options  => ['--domain', '--timefmt', '%d %b %Y %H:%M:%S',
                       '--xmin', '20 Oct 2013 06:05:00',
                       '--xmax', '20 Oct 2013 06:05:20'],
@@ -749,7 +755,7 @@ tryplot( testname => '--timefmt plot with bounds',
 EOF
 
 tryplot( testname => '--timefmt plot with --monotonic',
-         cmd      => q{seq 10 | awk '{x=(NR-1)%5; print strftime("%d %b %Y %T",1382249107+x,1),$1}'},
+         cmd      => q{seq 10 | gawk '{x=(NR-1)%5; print strftime("%d %b %Y %T",1382249107+x,1),$1}'},
          options  => ['--domain', '--timefmt', '%d %b %Y %H:%M:%S',
                       '--monotonic'],
          refplot  => <<'EOF' );
@@ -796,7 +802,7 @@ tryplot( testname => '--timefmt plot with --monotonic',
 EOF
 
 tryplot( testname => 'Error bars (using extraValuesPerPoint)',
-         cmd      => q{seq 5 | awk '{print $1,$1,$1/10}'},
+         cmd      => q{seq 5 | gawk '{print $1,$1,$1/10}'},
          options  => [qw(--domain),
                       qw(--extraValuesPerPoint 1 --curvestyle 0), 'with errorbars'],
          refplot  => <<'EOF' );
@@ -860,7 +866,7 @@ skip "Skipping unreliable tests. Set RUN_ALL_TESTS environment variable to run t
 
 
 tryplot( testname => 'Histogram plot',
-         cmd      => q{seq 50 | awk '{print $1*$1}'},
+         cmd      => q{seq 50 | gawk '{print $1*$1}'},
          options  => [qw(--lines --points),
                       qw(--histo 0 --binwidth 50 --ymin 0 --curvestyleall), 'with boxes'],
          refplot  => <<'EOF' );
@@ -907,7 +913,7 @@ tryplot( testname => 'Histogram plot',
 EOF
 
 tryplot( testname => 'Cumulative histogram',
-         cmd      => q{seq 50 | awk '{print $1*$1}'},
+         cmd      => q{seq 50 | gawk '{print $1*$1}'},
          options  => [qw(--lines --points),
                       qw(--histo 0 --histstyle cum --binwidth 50 --ymin 0 --curvestyleall), 'with boxes'],
          refplot  => <<'EOF' );
@@ -954,7 +960,7 @@ tryplot( testname => 'Cumulative histogram',
 EOF
 
 tryplot( testname => 'Circles',
-         cmd      => q{seq 5 | awk '{print $1,$1,$1/10}'},
+         cmd      => q{seq 5 | gawk '{print $1,$1,$1/10}'},
          options  => [qw(--circles --domain)],
          refplot  => <<'EOF' );
 
@@ -1008,7 +1014,7 @@ note( "Starting to run streaming tests. These will take several seconds each" );
 # points, and then "exit", so I should have two frames worth of data plotted. I
 # pre-send a 0 so that the gnuplot autoscaling is always well-defined
 tryplot( testname => 'basic streaming test',
-         cmd      => q{seq 500 | awk 'BEGIN{ print 0; } {print (NR==3)? "exit" : $0; fflush(); system("sleep 1.2");}'},
+         cmd      => q{seq 500 | gawk 'BEGIN{ print 0; } {print (NR==3)? "exit" : $0; fflush(); system("sleep 1.2");}'},
          options  => [qw(--lines --points --stream)],
          refplot  => <<'EOF' );
 
@@ -1094,7 +1100,7 @@ tryplot( testname => 'basic streaming test',
 EOF
 
 tryplot( testname => 'basic streaming test, twice as fast',
-         cmd      => q{seq 500 | awk 'BEGIN{ print 0; } {print (NR==3)? "exit" : $0; fflush(); system("sleep 0.6");}'},
+         cmd      => q{seq 500 | gawk 'BEGIN{ print 0; } {print (NR==3)? "exit" : $0; fflush(); system("sleep 0.6");}'},
          options  => [qw(--lines --points --stream 0.4)],
          refplot  => <<'EOF' );
 
@@ -1181,7 +1187,7 @@ EOF
 
 
 tryplot( testname => 'streaming with --xlen',
-         cmd      => q{seq 500 | awk 'BEGIN{ print 0; } {print (NR==3)? "exit" : $0; fflush(); system("sleep 0.6");}'},
+         cmd      => q{seq 500 | gawk 'BEGIN{ print 0; } {print (NR==3)? "exit" : $0; fflush(); system("sleep 0.6");}'},
          options  => [qw(--lines --points --stream 0.4 --xlen 1.1)],
          refplot  => <<'EOF' );
 
@@ -1267,7 +1273,7 @@ tryplot( testname => 'streaming with --xlen',
 EOF
 
 tryplot( testname => 'streaming with --monotonic',
-         cmd      => q{seq 500 | awk '{if(NR==11) {print "exit";} else {x=(NR-1)%5; if(x==0) {print -1,-1;} print x,NR;}; fflush(); system("sleep 0.6");}'},
+         cmd      => q{seq 500 | gawk '{if(NR==11) {print "exit";} else {x=(NR-1)%5; if(x==0) {print -1,-1;} print x,NR;}; fflush(); system("sleep 0.6");}'},
          options  => [qw(--lines --points --stream 0.4 --domain --monotonic)],
          refplot  => <<'EOF' );
 
@@ -1673,7 +1679,7 @@ tryplot( testname => 'streaming with --monotonic',
 EOF
 
 tryplot( testname => '--timefmt streaming plot with --xlen',
-         cmd      => q{seq 5 | awk 'BEGIN{ print strftime("%d %b %Y %T",1382249107-1,1),-4;} {if(NR==3) {print "exit";} else{ print strftime("%d %b %Y %T",1382249107+$1,1),$1;} fflush(); system("sleep 0.6")}'},
+         cmd      => q{seq 5 | gawk 'BEGIN{ print strftime("%d %b %Y %T",1382249107-1,1),-4;} {if(NR==3) {print "exit";} else{ print strftime("%d %b %Y %T",1382249107+$1,1),$1;} fflush(); system("sleep 0.6")}'},
          options  => ['--points', '--lines',
                       '--domain', '--timefmt', '%d %b %Y %H:%M:%S',
                       qw(--stream 0.4 --xlen 3)],
@@ -1761,7 +1767,7 @@ tryplot( testname => '--timefmt streaming plot with --xlen',
 EOF
 
 tryplot( testname => '--timefmt streaming plot with --monotonic',
-         cmd      => q{seq 10 | awk '{x=(NR-1)%5; if(x==0) {print strftime("%d %b %Y %T",1382249107-1,-4),-4;} print strftime("%d %b %Y %T",1382249107+x,1),NR; fflush(); system("sleep 0.6")}'},
+         cmd      => q{seq 10 | gawk '{x=(NR-1)%5; if(x==0) {print strftime("%d %b %Y %T",1382249107-1,-4),-4;} print strftime("%d %b %Y %T",1382249107+x,1),NR; fflush(); system("sleep 0.6")}'},
          options  => ['--points', '--lines',
                       '--domain', '--timefmt', '%d %b %Y %H:%M:%S',
                       qw(--stream 0.4 --monotonic)],
