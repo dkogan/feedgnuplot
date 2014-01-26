@@ -1157,7 +1157,7 @@ C<--xmin> and C<--xmax> I<must> use the format passed in to C<--timefmt>
 
 Using this option changes both the way the input is parsed I<and> the way the
 x-axis tics are labelled. Gnuplot tries to be intelligent in this labelling, but
-it doesn't always to what the user wants. The labelling can be controlled with
+it doesn't always do what the user wants. The labelling can be controlled with
 the gnuplot C<set format> command, which takes the same type of format string as
 C<--timefmt>. Example:
 
