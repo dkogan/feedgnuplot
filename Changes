@@ -1,10 +1,23 @@
-feedgnuplot (1.30) unstable; urgency=low
+feedgnuplot (1.32)
+
+  * Added --rangesize and --rangesizeall. Different curves can now plot
+    different-size tuples
+
+ -- Dima Kogan <dima@secretsauce.net>  Wed, 05 Feb 2014 13:57:58 -0800
+
+feedgnuplot (1.31)
+
+  * Test suite requires gawk to get strftime()
+
+ -- Dima Kogan <dima@secretsauce.net>  Sat, 25 Jan 2014 20:49:38 -0800
+
+feedgnuplot (1.30)
 
   * Added --with, --set, --unset, --style, --styleall
 
  -- Dima Kogan <dima@secretsauce.net>  Fri, 24 Jan 2014 15:38:07 -0800
 
-feedgnuplot (1.29) unstable; urgency=low
+feedgnuplot (1.29)
 
   * added CPAN meta-data to require IPC::Run at build time
 
