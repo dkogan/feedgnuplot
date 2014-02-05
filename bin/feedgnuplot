@@ -121,6 +121,8 @@ sub interpretCommandline
   $options{styleall}      = '';
   $options{with}          = '';
 
+  $options{rangesize} = [];
+
   GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=s', 'xmax=s', 'y2min=f', 'y2max=f',
@@ -129,7 +131,8 @@ sub interpretCommandline
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
-             'extraValuesPerPoint=i', 'help', 'dump', 'exit', 'version',
+             'rangesize=s{2}', 'rangesizeall=i', 'extraValuesPerPoint=i',
+             'help', 'dump', 'exit', 'version',
              'geometry=s') or pod2usage( -exitval => 1,
                                          -verbose => 1, # synopsis and args
                                          -output  => \*STDERR );
@@ -176,7 +179,7 @@ sub interpretCommandline
   # arrays in order to preserve the ordering. I parse both of these into hashes
   # because those are useful to have later. After this I can access individual
   # legends with $options{legend_hash}{curveid}
-  for my $listkey (qw(legend curvestyle))
+  for my $listkey (qw(legend curvestyle rangesize))
   {
     $options{"${listkey}_hash"} = {};
 
@@ -190,6 +193,12 @@ sub interpretCommandline
   if ( defined $options{hardcopy} && defined $options{stream} )
   {
     print STDERR "--stream doesn't make sense together with --hardcopy\n";
+    exit -1;
+  }
+
+  if ( defined $options{rangesizeall} && defined $options{extraValuesPerPoint} )
+  {
+    print STDERR "Only one of --rangesizeall and --extraValuesPerPoint may be given\n";
     exit -1;
   }
 
@@ -425,10 +434,18 @@ sub makeDomainNumeric
 
 sub mainThread
 {
-    my $valuesPerPoint = 1;
-    if($options{extraValuesPerPoint}) { $valuesPerPoint += $options{extraValuesPerPoint}; }
-    if($options{colormap})            { $valuesPerPoint++; }
-    if($options{circles} )            { $valuesPerPoint++; }
+    my $valuesPerPoint;
+    if( $options{rangesizeall} )
+    {
+        $valuesPerPoint = $options{rangesizeall};
+    }
+    else
+    {
+        $valuesPerPoint = 1;
+        if($options{extraValuesPerPoint}) { $valuesPerPoint += $options{extraValuesPerPoint}; }
+        if($options{colormap})            { $valuesPerPoint++; }
+        if($options{circles} )            { $valuesPerPoint++; }
+    }
 
     local *PIPE;
     my $dopersist = '';
@@ -703,21 +720,28 @@ sub mainThread
 
         while(@fields)
         {
+            my $rangesize = $valuesPerPoint;
+
             if($options{dataid})
             {
-                last if @fields < 1 + $valuesPerPoint;
                 $id = shift @fields;
             }
             else
             {
-                last if @fields < $valuesPerPoint;
                 $id++;
             }
+
+            if( $options{rangesize_hash}{$id} )
+            {
+                $rangesize = $options{rangesize_hash}{$id};
+            }
+
+            last if @fields < $rangesize;
 
             pushPoint(getCurve($id),
                       join(' ',
                            @domain,
-                           splice( @fields, 0, $valuesPerPoint ) ) . "\n",
+                           splice( @fields, 0, $rangesize ) ) . "\n",
                       $domain0_numeric);
         }
       }
@@ -1129,17 +1153,24 @@ conjunction with C<--dataid>.
 =head3 Multi-value style support
 
 Depending on how gnuplot is plotting the data, more than one value may be needed
-to represent a single point. For example, the script has support to plot all the
-data with C<--circles>. This requires a radius to be specified for each point in
-addition to the position of the point. Thus, when plotting with C<--circles>, 2
-numbers are read for each data point instead of 1. A similar situation exists
-with C<--colormap> where each point contains the position I<and> the color.
-There are other gnuplot styles that require more data (such as error bars), but
-none of these are directly supported by the script. They can still be used,
-though, by specifying the specific style with C<--style>, and specifying how
-many extra values are needed for each point with C<--extraValuesPerPoint extra>.
-C<--extraValuesPerPoint> is ONLY needed for the styles not explicitly supported;
-supported styles set that variable automatically.
+to represent the range of a single point. Basic 2D plots have 2 numbers
+representing each point: 1 domain and 1 range. But if plotting with
+C<--circles>, for instance, then there's an extra range value: the radius. A
+similar situation exists with C<--colormap> where each point contains the
+position I<and> the color. There are other gnuplot styles that require more data
+(such as error bars), but none of these are directly supported by the script.
+They can still be used, however, by specifying the specific style with
+C<--style>, and specifying how many values are needed for each point with
+C<--rangesizeall> or C<--rangesize> or C<--extraValuesPerPoint>. Those options
+that specify the range size are required I<only> for styles not explicitly
+supported by feedgnuplot; supported styles do the right thing automatically.
+
+More examples: if making a 2d plot of y error bars where gnuplot expects a
+(x,y,ydelta) tuple for each point, you want C<--rangesizeall 2> because you have
+one domain value (x) and 2 range values (y,ydelta). Gnuplot can also plot
+lopsided y errorbars by giving a tuple (x,y,ylow,yhigh). This is similar as
+before, but you want C<--rangesizeall 3> instead.
+
 
 =head3 3D data
 
@@ -1382,8 +1413,7 @@ Interpret the X data as a time/date, parsed with the given format
 C<--colormap>
 
 Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
-used to set the extents of the colors. Automatically increments
-C<--extraValuesPerPoint>
+used to set the extents of the colors. Automatically sets the C<--rangesize>.
 
 =item
 
@@ -1411,8 +1441,7 @@ Do [not] draw points
 C<--circles>
 
 Plot with circles. This requires a radius be specified for each point.
-Automatically increments C<--extraValuesPerPoint>). C<Not> supported for 3d
-plots.
+Automatically sets the C<--rangesize>. C<Not> supported for 3d plots.
 
 =item
 
@@ -1616,13 +1645,32 @@ replotted before being purged
 
 =item
 
+C<--rangesize curveID xxx>
+
+The options C<--rangesizeall>, C<--rangesize> and C<--extraValuesPerPoint> set
+the number of values are needed to represent each point being plotted (see
+L</"Multi-value style support"> above). These options are I<only> needed if
+unknown styles are used, with C<--styleall> or C<--with> for instance.
+
+C<--rangesize> is used to set how many values are needed to represent the range
+of a point for a particular curve. This overrides any defaults that may exist
+for this curve only.
+
+=item
+
+C<--rangesizeall xxx>
+
+Like C<--rangesize>, but applies to I<all> the curves.
+
 C<--extraValuesPerPoint xxx>
 
-How many extra values are given for each data point. Normally this is 0, and
-does not need to be specified, but sometimes we want extra data, like for colors
-or point sizes or error bars, etc. feedgnuplot options that require this
-(colormap, circles) automatically set it. This option is ONLY needed if unknown
-styles are used, with C<--styleall> or C<--with> for instance
+Like C<--rangesizeall>, but instead of overriding the default, adds to it. For
+example, if plotting non-lopsided y errorbars gnuplot wants (x,y,ydelta) tuples.
+These can be specified both with C<--rangesizeall 2> (because there are 2 range
+values) or C<--extraValuesPerPoint 1> (because there's 1 more value than usual).
+
+This option is I<only> needed if unknown styles are used, with C<--styleall> or
+C<--with> for instance.
 
 =item
 

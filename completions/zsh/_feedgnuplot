@@ -37,7 +37,9 @@ _arguments -S                                                                   
     '--hardcopy[Plot to a file]:filename'                                         \
     '--maxcurves[The maximum allowed number of curves]:number of curves'          \
     '(--3d)--monotonic[Resets plot if an X in the past is seen]'                  \
-    '--extraValuesPerPoint[How many extra values are given for each data point]:N'\
+    '(--rangesizeall)--extraValuesPerPoint[How many extra values are given for each data range]:N'\
+    '(--extraValuesPerPoint)--rangesizeall[How many values are given for each data range]:N'\
+    '*--rangesize[How many values comprise a data range in this curve]:curve id: :N:' \
     '--dump[Instead of printing to gnuplot, print to STDOUT]'                     \
     '--geometry[The X11 geometry string]:geometry string:'                        \
     '*--curvestyle[Additional styles for a curve]:curve id: :style:'              \
