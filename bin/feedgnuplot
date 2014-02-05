@@ -347,8 +347,6 @@ sub interpretCommandline
 
     my $Nfields = scalar split( ' ', $options{timefmt});
     $options{timefmt_Ncols} = $Nfields;
-    my $regex_str = join( '\s+', ('\S+') x $Nfields );
-    $options{timefmt_regex} = qr/$regex_str/;
 
     # make sure --xlen is an integer. With a timefmt xlen goes through strptime
     # and strftime, and those are integer-only
@@ -573,16 +571,6 @@ sub mainThread
 
     setCurveAsHistogram( $_ ) foreach (@{$options{histogram}});
 
-    # regexp for a possibly floating point, possibly scientific notation number
-    my $numRE   = '-?\d*\.?\d+(?:[Ee][-+]?\d+)?';
-    my $domainRE = $options{timefmt_regex} || $numRE;
-
-
-    # a point may be preceded by an id
-    my $pointRE = $options{dataid} ? '(\S+)\s+' : '()';
-    $pointRE .= '(' . join('\s+', ($numRE) x $valuesPerPoint) . ')';
-    $pointRE = qr/$pointRE/;
-
 # set all the axis ranges
     # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
     # gnuplot
@@ -651,18 +639,37 @@ sub mainThread
         # line is used)
         # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
 
+        my @fields = split;
+
         if($options{domain})
         {
-          /($domainRE)/go or next;
-          $domain[0] = $1;
-          $domain0_numeric = makeDomainNumeric( $domain[0] );
-
-          if($options{'3d'})
+          if( $options{timefmt} )
           {
-            /($numRE)/go or next;
-            $domain[1] = $1;
+              # no point if doing anything unless I have at least the domain and
+              # 1 piece of data
+              next if @fields < $options{timefmt_Ncols}+1;
+
+              $domain[0] = join (' ', splice( @fields, 0, $options{timefmt_Ncols}) );
+              $domain0_numeric = makeDomainNumeric( $domain[0] );
           }
-          elsif( $options{monotonic} )
+          elsif(!$options{'3d'})
+          {
+              # no point if doing anything unless I have at least the domain and
+              # 1 piece of data
+              next if @fields < 1+1;
+
+              $domain[0] = $domain0_numeric = shift @fields;
+          }
+          else
+          {
+              # no point if doing anything unless I have at least the domain and
+              # 1 piece of data
+              next if @fields < 2+1;
+
+              @domain = splice(@fields, 0, 2);
+          }
+
+          if( $options{monotonic} )
           {
             if( defined $latestX && $domain0_numeric < $latestX )
             {
@@ -676,7 +683,6 @@ sub mainThread
             else
             { $latestX = $domain0_numeric; }
           }
-
         }
         else
         {
@@ -684,8 +690,7 @@ sub mainThread
           # $. on the data queue in that case
           if(defined $dataQueue)
           {
-            s/ ([\d]+)$//o;
-            $domain[0] = $1;
+            $domain[0] = pop @fields;
           }
           else
           {
@@ -695,13 +700,25 @@ sub mainThread
         }
 
         my $id = -1;
-        while (/$pointRE/go)
-        {
-          if($1 ne '') {$id = $1;}
-          else         {$id++;   }
 
-          pushPoint(getCurve($id),
-                    "@domain $2\n", $domain0_numeric);
+        while(@fields)
+        {
+            if($options{dataid})
+            {
+                last if @fields < 1 + $valuesPerPoint;
+                $id = shift @fields;
+            }
+            else
+            {
+                last if @fields < $valuesPerPoint;
+                $id++;
+            }
+
+            pushPoint(getCurve($id),
+                      join(' ',
+                           @domain,
+                           splice( @fields, 0, $valuesPerPoint ) ) . "\n",
+                      $domain0_numeric);
         }
       }
     }
