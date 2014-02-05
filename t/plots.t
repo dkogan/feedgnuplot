@@ -804,7 +804,7 @@ EOF
 tryplot( testname => 'Error bars (using extraValuesPerPoint)',
          cmd      => q{seq 5 | gawk '{print $1,$1,$1/10}'},
          options  => [qw(--domain),
-                      qw(--extraValuesPerPoint 1 --curvestyle 0), 'with errorbars'],
+                      qw(--extraValuesPerPoint 1 --with errorbars)],
          refplot  => <<'EOF' );
 
 
@@ -2280,7 +2280,7 @@ sub tryplot
   my %args = @_;
 
   my @options = ('--exit',
-                 '--extracmds', 'unset grid',
+                 qw(--unset grid),
                  '--terminal', 'dumb 100,40');
   unshift @options, @{$args{options}};
 
