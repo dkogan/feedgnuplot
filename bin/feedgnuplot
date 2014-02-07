@@ -202,6 +202,23 @@ sub interpretCommandline
     exit -1;
   }
 
+
+  # I now set up the rangesize to always be
+  #  $options{rangesize_hash}{$id} // $options{rangesize_default}
+  if ( $options{rangesizeall} )
+  {
+      $options{rangesize_default} = $options{rangesizeall};
+  }
+  else
+  {
+      $options{rangesize_default} = 1;
+
+      $options{rangesize_default} += $options{extraValuesPerPoint} if ($options{extraValuesPerPoint});
+      $options{rangesize_default}++                                if ($options{colormap});
+      $options{rangesize_default}++                                if ($options{circles} );
+  }
+
+
   # parse stream option. Allowed only numbers >= 0 or 'trigger'. After this code
   # $options{stream} is
   #  -1 for triggered replotting
@@ -434,19 +451,6 @@ sub makeDomainNumeric
 
 sub mainThread
 {
-    my $valuesPerPoint;
-    if( $options{rangesizeall} )
-    {
-        $valuesPerPoint = $options{rangesizeall};
-    }
-    else
-    {
-        $valuesPerPoint = 1;
-        if($options{extraValuesPerPoint}) { $valuesPerPoint += $options{extraValuesPerPoint}; }
-        if($options{colormap})            { $valuesPerPoint++; }
-        if($options{circles} )            { $valuesPerPoint++; }
-    }
-
     local *PIPE;
     my $dopersist = '';
 
@@ -720,8 +724,6 @@ sub mainThread
 
         while(@fields)
         {
-            my $rangesize = $valuesPerPoint;
-
             if($options{dataid})
             {
                 $id = shift @fields;
@@ -731,10 +733,10 @@ sub mainThread
                 $id++;
             }
 
-            if( $options{rangesize_hash}{$id} )
-            {
-                $rangesize = $options{rangesize_hash}{$id};
-            }
+            # I'd like to use //, but I guess some people are still on perl 5.8
+            my $rangesize = exists $options{rangesize_hash}{$id} ?
+              $options{rangesize_hash}{$id} :
+              $options{rangesize_default};
 
             last if @fields < $rangesize;
 
