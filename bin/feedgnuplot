@@ -13,7 +13,7 @@ use Thread::Queue;
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.32;
+my $VERSION = 1.33;
 
 my %options;
 interpretCommandline();
@@ -201,6 +201,23 @@ sub interpretCommandline
     print STDERR "Only one of --rangesizeall and --extraValuesPerPoint may be given\n";
     exit -1;
   }
+
+
+  # I now set up the rangesize to always be
+  #  $options{rangesize_hash}{$id} // $options{rangesize_default}
+  if ( $options{rangesizeall} )
+  {
+      $options{rangesize_default} = $options{rangesizeall};
+  }
+  else
+  {
+      $options{rangesize_default} = 1;
+
+      $options{rangesize_default} += $options{extraValuesPerPoint} if ($options{extraValuesPerPoint});
+      $options{rangesize_default}++                                if ($options{colormap});
+      $options{rangesize_default}++                                if ($options{circles} );
+  }
+
 
   # parse stream option. Allowed only numbers >= 0 or 'trigger'. After this code
   # $options{stream} is
@@ -434,19 +451,6 @@ sub makeDomainNumeric
 
 sub mainThread
 {
-    my $valuesPerPoint;
-    if( $options{rangesizeall} )
-    {
-        $valuesPerPoint = $options{rangesizeall};
-    }
-    else
-    {
-        $valuesPerPoint = 1;
-        if($options{extraValuesPerPoint}) { $valuesPerPoint += $options{extraValuesPerPoint}; }
-        if($options{colormap})            { $valuesPerPoint++; }
-        if($options{circles} )            { $valuesPerPoint++; }
-    }
-
     local *PIPE;
     my $dopersist = '';
 
@@ -720,8 +724,6 @@ sub mainThread
 
         while(@fields)
         {
-            my $rangesize = $valuesPerPoint;
-
             if($options{dataid})
             {
                 $id = shift @fields;
@@ -731,10 +733,10 @@ sub mainThread
                 $id++;
             }
 
-            if( $options{rangesize_hash}{$id} )
-            {
-                $rangesize = $options{rangesize_hash}{$id};
-            }
+            # I'd like to use //, but I guess some people are still on perl 5.8
+            my $rangesize = exists $options{rangesize_hash}{$id} ?
+              $options{rangesize_hash}{$id} :
+              $options{rangesize_default};
 
             last if @fields < $rangesize;
 
@@ -865,7 +867,19 @@ sub updateCurveOptions
   my $usingoptions = '';
   if( $options{timefmt} )
   {
-    $usingoptions = "using 1:" . ($options{timefmt_Ncols}+1);
+      # with --timefmt I need an explicit 'using' specification. I specify the
+      # columns as 1:2:3..... I need the right number of columns (this is given
+      # as 1 + rangesize). I also need to start the range at the first column
+      # past the timefmt
+
+      # I'd like to use //, but I guess some people are still on perl 5.8
+      my $rangesize = exists $options{rangesize_hash}{$id} ?
+        $options{rangesize_hash}{$id} :
+        $options{rangesize_default};
+
+      my @rest = map {$_ + $options{timefmt_Ncols}} (1..$rangesize);
+
+      $usingoptions = "using 1:" . join(':', @rest);
   }
 
   $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions} $curvestyleall";
