@@ -1,3 +1,9 @@
+feedgnuplot (1.33)
+
+  * fixed incorrect plotting of --timefmt --rangesize plots
+
+ -- Dima Kogan <dima@secretsauce.net>  Thu, 06 Feb 2014 23:17:21 -0800
+
 feedgnuplot (1.32)
 
   * Added --rangesize and --rangesizeall. Different curves can now plot
