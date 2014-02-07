@@ -867,7 +867,19 @@ sub updateCurveOptions
   my $usingoptions = '';
   if( $options{timefmt} )
   {
-    $usingoptions = "using 1:" . ($options{timefmt_Ncols}+1);
+      # with --timefmt I need an explicit 'using' specification. I specify the
+      # columns as 1:2:3..... I need the right number of columns (this is given
+      # as 1 + rangesize). I also need to start the range at the first column
+      # past the timefmt
+
+      # I'd like to use //, but I guess some people are still on perl 5.8
+      my $rangesize = exists $options{rangesize_hash}{$id} ?
+        $options{rangesize_hash}{$id} :
+        $options{rangesize_default};
+
+      my @rest = map {$_ + $options{timefmt_Ncols}} (1..$rangesize);
+
+      $usingoptions = "using 1:" . join(':', @rest);
   }
 
   $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions} $curvestyleall";
