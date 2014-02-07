@@ -1,3 +1,10 @@
+feedgnuplot (1.33-1) unstable; urgency=low
+
+  * Upstream update: fixed incorrect plotting of --timefmt --rangesize
+    plots
+
+ -- Dima Kogan <dima@secretsauce.net>  Thu, 06 Feb 2014 23:19:02 -0800
+
 feedgnuplot (1.32-1) unstable; urgency=low
 
   * Added --rangesize and --rangesizeall. Different curves can now plot
