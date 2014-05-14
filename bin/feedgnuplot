@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+
+package feedgnuplot; # for the metacpan indexer
+
 use strict;
 use warnings;
 use Getopt::Long;
