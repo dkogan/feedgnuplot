@@ -75,6 +75,7 @@ if($options{stream})
   }
 
   $streamingFinished = 1;
+  $dataQueue->enqueue(undef);
 
   $plotThr->join() if defined $plotThr;
   $addThr->join();
@@ -413,8 +414,6 @@ sub plotUpdateThread
     # indicate that the timer was the replot source
     $dataQueue->enqueue('replot timertick');
   }
-
-  $dataQueue->enqueue(undef);
 }
 
 sub sendRangeCommand
