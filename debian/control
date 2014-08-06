@@ -11,7 +11,7 @@ Vcs-Browser: http://anonscm.debian.org/gitweb/?p=debian-science/packages/feedgnu
 
 Package: feedgnuplot
 Architecture: all
-Depends: ${misc:Depends}, ${perl:Depends}, gnuplot-qt | gnuplot-x11 | gnuplot
+Depends: ${misc:Depends}, ${perl:Depends}, gnuplot-qt | gnuplot-x11 | gnuplot-nox
 Description: Pipe-oriented frontend to Gnuplot
  Flexible, command-line-oriented frontend to Gnuplot. Creates plots from data
  coming in on STDIN or given in a filename passed on the commandline. Various
