@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+
+package feedgnuplot; # for the metacpan indexer
+
 use strict;
 use warnings;
 use Getopt::Long;
@@ -13,7 +16,7 @@ use Thread::Queue;
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.33;
+my $VERSION = 1.34;
 
 my %options;
 interpretCommandline();
@@ -371,7 +374,7 @@ sub interpretCommandline
     $options{timefmt} =~ s/^\s*//;
     $options{timefmt} =~ s/\s*$//;
 
-    my $Nfields = scalar split( ' ', $options{timefmt});
+    my $Nfields = () = split /\s+/, $options{timefmt}, -1;
     $options{timefmt_Ncols} = $Nfields;
 
     # make sure --xlen is an integer. With a timefmt xlen goes through strptime
