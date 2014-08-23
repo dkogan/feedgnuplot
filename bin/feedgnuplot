@@ -75,6 +75,7 @@ if($options{stream})
   }
 
   $streamingFinished = 1;
+  $dataQueue->enqueue(undef);
 
   $plotThr->join() if defined $plotThr;
   $addThr->join();
@@ -413,8 +414,6 @@ sub plotUpdateThread
     # indicate that the timer was the replot source
     $dataQueue->enqueue('replot timertick');
   }
-
-  $dataQueue->enqueue(undef);
 }
 
 sub sendRangeCommand
@@ -455,12 +454,6 @@ sub makeDomainNumeric
 sub mainThread
 {
     local *PIPE;
-    my $dopersist = '';
-
-    if( !$options{stream} && getGnuplotVersion() >= 4.3)
-    {
-      $dopersist = '--persist';
-    }
 
     if(exists $options{dump})
     {
@@ -470,7 +463,7 @@ sub mainThread
     {
       my $geometry = defined $options{geometry} ?
         "-geometry $options{geometry}" : '';
-      open PIPE, "|gnuplot $geometry $dopersist" or die "Can't initialize gnuplot\n";
+      open PIPE, "|gnuplot $geometry" or die "Can't initialize gnuplot\n";
     }
     autoflush PIPE 1;
 
@@ -768,7 +761,7 @@ sub mainThread
       # sleep until the plot file exists, and it is closed. Sometimes the output
       # is still being written at this point. If the output filename starts with
       # '|', gnuplot pipes the output to that process, instead of writing to a
-      # file. In that case I don't make sure the file exists, since there IS not
+      # file. In that case I don't make sure the file exists, since there IS no
       # file
       if( $options{hardcopy} !~ /^\|/ )
       {
