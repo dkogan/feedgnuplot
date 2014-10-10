@@ -1,3 +1,9 @@
+feedgnuplot (1.34-2) unstable; urgency=medium
+
+  * Depends now works with the 'gnuplot5' packages
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 10 Oct 2014 14:05:17 -0700
+
 feedgnuplot (1.34-1) unstable; urgency=medium
 
   * Very minor upstream update
