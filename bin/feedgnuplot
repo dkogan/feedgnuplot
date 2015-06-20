@@ -1757,10 +1757,12 @@ in a Thinkpad.
  $ while true; do cat /proc/acpi/ibm/thermal | awk '{$1=""; print}' ; sleep 1; done |
    feedgnuplot --stream --xlen 100 --lines --autolegend --ymax 100 --ymin 20 --ylabel 'Temperature (deg C)'
 
-=head2 Plotting a histogram of file sizes in a directory
+=head2 Plotting a histogram of file sizes in a directory, granular to 10MB
 
  $ ls -l | awk '{print $5/1e6}' |
-   feedgnuplot --histogram 0 --with boxes --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
+   feedgnuplot --histogram 0 --with boxes
+     --binwidth 10 --set 'style fill solid'
+     --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
 
 =head1 ACKNOWLEDGEMENT
 
