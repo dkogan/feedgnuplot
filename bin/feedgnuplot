@@ -457,7 +457,7 @@ sub mainThread
     local *PIPE;
     my $dopersist = '';
 
-    if( !$options{stream} && getGnuplotVersion() >= 4.3)
+    if( getGnuplotVersion() >= 4.3)
     {
       $dopersist = '--persist';
     }
