@@ -455,6 +455,8 @@ sub makeDomainNumeric
 sub mainThread
 {
     local *PIPE;
+    pipe my ($pipe_readdata, $pipe_writedata);
+
     my $dopersist = '';
 
     if( getGnuplotVersion() >= 4.3)
@@ -644,7 +646,8 @@ sub mainThread
         if(/^replot/o )
         {
           # /timertick/ determines if the timer was the source of the replot
-          replot( $domain0_numeric, /timertick/ );
+          replot( $pipe_readdata, $pipe_writedata,
+                  $domain0_numeric, /timertick/ );
           next;
         }
 
@@ -700,7 +703,8 @@ sub mainThread
               # the x-coordinate of the new point is in the past, so I wipe out
               # all the data and start anew. Before I wipe the old data, I
               # replot the old data
-              replot( $domain0_numeric );
+              replot( $pipe_readdata, $pipe_writedata,
+                      $domain0_numeric );
               clearCurves();
               $latestX = undef;
             }
@@ -759,7 +763,7 @@ sub mainThread
     }
 
     # finished reading in all. Plot what we have
-    plotStoredData();
+    plotStoredData($pipe_readdata, $pipe_writedata);
 
     if ( defined $options{hardcopy})
     {
@@ -819,18 +823,22 @@ sub pruneOldData
 
 sub plotStoredData
 {
+  my ($pipe_readdata, $pipe_writedata) = @_;
+
   # get the options for those curves that havse any data
   my @nonemptyCurves = grep { $_->{datastring} } @curves;
   my @extraopts = map {$_->{options}} @nonemptyCurves;
 
-  my $body = join(', ' , map({ "'-' $_" } @extraopts) );
+  my $fd = fileno $pipe_readdata;
+
+  my $body = join(', ' , map({ "'<&$fd' $_" } @extraopts) );
   if($options{'3d'}) { print PIPE "splot $body\n"; }
   else               { print PIPE  "plot $body\n"; }
 
   foreach my $curve (@nonemptyCurves)
   {
-    print PIPE $curve->{datastring};
-    print PIPE "e\n";
+    print $pipe_writedata $curve->{datastring};
+    print $pipe_writedata "e\n";
   }
 }
 
@@ -977,7 +985,8 @@ sub replot
   # }
 
 
-  my ($domain0_numeric, $replot_is_from_timer) = @_;
+  my ($pipe_readdata, $pipe_writedata,
+      $domain0_numeric, $replot_is_from_timer) = @_;
 
   my $now = [gettimeofday];
 
@@ -1008,7 +1017,7 @@ sub replot
       sendRangeCommand( "xrange", $xmin, $xmax );
     }
 
-    plotStoredData();
+    plotStoredData($pipe_readdata, $pipe_writedata);
 
 
     # update replot state
