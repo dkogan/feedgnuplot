@@ -456,10 +456,28 @@ sub mainThread
     local *PIPE;
     my $dopersist = '';
 
-    if( !$options{stream} && getGnuplotVersion() >= 4.3)
+    if( getGnuplotVersion() >= 4.3 && # --persist not available before this
+
+        # --persist is needed for the "half-alive" state (see documentation for
+        # --exit). This state is only used with these options:
+        !$options{stream} && $options{exit})
     {
       $dopersist = '--persist';
     }
+
+    # We trap SIGINT to kill the data input, but keep the plot up. see
+    # documentation for --exit
+    if ($options{stream} && !$options{exit})
+    {
+        $SIG{INT} = sub
+        {
+            print STDERR "$0 received SIGINT. Send again to quit\n";
+            $SIG{INT} = undef;
+        };
+    }
+
+
+
 
     if(exists $options{dump})
     {
@@ -751,14 +769,8 @@ sub mainThread
       }
     }
 
-    # if we were streaming, we're now done!
-    if( $options{stream} )
-    {
-      return;
-    }
-
     # finished reading in all. Plot what we have
-    plotStoredData();
+    plotStoredData() unless $options{stream};
 
     if ( defined $options{hardcopy})
     {
@@ -777,6 +789,13 @@ sub mainThread
 
       print "Wrote output to $outputfile\n";
       return;
+    }
+
+    # data exhausted. If we're killed now, then we should peacefully die.
+    if($options{stream} && !$options{exit})
+    {
+        print STDERR "Input data exhausted\n";
+        $SIG{INT} = undef;
     }
 
     # we persist gnuplot, so we shouldn't need this sleep. However, once
@@ -1699,10 +1718,80 @@ is possible to send the output produced this way to gnuplot directly.
 
 C<--exit>
 
-Terminate the feedgnuplot process after passing data to gnuplot. The window will
-persist but will not be interactive. Without this option feedgnuplot keeps
-running and must be killed by the user. Note that this option works only with
-later versions of gnuplot and only with some gnuplot terminals.
+This controls the details of what happens when the input data is exhausted, or
+when some part of the C<feedgnuplot> pipeline is killed. This option does
+different things depending on whether C<--stream> is active, so read this
+closely.
+
+With interactive gnuplot terminals (qt, x11, wxt), the plot windows live in a
+separate process from the main C<gnuplot> process. It is thus possible for the
+main C<gnuplot> process to exit, while leaving the plot windows up (a caveat is
+that such decapitated windows aren't interactive). To be clear, there are 3
+possible states:
+
+=over
+
+=item Alive: C<feedgnuplot>, C<gnuplot> alive, plot window process alive, no
+shell prompt (shell busy with C<feedgnuplot>)
+
+=item Half-alive: C<feedgnuplot>, C<gnuplot> dead, plot window process alive
+(but non-interactive), shell prompt available
+
+=item Dead: C<feedgnuplot>, C<gnuplot> dead, plot window process dead, shell
+prompt available
+
+=back
+
+The C<--exit> option controls the details of this behavior. The possibilities
+are:
+
+=over
+
+=item No C<--stream>, input pipe is exhausted (all data read in)
+
+=over
+
+=item default; no C<--exit>
+
+Alive. Need to Ctrl-C to get back into the shell
+
+=item C<--exit>
+
+Half-alive. Non-interactive prompt up, and the shell accepts new commands.
+Without C<--stream> the goal is to show a plot, so a Dead state is not useful
+here.
+
+=back
+
+=item C<--stream>, input pipe is exhausted (all data read in) or the
+C<feedgnuplot> process terminated
+
+=over
+
+=item default; no C<--exit>
+
+Alive. Need to Ctrl-C to get back into the shell
+
+=item C<--exit>
+
+Dead. No plot is shown, and the shell accepts new commands. With C<--stream> the
+goal is to show a plot as the data comes in, which we have been doing. Now that
+we're done, we can clean up everything.
+
+=back
+
+=back
+
+Note that one usually invokes C<feedgnuplot> as a part of a shell pipeline:
+
+ $ write_data | feedgnuplot
+
+If the user terminates this pipeline with ^C, then I<all> the processes in the
+pipeline receive SIGINT. This normally kills C<feedgnuplot> and all its
+C<gnuplot> children, and we let this happen unless C<--stream> and no C<--exit>.
+If C<--stream> and no C<--exit>, then we ignore the first ^C. The data feeder
+dies, and we behave as if the input data was exhausted. A second ^C kills us
+also.
 
 =item
 
