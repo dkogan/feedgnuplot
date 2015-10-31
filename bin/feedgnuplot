@@ -751,14 +751,8 @@ sub mainThread
       }
     }
 
-    # if we were streaming, we're now done!
-    if( $options{stream} )
-    {
-      return;
-    }
-
     # finished reading in all. Plot what we have
-    plotStoredData();
+    plotStoredData() unless $options{stream};
 
     if ( defined $options{hardcopy})
     {
