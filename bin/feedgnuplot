@@ -384,7 +384,7 @@ sub interpretCommandline
     {
       if( $options{xlen} - int($options{xlen}) )
       {
-        say STDERR "When streaming --xlen MUST be an integer. Rounding up to the nearest second";
+        print STDERR "When streaming --xlen MUST be an integer. Rounding up to the nearest second\n";
         $options{xlen} = 1 + int($options{xlen});
       }
     }
