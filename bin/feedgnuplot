@@ -14,7 +14,7 @@ use threads;
 use threads::shared;
 use Thread::Queue;
 use Pod::Usage;
-use Time::Piece;
+use DateTime::Format::Strptime;
 
 my $VERSION = 1.34;
 
@@ -30,6 +30,9 @@ interpretCommandline();
 # represent the offset IN THE ORIGINAL STRING of the current start of the
 # datastring
 
+
+
+my $strptime;
 
 my @curves = ();
 
@@ -382,12 +385,16 @@ sub interpretCommandline
     # and strftime, and those are integer-only
     if( defined $options{xlen} )
     {
+        # warning do I need to make sure this is an integer anymore?
       if( $options{xlen} - int($options{xlen}) )
       {
         print STDERR "When streaming --xlen MUST be an integer. Rounding up to the nearest second\n";
         $options{xlen} = 1 + int($options{xlen});
       }
     }
+
+
+#    $strptime = DateTime::Format::Strptime->new( pattern => $options{timefmt} );
   }
 }
 
@@ -440,14 +447,18 @@ sub makeDomainNumeric
 {
   my ($domain0) = @_;
 
-  if ( $options{timefmt} )
-  {
-    my $timepiece = Time::Piece->strptime( $domain0, $options{timefmt} )
-      or die "Couldn't parse time format. String '$domain0' doesn't fit format '$options{timefmt}'";
 
-    return $timepiece->epoch();
+
+  if( $options{timefmt})
+  {
+#      my $t = $strptime->parse_datetime($domain0);
+#      print STDERR "$domain0 $t\n";
   }
 
+
+
+
+#  return $strptime->parse_datetime($domain0) if $options{timefmt};
   return $domain0;
 }
 
@@ -691,6 +702,17 @@ sub mainThread
 
               @domain = splice(@fields, 0, 2);
           }
+
+
+
+
+          # domain0_numeric is only used for xlen and monotonic, I think. And
+          # this is the only thing that requires strptime. Shouldn't bother with
+          # strptime otherwise
+
+
+
+
 
           if( $options{monotonic} )
           {
@@ -996,7 +1018,7 @@ sub replot
       {
         # if we're using a timefmt, I need to convert my xmin range from
         # seconds-since-the-epoch BACK to the timefmt. Sheesh
-        ($xmin, $xmax) = map {Time::Piece->strptime( $_, '%s' )->strftime( $options{timefmt} ) } ($xmin, $xmax);
+        ($xmin, $xmax) = map {$strptime->parse_datetime($_)} ($xmin, $xmax);
       }
       sendRangeCommand( "xrange", $xmin, $xmax );
     }
