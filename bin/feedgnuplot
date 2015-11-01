@@ -7,16 +7,14 @@ use warnings;
 use Getopt::Long;
 use Time::HiRes qw( usleep gettimeofday tv_interval );
 use IO::Handle;
+use IO::Select;
 use List::Util qw( first );
 use Scalar::Util qw( looks_like_number );
-use Text::ParseWords;
-use threads;
-use threads::shared;
-use Thread::Queue;
+use Text::ParseWords; # for shellwords
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.34;
+my $VERSION = 1.35;
 
 my %options;
 interpretCommandline();
@@ -29,15 +27,10 @@ interpretCommandline();
 # with --xlen, the offsets are preserved by using $curve->{datastring_offset} to
 # represent the offset IN THE ORIGINAL STRING of the current start of the
 # datastring
-
-
 my @curves = ();
 
 # list mapping curve names to their indices in the @curves list
 my %curveIndices = ();
-
-# now start the data acquisition and plotting threads
-my $dataQueue;
 
 # Whether any new data has arrived since the last replot
 my $haveNewData;
@@ -48,39 +41,16 @@ my $last_replot_time = [gettimeofday];
 # whether the previous replot was timer based
 my $last_replot_is_from_timer = 1;
 
-my $streamingFinished : shared = undef;
 
-if($options{stream})
-{
-  $dataQueue  = Thread::Queue->new();
-  my $addThr  = threads->create(\&mainThread);
+my $prev_timed_replot_time = [gettimeofday];
+my $this_replot_is_from_timer;
+my $stdin    = IO::Handle->new();
+die "Couldn't open STDIN" unless $stdin->fdopen(fileno(STDIN),"r");
+my $selector = IO::Select->new( $stdin );
 
-  # spawn the plot updating thread. If I'm replotting from a data trigger, I don't need this
-  my $plotThr = threads->create(\&plotUpdateThread) if $options{stream} > 0;
 
-  while(<>)
-  {
-    chomp;
 
-    last if /^exit/;
-
-    # place every line of input to the queue, so that the plotting thread can process it. if we are
-    # using an implicit domain (x = line number), then we send it on the data queue also, since
-    # $. is not meaningful in the plotting thread
-    if(!$options{domain})
-    {
-      $_ .= " $.";
-    }
-    $dataQueue->enqueue($_);
-  }
-
-  $streamingFinished = 1;
-
-  $plotThr->join() if defined $plotThr;
-  $addThr->join();
-}
-else
-{ mainThread(); }
+mainThread();
 
 
 
@@ -227,6 +197,9 @@ sub interpretCommandline
   #  -1 for triggered replotting
   #  >0 for timed replotting
   #  undef if not streaming
+  #
+  #  Note that '0' is not allowed, so !$options{stream} will do the expected
+  #  thing
   if(defined $options{stream})
   {
     # if no streaming period is given, default to 1Hz.
@@ -383,7 +356,7 @@ sub interpretCommandline
     {
       if( $options{xlen} - int($options{xlen}) )
       {
-        say STDERR "When streaming --xlen MUST be an integer. Rounding up to the nearest second";
+        print STDERR "When streaming --xlen MUST be an integer. Rounding up to the nearest second\n";
         $options{xlen} = 1 + int($options{xlen});
       }
     }
@@ -402,19 +375,6 @@ sub getGnuplotVersion
   close(GNUPLOT_VERSION);
 
   return $gnuplotVersion;
-}
-
-sub plotUpdateThread
-{
-  while(! $streamingFinished)
-  {
-    usleep( $options{stream} * 1e6 );
-
-    # indicate that the timer was the replot source
-    $dataQueue->enqueue('replot timertick');
-  }
-
-  $dataQueue->enqueue(undef);
 }
 
 sub sendRangeCommand
@@ -452,15 +412,63 @@ sub makeDomainNumeric
   return $domain0;
 }
 
+
+sub getNextLine
+{
+    while(1)
+    {
+        $this_replot_is_from_timer = undef;
+
+        # if we're not streaming, or we're doing triggered-only replotting, simply
+        # do a blocking read
+        return $stdin->getline()
+          if (! $options{stream} || $options{stream} < 0);
+
+
+        my $now = [gettimeofday];
+        my $time_remaining = $options{stream} - tv_interval($prev_timed_replot_time, $now);
+
+        if ( $time_remaining < 0 )
+        {
+            $prev_timed_replot_time = $now;
+            $this_replot_is_from_timer = 1;
+            return 'replot';
+        }
+
+        if ($selector->can_read($time_remaining))
+        {
+            return $stdin->getline();
+        }
+    }
+}
+
 sub mainThread
 {
     local *PIPE;
     my $dopersist = '';
 
-    if( !$options{stream} && getGnuplotVersion() >= 4.3)
+    if( getGnuplotVersion() >= 4.3 && # --persist not available before this
+
+        # --persist is needed for the "half-alive" state (see documentation for
+        # --exit). This state is only used with these options:
+        !$options{stream} && $options{exit})
     {
       $dopersist = '--persist';
     }
+
+    # We trap SIGINT to kill the data input, but keep the plot up. see
+    # documentation for --exit
+    if ($options{stream} && !$options{exit})
+    {
+        $SIG{INT} = sub
+        {
+            print STDERR "$0 received SIGINT. Send again to quit\n";
+            $SIG{INT} = undef;
+        };
+    }
+
+
+
 
     if(exists $options{dump})
     {
@@ -628,8 +636,7 @@ sub mainThread
     # number of seconds since the UNIX epoch.
     my $domain0_numeric;
 
-    # I should be using the // operator, but I'd like to be compatible with perl 5.8
-    while( $_ = (defined $dataQueue ? $dataQueue->dequeue() : <>))
+    while( defined ($_ = getNextLine()) )
     {
       next if /^#/o;
 
@@ -643,123 +650,104 @@ sub mainThread
 
         if(/^replot/o )
         {
-          # /timertick/ determines if the timer was the source of the replot
-          replot( $domain0_numeric, /timertick/ );
+          replot( $domain0_numeric );
           next;
         }
 
-        # /exit/ is handled in the data-reading thread
+        last if /^exit/o;
       }
 
-      if(! /^replot/o)
+      # parse the incoming data lines. The format is
+      # x id0 dat0 id1 dat1 ....
+      # where idX is the ID of the curve that datX corresponds to
+      #
+      # $options{domain} indicates whether the initial 'x' is given or not (if not, the line
+      # number is used)
+      # $options{dataid} indicates whether idX is given or not (if not, the point order in the
+      # line is used)
+      # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
+
+      my @fields = split;
+
+      if($options{domain})
       {
-        # parse the incoming data lines. The format is
-        # x id0 dat0 id1 dat1 ....
-        # where idX is the ID of the curve that datX corresponds to
-        #
-        # $options{domain} indicates whether the initial 'x' is given or not (if not, the line
-        # number is used)
-        # $options{dataid} indicates whether idX is given or not (if not, the point order in the
-        # line is used)
-        # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
-
-        my @fields = split;
-
-        if($options{domain})
+        if( $options{timefmt} )
         {
-          if( $options{timefmt} )
-          {
-              # no point if doing anything unless I have at least the domain and
-              # 1 piece of data
-              next if @fields < $options{timefmt_Ncols}+1;
+            # no point if doing anything unless I have at least the domain and
+            # 1 piece of data
+            next if @fields < $options{timefmt_Ncols}+1;
 
-              $domain[0] = join (' ', splice( @fields, 0, $options{timefmt_Ncols}) );
-              $domain0_numeric = makeDomainNumeric( $domain[0] );
-          }
-          elsif(!$options{'3d'})
-          {
-              # no point if doing anything unless I have at least the domain and
-              # 1 piece of data
-              next if @fields < 1+1;
+            $domain[0] = join (' ', splice( @fields, 0, $options{timefmt_Ncols}) );
+            $domain0_numeric = makeDomainNumeric( $domain[0] );
+        }
+        elsif(!$options{'3d'})
+        {
+            # no point if doing anything unless I have at least the domain and
+            # 1 piece of data
+            next if @fields < 1+1;
 
-              $domain[0] = $domain0_numeric = shift @fields;
-          }
-          else
-          {
-              # no point if doing anything unless I have at least the domain and
-              # 1 piece of data
-              next if @fields < 2+1;
-
-              @domain = splice(@fields, 0, 2);
-          }
-
-          if( $options{monotonic} )
-          {
-            if( defined $latestX && $domain0_numeric < $latestX )
-            {
-              # the x-coordinate of the new point is in the past, so I wipe out
-              # all the data and start anew. Before I wipe the old data, I
-              # replot the old data
-              replot( $domain0_numeric );
-              clearCurves();
-              $latestX = undef;
-            }
-            else
-            { $latestX = $domain0_numeric; }
-          }
+            $domain[0] = $domain0_numeric = shift @fields;
         }
         else
         {
-          # since $. is not meaningful in the plotting thread if we're using the data queue, we pass
-          # $. on the data queue in that case
-          if(defined $dataQueue)
+            # no point if doing anything unless I have at least the domain and
+            # 1 piece of data
+            next if @fields < 2+1;
+
+            @domain = splice(@fields, 0, 2);
+        }
+
+        if( $options{monotonic} )
+        {
+          if( defined $latestX && $domain0_numeric < $latestX )
           {
-            $domain[0] = pop @fields;
+            # the x-coordinate of the new point is in the past, so I wipe out
+            # all the data and start anew. Before I wipe the old data, I
+            # replot the old data
+            replot( $domain0_numeric );
+            clearCurves();
+            $latestX = undef;
+          }
+          else
+          { $latestX = $domain0_numeric; }
+        }
+      }
+      else
+      {
+        $domain[0] = $.;
+        $domain0_numeric = makeDomainNumeric( $domain[0] );
+      }
+
+      my $id = -1;
+
+      while(@fields)
+      {
+          if($options{dataid})
+          {
+              $id = shift @fields;
           }
           else
           {
-            $domain[0] = $.;
+              $id++;
           }
-          $domain0_numeric = makeDomainNumeric( $domain[0] );
-        }
 
-        my $id = -1;
+          # I'd like to use //, but I guess some people are still on perl 5.8
+          my $rangesize = exists $options{rangesize_hash}{$id} ?
+            $options{rangesize_hash}{$id} :
+            $options{rangesize_default};
 
-        while(@fields)
-        {
-            if($options{dataid})
-            {
-                $id = shift @fields;
-            }
-            else
-            {
-                $id++;
-            }
+          last if @fields < $rangesize;
 
-            # I'd like to use //, but I guess some people are still on perl 5.8
-            my $rangesize = exists $options{rangesize_hash}{$id} ?
-              $options{rangesize_hash}{$id} :
-              $options{rangesize_default};
-
-            last if @fields < $rangesize;
-
-            pushPoint(getCurve($id),
-                      join(' ',
-                           @domain,
-                           splice( @fields, 0, $rangesize ) ) . "\n",
-                      $domain0_numeric);
-        }
+          pushPoint(getCurve($id),
+                    join(' ',
+                         @domain,
+                         splice( @fields, 0, $rangesize ) ) . "\n",
+                    $domain0_numeric);
       }
     }
 
-    # if we were streaming, we're now done!
-    if( $options{stream} )
-    {
-      return;
-    }
-
     # finished reading in all. Plot what we have
-    plotStoredData();
+    plotStoredData() unless $options{stream};
 
     if ( defined $options{hardcopy})
     {
@@ -768,7 +756,7 @@ sub mainThread
       # sleep until the plot file exists, and it is closed. Sometimes the output
       # is still being written at this point. If the output filename starts with
       # '|', gnuplot pipes the output to that process, instead of writing to a
-      # file. In that case I don't make sure the file exists, since there IS not
+      # file. In that case I don't make sure the file exists, since there IS no
       # file
       if( $options{hardcopy} !~ /^\|/ )
       {
@@ -778,6 +766,13 @@ sub mainThread
 
       print "Wrote output to $outputfile\n";
       return;
+    }
+
+    # data exhausted. If we're killed now, then we should peacefully die.
+    if($options{stream} && !$options{exit})
+    {
+        print STDERR "Input data exhausted\n";
+        $SIG{INT} = undef;
     }
 
     # we persist gnuplot, so we shouldn't need this sleep. However, once
@@ -977,7 +972,7 @@ sub replot
   # }
 
 
-  my ($domain0_numeric, $replot_is_from_timer) = @_;
+  my ($domain0_numeric) = @_;
 
   my $now = [gettimeofday];
 
@@ -987,7 +982,7 @@ sub replot
       # if the last replot was timer-based, but this one isn't, force a replot.
       # This makes sure that a replot happens for a domain rollover shortly
       # after a timer replot
-      !$replot_is_from_timer && $last_replot_is_from_timer ||
+      !$this_replot_is_from_timer && $last_replot_is_from_timer ||
 
       # if enough time has elapsed since the last replot, it's ok to replot
       tv_interval ( $last_replot_time, $now ) > 0.8*$options{stream} )
@@ -1013,7 +1008,7 @@ sub replot
 
     # update replot state
     $last_replot_time          = $now;
-    $last_replot_is_from_timer = $replot_is_from_timer;
+    $last_replot_is_from_timer = $this_replot_is_from_timer;
   }
 }
 
@@ -1700,10 +1695,80 @@ is possible to send the output produced this way to gnuplot directly.
 
 C<--exit>
 
-Terminate the feedgnuplot process after passing data to gnuplot. The window will
-persist but will not be interactive. Without this option feedgnuplot keeps
-running and must be killed by the user. Note that this option works only with
-later versions of gnuplot and only with some gnuplot terminals.
+This controls the details of what happens when the input data is exhausted, or
+when some part of the C<feedgnuplot> pipeline is killed. This option does
+different things depending on whether C<--stream> is active, so read this
+closely.
+
+With interactive gnuplot terminals (qt, x11, wxt), the plot windows live in a
+separate process from the main C<gnuplot> process. It is thus possible for the
+main C<gnuplot> process to exit, while leaving the plot windows up (a caveat is
+that such decapitated windows aren't interactive). To be clear, there are 3
+possible states:
+
+=over
+
+=item Alive: C<feedgnuplot>, C<gnuplot> alive, plot window process alive, no
+shell prompt (shell busy with C<feedgnuplot>)
+
+=item Half-alive: C<feedgnuplot>, C<gnuplot> dead, plot window process alive
+(but non-interactive), shell prompt available
+
+=item Dead: C<feedgnuplot>, C<gnuplot> dead, plot window process dead, shell
+prompt available
+
+=back
+
+The C<--exit> option controls the details of this behavior. The possibilities
+are:
+
+=over
+
+=item No C<--stream>, input pipe is exhausted (all data read in)
+
+=over
+
+=item default; no C<--exit>
+
+Alive. Need to Ctrl-C to get back into the shell
+
+=item C<--exit>
+
+Half-alive. Non-interactive prompt up, and the shell accepts new commands.
+Without C<--stream> the goal is to show a plot, so a Dead state is not useful
+here.
+
+=back
+
+=item C<--stream>, input pipe is exhausted (all data read in) or the
+C<feedgnuplot> process terminated
+
+=over
+
+=item default; no C<--exit>
+
+Alive. Need to Ctrl-C to get back into the shell
+
+=item C<--exit>
+
+Dead. No plot is shown, and the shell accepts new commands. With C<--stream> the
+goal is to show a plot as the data comes in, which we have been doing. Now that
+we're done, we can clean up everything.
+
+=back
+
+=back
+
+Note that one usually invokes C<feedgnuplot> as a part of a shell pipeline:
+
+ $ write_data | feedgnuplot
+
+If the user terminates this pipeline with ^C, then I<all> the processes in the
+pipeline receive SIGINT. This normally kills C<feedgnuplot> and all its
+C<gnuplot> children, and we let this happen unless C<--stream> and no C<--exit>.
+If C<--stream> and no C<--exit>, then we ignore the first ^C. The data feeder
+dies, and we behave as if the input data was exhausted. A second ^C kills us
+also.
 
 =item
 
@@ -1757,10 +1822,12 @@ in a Thinkpad.
  $ while true; do cat /proc/acpi/ibm/thermal | awk '{$1=""; print}' ; sleep 1; done |
    feedgnuplot --stream --xlen 100 --lines --autolegend --ymax 100 --ymin 20 --ylabel 'Temperature (deg C)'
 
-=head2 Plotting a histogram of file sizes in a directory
+=head2 Plotting a histogram of file sizes in a directory, granular to 10MB
 
  $ ls -l | awk '{print $5/1e6}' |
-   feedgnuplot --histogram 0 --with boxes --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
+   feedgnuplot --histogram 0 --with boxes
+     --binwidth 10 --set 'style fill solid'
+     --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
 
 =head1 ACKNOWLEDGEMENT
 
