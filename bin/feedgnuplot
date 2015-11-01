@@ -29,8 +29,6 @@ interpretCommandline();
 # with --xlen, the offsets are preserved by using $curve->{datastring_offset} to
 # represent the offset IN THE ORIGINAL STRING of the current start of the
 # datastring
-
-
 my @curves = ();
 
 # list mapping curve names to their indices in the @curves list
