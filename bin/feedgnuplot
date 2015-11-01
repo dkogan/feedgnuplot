@@ -7,12 +7,10 @@ use warnings;
 use Getopt::Long;
 use Time::HiRes qw( usleep gettimeofday tv_interval );
 use IO::Handle;
+use IO::Select;
 use List::Util qw( first );
 use Scalar::Util qw( looks_like_number );
 use Text::ParseWords; # for shellwords
-use threads;
-use threads::shared;
-use Thread::Queue;
 use Pod::Usage;
 use Time::Piece;
 
@@ -34,9 +32,6 @@ my @curves = ();
 # list mapping curve names to their indices in the @curves list
 my %curveIndices = ();
 
-# now start the data acquisition and plotting threads
-my $dataQueue;
-
 # Whether any new data has arrived since the last replot
 my $haveNewData;
 
@@ -46,40 +41,16 @@ my $last_replot_time = [gettimeofday];
 # whether the previous replot was timer based
 my $last_replot_is_from_timer = 1;
 
-my $streamingFinished : shared = undef;
 
-if($options{stream})
-{
-  $dataQueue  = Thread::Queue->new();
-  my $addThr  = threads->create(\&mainThread);
+my $prev_timed_replot_time = [gettimeofday];
+my $this_replot_is_from_timer;
+my $stdin    = IO::Handle->new();
+die "Couldn't open STDIN" unless $stdin->fdopen(fileno(STDIN),"r");
+my $selector = IO::Select->new( $stdin );
 
-  # spawn the plot updating thread. If I'm replotting from a data trigger, I don't need this
-  my $plotThr = threads->create(\&plotUpdateThread) if $options{stream} > 0;
 
-  while(<>)
-  {
-    chomp;
 
-    last if /^exit/;
-
-    # place every line of input to the queue, so that the plotting thread can process it. if we are
-    # using an implicit domain (x = line number), then we send it on the data queue also, since
-    # $. is not meaningful in the plotting thread
-    if(!$options{domain})
-    {
-      $_ .= " $.";
-    }
-    $dataQueue->enqueue($_);
-  }
-
-  $streamingFinished = 1;
-  $dataQueue->enqueue(undef);
-
-  $plotThr->join() if defined $plotThr;
-  $addThr->join();
-}
-else
-{ mainThread(); }
+mainThread();
 
 
 
@@ -226,6 +197,9 @@ sub interpretCommandline
   #  -1 for triggered replotting
   #  >0 for timed replotting
   #  undef if not streaming
+  #
+  #  Note that '0' is not allowed, so !$options{stream} will do the expected
+  #  thing
   if(defined $options{stream})
   {
     # if no streaming period is given, default to 1Hz.
@@ -403,17 +377,6 @@ sub getGnuplotVersion
   return $gnuplotVersion;
 }
 
-sub plotUpdateThread
-{
-  while(! $streamingFinished)
-  {
-    usleep( $options{stream} * 1e6 );
-
-    # indicate that the timer was the replot source
-    $dataQueue->enqueue('replot timertick');
-  }
-}
-
 sub sendRangeCommand
 {
   my ($name, $min, $max) = @_;
@@ -447,6 +410,36 @@ sub makeDomainNumeric
   }
 
   return $domain0;
+}
+
+
+sub getNextLine
+{
+    while(1)
+    {
+        $this_replot_is_from_timer = undef;
+
+        # if we're not streaming, or we're doing triggered-only replotting, simply
+        # do a blocking read
+        return $stdin->getline()
+          if (! $options{stream} || $options{stream} < 0);
+
+
+        my $now = [gettimeofday];
+        my $time_remaining = $options{stream} - tv_interval($prev_timed_replot_time, $now);
+
+        if ( $time_remaining < 0 )
+        {
+            $prev_timed_replot_time = $now;
+            $this_replot_is_from_timer = 1;
+            return 'replot';
+        }
+
+        if ($selector->can_read($time_remaining))
+        {
+            return $stdin->getline();
+        }
+    }
 }
 
 sub mainThread
@@ -643,8 +636,7 @@ sub mainThread
     # number of seconds since the UNIX epoch.
     my $domain0_numeric;
 
-    # I should be using the // operator, but I'd like to be compatible with perl 5.8
-    while( $_ = (defined $dataQueue ? $dataQueue->dequeue() : <>))
+    while( defined ($_ = getNextLine()) )
     {
       next if /^#/o;
 
@@ -658,12 +650,11 @@ sub mainThread
 
         if(/^replot/o )
         {
-          # /timertick/ determines if the timer was the source of the replot
-          replot( $domain0_numeric, /timertick/ );
+          replot( $domain0_numeric );
           next;
         }
 
-        # /exit/ is handled in the data-reading thread
+        last if /^exit/o;
       }
 
       if(! /^replot/o)
@@ -725,16 +716,7 @@ sub mainThread
         }
         else
         {
-          # since $. is not meaningful in the plotting thread if we're using the data queue, we pass
-          # $. on the data queue in that case
-          if(defined $dataQueue)
-          {
-            $domain[0] = pop @fields;
-          }
-          else
-          {
-            $domain[0] = $.;
-          }
+          $domain[0] = $.;
           $domain0_numeric = makeDomainNumeric( $domain[0] );
         }
 
@@ -993,7 +975,7 @@ sub replot
   # }
 
 
-  my ($domain0_numeric, $replot_is_from_timer) = @_;
+  my ($domain0_numeric) = @_;
 
   my $now = [gettimeofday];
 
@@ -1003,7 +985,7 @@ sub replot
       # if the last replot was timer-based, but this one isn't, force a replot.
       # This makes sure that a replot happens for a domain rollover shortly
       # after a timer replot
-      !$replot_is_from_timer && $last_replot_is_from_timer ||
+      !$this_replot_is_from_timer && $last_replot_is_from_timer ||
 
       # if enough time has elapsed since the last replot, it's ok to replot
       tv_interval ( $last_replot_time, $now ) > 0.8*$options{stream} )
@@ -1029,7 +1011,7 @@ sub replot
 
     # update replot state
     $last_replot_time          = $now;
-    $last_replot_is_from_timer = $replot_is_from_timer;
+    $last_replot_is_from_timer = $this_replot_is_from_timer;
   }
 }
 
