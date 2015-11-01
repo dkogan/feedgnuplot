@@ -657,95 +657,92 @@ sub mainThread
         last if /^exit/o;
       }
 
-      if(! /^replot/o)
+      # parse the incoming data lines. The format is
+      # x id0 dat0 id1 dat1 ....
+      # where idX is the ID of the curve that datX corresponds to
+      #
+      # $options{domain} indicates whether the initial 'x' is given or not (if not, the line
+      # number is used)
+      # $options{dataid} indicates whether idX is given or not (if not, the point order in the
+      # line is used)
+      # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
+
+      my @fields = split;
+
+      if($options{domain})
       {
-        # parse the incoming data lines. The format is
-        # x id0 dat0 id1 dat1 ....
-        # where idX is the ID of the curve that datX corresponds to
-        #
-        # $options{domain} indicates whether the initial 'x' is given or not (if not, the line
-        # number is used)
-        # $options{dataid} indicates whether idX is given or not (if not, the point order in the
-        # line is used)
-        # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
-
-        my @fields = split;
-
-        if($options{domain})
+        if( $options{timefmt} )
         {
-          if( $options{timefmt} )
-          {
-              # no point if doing anything unless I have at least the domain and
-              # 1 piece of data
-              next if @fields < $options{timefmt_Ncols}+1;
+            # no point if doing anything unless I have at least the domain and
+            # 1 piece of data
+            next if @fields < $options{timefmt_Ncols}+1;
 
-              $domain[0] = join (' ', splice( @fields, 0, $options{timefmt_Ncols}) );
-              $domain0_numeric = makeDomainNumeric( $domain[0] );
-          }
-          elsif(!$options{'3d'})
-          {
-              # no point if doing anything unless I have at least the domain and
-              # 1 piece of data
-              next if @fields < 1+1;
+            $domain[0] = join (' ', splice( @fields, 0, $options{timefmt_Ncols}) );
+            $domain0_numeric = makeDomainNumeric( $domain[0] );
+        }
+        elsif(!$options{'3d'})
+        {
+            # no point if doing anything unless I have at least the domain and
+            # 1 piece of data
+            next if @fields < 1+1;
 
-              $domain[0] = $domain0_numeric = shift @fields;
-          }
-          else
-          {
-              # no point if doing anything unless I have at least the domain and
-              # 1 piece of data
-              next if @fields < 2+1;
-
-              @domain = splice(@fields, 0, 2);
-          }
-
-          if( $options{monotonic} )
-          {
-            if( defined $latestX && $domain0_numeric < $latestX )
-            {
-              # the x-coordinate of the new point is in the past, so I wipe out
-              # all the data and start anew. Before I wipe the old data, I
-              # replot the old data
-              replot( $domain0_numeric );
-              clearCurves();
-              $latestX = undef;
-            }
-            else
-            { $latestX = $domain0_numeric; }
-          }
+            $domain[0] = $domain0_numeric = shift @fields;
         }
         else
         {
-          $domain[0] = $.;
-          $domain0_numeric = makeDomainNumeric( $domain[0] );
+            # no point if doing anything unless I have at least the domain and
+            # 1 piece of data
+            next if @fields < 2+1;
+
+            @domain = splice(@fields, 0, 2);
         }
 
-        my $id = -1;
-
-        while(@fields)
+        if( $options{monotonic} )
         {
-            if($options{dataid})
-            {
-                $id = shift @fields;
-            }
-            else
-            {
-                $id++;
-            }
-
-            # I'd like to use //, but I guess some people are still on perl 5.8
-            my $rangesize = exists $options{rangesize_hash}{$id} ?
-              $options{rangesize_hash}{$id} :
-              $options{rangesize_default};
-
-            last if @fields < $rangesize;
-
-            pushPoint(getCurve($id),
-                      join(' ',
-                           @domain,
-                           splice( @fields, 0, $rangesize ) ) . "\n",
-                      $domain0_numeric);
+          if( defined $latestX && $domain0_numeric < $latestX )
+          {
+            # the x-coordinate of the new point is in the past, so I wipe out
+            # all the data and start anew. Before I wipe the old data, I
+            # replot the old data
+            replot( $domain0_numeric );
+            clearCurves();
+            $latestX = undef;
+          }
+          else
+          { $latestX = $domain0_numeric; }
         }
+      }
+      else
+      {
+        $domain[0] = $.;
+        $domain0_numeric = makeDomainNumeric( $domain[0] );
+      }
+
+      my $id = -1;
+
+      while(@fields)
+      {
+          if($options{dataid})
+          {
+              $id = shift @fields;
+          }
+          else
+          {
+              $id++;
+          }
+
+          # I'd like to use //, but I guess some people are still on perl 5.8
+          my $rangesize = exists $options{rangesize_hash}{$id} ?
+            $options{rangesize_hash}{$id} :
+            $options{rangesize_default};
+
+          last if @fields < $rangesize;
+
+          pushPoint(getCurve($id),
+                    join(' ',
+                         @domain,
+                         splice( @fields, 0, $rangesize ) ) . "\n",
+                    $domain0_numeric);
       }
     }
 
