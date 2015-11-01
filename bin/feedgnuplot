@@ -9,7 +9,7 @@ use Time::HiRes qw( usleep gettimeofday tv_interval );
 use IO::Handle;
 use List::Util qw( first );
 use Scalar::Util qw( looks_like_number );
-use Text::ParseWords;
+use Text::ParseWords; # for shellwords
 use threads;
 use threads::shared;
 use Thread::Queue;
