@@ -1,3 +1,10 @@
+feedgnuplot (1.35-1) unstable; urgency=medium
+
+  * Upstream update: fancier handling of termination conditions, no more
+    threading code
+
+ -- Dima Kogan <dima@secretsauce.net>  Mon, 02 Nov 2015 13:55:32 -0800
+
 feedgnuplot (1.34-2) unstable; urgency=medium
 
   * Depends now works with the 'gnuplot5' packages
