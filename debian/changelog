@@ -1,3 +1,9 @@
+feedgnuplot (1.36-1) unstable; urgency=medium
+
+  * Upstream update: added --equation to plot symbolic equations
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 13 Nov 2015 11:14:30 -0800
+
 feedgnuplot (1.35-1) unstable; urgency=medium
 
   * Upstream update: fancier handling of termination conditions, no more
