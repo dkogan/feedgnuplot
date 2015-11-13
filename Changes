@@ -1,3 +1,9 @@
+feedgnuplot (1.36)
+
+  * Added --equation to plot symbolic equations
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 13 Nov 2015 11:08:26 -0800
+
 feedgnuplot (1.35)
 
   * replaced a 'say' with 'print'. Should work better with ancient perls
