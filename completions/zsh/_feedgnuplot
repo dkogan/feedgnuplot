@@ -32,6 +32,7 @@ _arguments -S                                                                   
     '*--extracmds[Additional gnuplot commands]:command'                           \
     '*--set[Additional 'set' gnuplot commands]:set-option'                        \
     '*--unset[Additional 'unset' gnuplot commands]:unset-option'                  \
+    '*--equation[Raw symbolic equation]:equation'                                 \
     '--square[Plot data with square aspect ratio]'                                \
     '--square_xy[For 3D plots, set square aspect ratio for ONLY the x,y axes]'    \
     '--hardcopy[Plot to a file]:filename'                                         \
