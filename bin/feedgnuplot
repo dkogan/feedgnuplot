@@ -1617,7 +1617,7 @@ times.
 C<--equation xxx>
 
 Gnuplot can plot both data and symbolic equations. C<feedgnuplot> generally
-plots data, but with this option can plot symbolic equations /also/. This is
+plots data, but with this option can plot symbolic equations I<also>. This is
 generally intended to augment data plots, since for equation-only plots you
 don't need C<feedgnuplot>. C<--equation> can be passed multiple times for
 multiple equations. The given strings are passed to gnuplot directly without any
@@ -1629,7 +1629,7 @@ basic example:
                --equation 'sin(x)/x' --equation 'cos(x)/x with lines lw 4'
 
 Here I plot the incoming data (points along a line) with the given style (a line
-with thickness 3), /and/ I plot two damped sinusoids on the same plot. The
+with thickness 3), I<and> I plot two damped sinusoids on the same plot. The
 sinusoids are not affected by C<feedgnuplot> styling, so their styles are set
 separately, as in this example. More complicated example:
 
@@ -1638,7 +1638,7 @@ separately, as in this example. More complicated example:
                --set parametric --set "trange [0:2*3.14]" --equation "sin(t),cos(t)"
 
 Here the data I generate is points along the unit circle. I plot these as
-points, and I /also/ plot a true circle as a parametric equation.
+points, and I I<also> plot a true circle as a parametric equation.
 
 =item
 
