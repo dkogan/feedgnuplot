@@ -89,6 +89,7 @@ sub interpretCommandline
   $options{extracmds}  = [];
   $options{set}        = [];
   $options{unset}      = [];
+  $options{equation}   = [];
 
   $options{curvestyleall} = '';
   $options{styleall}      = '';
@@ -102,6 +103,7 @@ sub interpretCommandline
              'zmin=f', 'zmax=f', 'y2=s@',
              'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
+             'equation=s@',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
              'rangesize=s{2}', 'rangesizeall=i', 'extraValuesPerPoint=i',
@@ -818,7 +820,9 @@ sub plotStoredData
   my @nonemptyCurves = grep { $_->{datastring} } @curves;
   my @extraopts = map {$_->{options}} @nonemptyCurves;
 
-  my $body = join(', ' , map({ "'-' $_" } @extraopts) );
+  my $body = join('', map { "$_," } @{$options{equation}});
+  $body .= join(', ' , map({ "'-' $_" } @extraopts) );
+
   if($options{'3d'}) { print PIPE "splot $body\n"; }
   else               { print PIPE  "plot $body\n"; }
 
@@ -1607,6 +1611,34 @@ C<--unset xxx>
 Additional 'unset' commands to pass on to gnuplot verbatim. C<--unset 'a b c'>
 will result in gnuplot seeing a C<unset a b c> command. Can be passed multiple
 times.
+
+=item
+
+C<--equation xxx>
+
+Gnuplot can plot both data and symbolic equations. C<feedgnuplot> generally
+plots data, but with this option can plot symbolic equations /also/. This is
+generally intended to augment data plots, since for equation-only plots you
+don't need C<feedgnuplot>. C<--equation> can be passed multiple times for
+multiple equations. The given strings are passed to gnuplot directly without any
+thing added or removed, so styling and such should be applied in the string. A
+basic example:
+
+ seq 100 | awk '{print $1/10, $1/100}' |
+   feedgnuplot --with 'lines lw 3' --domain --ymax 1
+               --equation 'sin(x)/x' --equation 'cos(x)/x with lines lw 4'
+
+Here I plot the incoming data (points along a line) with the given style (a line
+with thickness 3), /and/ I plot two damped sinusoids on the same plot. The
+sinusoids are not affected by C<feedgnuplot> styling, so their styles are set
+separately, as in this example. More complicated example:
+
+ seq 360 | perl -nE '$th=$_/360 * 3.14*2; $c=cos($th); $s=sin($th); say "$c $s"' |
+   feedgnuplot --domain --square
+               --set parametric --set "trange [0:2*3.14]" --equation "sin(t),cos(t)"
+
+Here the data I generate is points along the unit circle. I plot these as
+points, and I /also/ plot a true circle as a parametric equation.
 
 =item
 
