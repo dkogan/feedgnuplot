@@ -1541,12 +1541,17 @@ in the plot. Defaults to 1.0 if not given.
 
 C<--histstyle style>
 
-Normally, histograms are generated with the 'smooth freq' gnuplot style.
-C<--histstyle> can be used to select different 'smooth' settings. Allowed are
-'unique', 'cumulative' and 'cnormal'. 'unique' indicates whether a bin has at
-least one item in it: instead of counting the items, it'll always report 0 or 1.
-'cumulative' is the integral of the "normal" histogram. 'cnormal' is like
-'cumulative', but rescaled to end up at 1.0.
+Normally, histograms are generated with the 'smooth frequency' gnuplot style.
+C<--histstyle> can be used to select different C<smooth> settings (see the
+gnuplot C<help smooth> page for more info). Allowed values are 'frequency' (the
+default), 'unique', 'cumulative' and 'cnormal'. 'unique' indicates whether a bin
+has at least one item in it: instead of counting the items, it'll always report
+0 or 1. 'cumulative' is the integral of the 'frequency' histogram. 'cnormal' is
+like 'cumulative', but rescaled to end up at 1.0. Note that there's no
+normalized 'frequency' option because gnuplot does not provide one.
+
+
+C<help smooth>
 
 =item
 
