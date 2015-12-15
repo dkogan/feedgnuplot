@@ -552,7 +552,7 @@ sub mainThread
       print(PIPE "set view equal xy\n");
     }
 
-# For the specified values, set the legend entries to 'title "blah blah"'
+    # For the specified values, set the legend entries to 'title "blah blah"'
     if(@{$options{legend}})
     {
       # @{$options{legend}} is a list where consecutive pairs are (curveID,
@@ -567,7 +567,7 @@ sub mainThread
       }
     }
 
-# add the extra curve options
+    # add the extra curve options
     if(@{$options{curvestyle}})
     {
       # @{$options{curvestyle}} is a list where consecutive pairs are (curveID,
@@ -582,22 +582,22 @@ sub mainThread
       }
     }
 
-# For the values requested to be printed on the y2 axis, set that
+    # For the values requested to be printed on the y2 axis, set that
     addCurveOption($_, 'axes x1y2') foreach (@{$options{y2}});
 
-# timefmt
+    # timefmt
     if( $options{timefmt} )
     {
       print(PIPE "set timefmt '$options{timefmt}'\n");
       print(PIPE "set xdata time\n");
     }
 
-# add the extra global options
+    # add the extra global options
     print(PIPE "$_\n")       foreach (@{$options{extracmds}});
     print(PIPE "set $_\n")   foreach (@{$options{set}});
     print(PIPE "unset $_\n") foreach (@{$options{unset}});
 
-# set up histograms
+    # set up histograms
     $options{binwidth} ||= 1;   # if no binwidth given, set it to 1
     print PIPE
       "set boxwidth $options{binwidth}\n" .
@@ -605,7 +605,7 @@ sub mainThread
 
     setCurveAsHistogram( $_ ) foreach (@{$options{histogram}});
 
-# set all the axis ranges
+    # set all the axis ranges
     # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
     # gnuplot
     print PIPE "set xtics\n";
