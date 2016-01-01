@@ -1,3 +1,10 @@
+feedgnuplot (1.37-1) unstable; urgency=medium
+
+  * Upstream update: At the end of a streaming plot, include the last
+    chunk of data
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 01 Jan 2016 08:14:23 -0800
+
 feedgnuplot (1.36-1) unstable; urgency=medium
 
   * Upstream update: added --equation to plot symbolic equations
