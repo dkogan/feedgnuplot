@@ -20,6 +20,7 @@ complete -W               \
     --extracmds           \
     --set                 \
     --unset               \
+    --equation            \
     --geometry            \
     --hardcopy            \
     --help                \

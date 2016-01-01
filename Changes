@@ -1,3 +1,10 @@
+feedgnuplot (1.37)
+
+  * At the end of a streaming plot, include the last chunk of data
+  * Added --equation to the completions
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 01 Jan 2016 08:09:43 -0800
+
 feedgnuplot (1.36)
 
   * Added --equation to plot symbolic equations

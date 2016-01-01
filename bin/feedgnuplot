@@ -14,7 +14,7 @@ use Text::ParseWords; # for shellwords
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.36;
+my $VERSION = 1.37;
 
 my %options;
 interpretCommandline();
@@ -552,7 +552,7 @@ sub mainThread
       print(PIPE "set view equal xy\n");
     }
 
-# For the specified values, set the legend entries to 'title "blah blah"'
+    # For the specified values, set the legend entries to 'title "blah blah"'
     if(@{$options{legend}})
     {
       # @{$options{legend}} is a list where consecutive pairs are (curveID,
@@ -567,7 +567,7 @@ sub mainThread
       }
     }
 
-# add the extra curve options
+    # add the extra curve options
     if(@{$options{curvestyle}})
     {
       # @{$options{curvestyle}} is a list where consecutive pairs are (curveID,
@@ -582,22 +582,22 @@ sub mainThread
       }
     }
 
-# For the values requested to be printed on the y2 axis, set that
+    # For the values requested to be printed on the y2 axis, set that
     addCurveOption($_, 'axes x1y2') foreach (@{$options{y2}});
 
-# timefmt
+    # timefmt
     if( $options{timefmt} )
     {
       print(PIPE "set timefmt '$options{timefmt}'\n");
       print(PIPE "set xdata time\n");
     }
 
-# add the extra global options
+    # add the extra global options
     print(PIPE "$_\n")       foreach (@{$options{extracmds}});
     print(PIPE "set $_\n")   foreach (@{$options{set}});
     print(PIPE "unset $_\n") foreach (@{$options{unset}});
 
-# set up histograms
+    # set up histograms
     $options{binwidth} ||= 1;   # if no binwidth given, set it to 1
     print PIPE
       "set boxwidth $options{binwidth}\n" .
@@ -605,7 +605,7 @@ sub mainThread
 
     setCurveAsHistogram( $_ ) foreach (@{$options{histogram}});
 
-# set all the axis ranges
+    # set all the axis ranges
     # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
     # gnuplot
     print PIPE "set xtics\n";
@@ -749,7 +749,7 @@ sub mainThread
     }
 
     # finished reading in all. Plot what we have
-    plotStoredData() unless $options{stream};
+    plotStoredData() unless $options{stream} && $options{exit};
 
     if ( defined $options{hardcopy})
     {
@@ -1541,12 +1541,17 @@ in the plot. Defaults to 1.0 if not given.
 
 C<--histstyle style>
 
-Normally, histograms are generated with the 'smooth freq' gnuplot style.
-C<--histstyle> can be used to select different 'smooth' settings. Allowed are
-'unique', 'cumulative' and 'cnormal'. 'unique' indicates whether a bin has at
-least one item in it: instead of counting the items, it'll always report 0 or 1.
-'cumulative' is the integral of the "normal" histogram. 'cnormal' is like
-'cumulative', but rescaled to end up at 1.0.
+Normally, histograms are generated with the 'smooth frequency' gnuplot style.
+C<--histstyle> can be used to select different C<smooth> settings (see the
+gnuplot C<help smooth> page for more info). Allowed values are 'frequency' (the
+default), 'unique', 'cumulative' and 'cnormal'. 'unique' indicates whether a bin
+has at least one item in it: instead of counting the items, it'll always report
+0 or 1. 'cumulative' is the integral of the 'frequency' histogram. 'cnormal' is
+like 'cumulative', but rescaled to end up at 1.0. Note that there's no
+normalized 'frequency' option because gnuplot does not provide one.
+
+
+C<help smooth>
 
 =item
 
@@ -1617,7 +1622,7 @@ times.
 C<--equation xxx>
 
 Gnuplot can plot both data and symbolic equations. C<feedgnuplot> generally
-plots data, but with this option can plot symbolic equations /also/. This is
+plots data, but with this option can plot symbolic equations I<also>. This is
 generally intended to augment data plots, since for equation-only plots you
 don't need C<feedgnuplot>. C<--equation> can be passed multiple times for
 multiple equations. The given strings are passed to gnuplot directly without any
@@ -1629,7 +1634,7 @@ basic example:
                --equation 'sin(x)/x' --equation 'cos(x)/x with lines lw 4'
 
 Here I plot the incoming data (points along a line) with the given style (a line
-with thickness 3), /and/ I plot two damped sinusoids on the same plot. The
+with thickness 3), I<and> I plot two damped sinusoids on the same plot. The
 sinusoids are not affected by C<feedgnuplot> styling, so their styles are set
 separately, as in this example. More complicated example:
 
@@ -1638,7 +1643,7 @@ separately, as in this example. More complicated example:
                --set parametric --set "trange [0:2*3.14]" --equation "sin(t),cos(t)"
 
 Here the data I generate is points along the unit circle. I plot these as
-points, and I /also/ plot a true circle as a parametric equation.
+points, and I I<also> plot a true circle as a parametric equation.
 
 =item
 
