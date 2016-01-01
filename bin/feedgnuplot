@@ -749,7 +749,7 @@ sub mainThread
     }
 
     # finished reading in all. Plot what we have
-    plotStoredData() unless $options{stream};
+    plotStoredData() unless $options{stream} && $options{exit};
 
     if ( defined $options{hardcopy})
     {
