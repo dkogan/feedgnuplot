@@ -605,11 +605,6 @@ sub mainThread
 
     setCurveAsHistogram( $_ ) foreach (@{$options{histogram}});
 
-    # set all the axis ranges
-    # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
-    # gnuplot
-    print PIPE "set xtics\n";
-
     if(@{$options{y2}})
     {
       print PIPE "set ytics nomirror\n";
