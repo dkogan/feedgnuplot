@@ -497,11 +497,11 @@ sub mainThread
       }
 
       my %terminalOpts =
-      ( eps  => 'postscript solid color enhanced eps',
-        ps   => 'postscript solid color landscape 10',
-        pdf  => 'pdfcairo solid color font ",10" size 11in,8.5in',
-        png  => 'png size 1280,1024',
-        svg  => 'svg');
+      ( eps  => 'postscript noenhanced solid color enhanced eps',
+        ps   => 'postscript noenhanced solid color landscape 12',
+        pdf  => 'pdfcairo noenhanced solid color font ",12" size 11in,8.5in',
+        png  => 'png noenhanced size 1280,1024',
+        svg  => 'svg noenhanced');
 
       if( !defined $options{terminal} &&
            defined $outputfileType    &&
