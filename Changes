@@ -1,3 +1,11 @@
+feedgnuplot (1.38)
+
+  * hardcopy defaults:
+   - no enhanced text mode
+   - larger font size
+
+ -- Dima Kogan <dima@secretsauce.net>  Wed, 27 Jul 2016 22:15:11 -0700
+
 feedgnuplot (1.37)
 
   * At the end of a streaming plot, include the last chunk of data
