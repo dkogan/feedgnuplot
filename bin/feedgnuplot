@@ -333,9 +333,9 @@ sub interpretCommandline
   # --xlen implies an order to the data, so I force monotonicity
   $options{monotonic} = 1 if defined $options{xlen};
 
-  if( $options{histstyle} !~ /freq|cum|uniq|cnorm/ )
+  if( $options{histstyle} !~ /freq|cum|uniq|cnorm|fnorm/ )
   {
-    print STDERR "unknown histstyle. Allowed are 'freq...', 'cum...', 'uniq...', 'cnorm...'\n";
+    print STDERR "unknown histstyle. Allowed are 'freq...', 'fnorm...', 'cum...', 'uniq...', 'cnorm...'\n";
     exit -1;
   }
 
@@ -1539,14 +1539,11 @@ C<--histstyle style>
 Normally, histograms are generated with the 'smooth frequency' gnuplot style.
 C<--histstyle> can be used to select different C<smooth> settings (see the
 gnuplot C<help smooth> page for more info). Allowed values are 'frequency' (the
-default), 'unique', 'cumulative' and 'cnormal'. 'unique' indicates whether a bin
-has at least one item in it: instead of counting the items, it'll always report
-0 or 1. 'cumulative' is the integral of the 'frequency' histogram. 'cnormal' is
-like 'cumulative', but rescaled to end up at 1.0. Note that there's no
-normalized 'frequency' option because gnuplot does not provide one.
-
-
-C<help smooth>
+default), 'fnormal' (available in very recent gnuplots), 'unique', 'cumulative'
+and 'cnormal'. 'fnormal' is a normalized histogram. 'unique' indicates whether a
+bin has at least one item in it: instead of counting the items, it'll always
+report 0 or 1. 'cumulative' is the integral of the 'frequency' histogram.
+'cnormal' is like 'cumulative', but rescaled to end up at 1.0.
 
 =item
 
