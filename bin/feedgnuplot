@@ -8,7 +8,7 @@ use Getopt::Long;
 use Time::HiRes qw( usleep gettimeofday tv_interval );
 use IO::Handle;
 use IO::Select;
-use List::Util qw( first );
+use List::Util qw( first any );
 use Scalar::Util qw( looks_like_number );
 use Text::ParseWords; # for shellwords
 use Pod::Usage;
@@ -155,6 +155,23 @@ sub interpretCommandline
   {
     $options{curvestyleall} = "with $options{with}";
     delete $options{with};
+  }
+
+  # If we're plotting histograms, then set the default histogram options for
+  # each histogram curve
+  #
+  # Apply this to plain (non-cumulative) histograms
+  if( !$options{curvestyleall} && $options{histstyle} =~ /freq|fnorm/ )
+  {
+      for my $hist_curve(@{$options{histogram}})
+      {
+          # If we don't specify any options specifically for this histogram, use
+          # the defaults: filled boxes with borders
+          if( !any { $options{curvestyle}[$_*2] eq $hist_curve } 0..(@{$options{curvestyle}}/2 - 1) )
+          {
+              push @{$options{curvestyle}}, ($hist_curve, 'with boxes fill solid border lt -1');
+          }
+      }
   }
 
   # --legend and --curvestyle options are conceptually hashes, but are parsed as
@@ -1497,11 +1514,11 @@ passing something like
 
 C<--histogram curveID>
 
-
 Set up a this specific curve to plot a histogram. The bin width is given with
-the C<--binwidth> option (assumed 1.0 if omitted). C<--histogram> does I<not>
-touch the drawing style. It is often desired to plot these with boxes, and this
-I<must> be explicitly requested by C<--with boxes>. This works with C<--domain>
+the C<--binwidth> option (assumed 1.0 if omitted). If a drawing style is not
+specified for this curve (C<--curvestyle>) or all curves (C<--with>,
+C<--curvestyleall>) then the default histogram style is set: filled boxes with
+borders. This is what the user generally wants. This works with C<--domain>
 and/or C<--stream>, but in those cases the x-value is used I<only> to cull old
 data because of C<--xlen> or C<--monotonic>. I.e. the x-values are I<not> drawn
 in any way. Can be passed multiple times, or passed a comma- separated list
@@ -1835,8 +1852,8 @@ in a Thinkpad.
 =head2 Plotting a histogram of file sizes in a directory, granular to 10MB
 
  $ ls -l | awk '{print $5/1e6}' |
-   feedgnuplot --histogram 0 --with boxes
-     --binwidth 10 --set 'style fill solid'
+   feedgnuplot --histogram 0
+     --binwidth 10
      --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
 
 =head1 ACKNOWLEDGEMENT
