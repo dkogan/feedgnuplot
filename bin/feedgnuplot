@@ -8,13 +8,13 @@ use Getopt::Long;
 use Time::HiRes qw( usleep gettimeofday tv_interval );
 use IO::Handle;
 use IO::Select;
-use List::Util qw( first );
+use List::Util qw( first any );
 use Scalar::Util qw( looks_like_number );
 use Text::ParseWords; # for shellwords
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.37;
+my $VERSION = 1.39;
 
 my %options;
 interpretCommandline();
@@ -138,17 +138,41 @@ sub interpretCommandline
   # --curvestyleall, so fill that in
   if( $options{styleall} )
   {
-    if($options{curvestyleall} )
-    {
-      $options{curvestyleall} .= " $options{styleall}";
-    }
-    else
-    {
-      $options{curvestyleall} = $options{styleall};
-    }
+    if($options{curvestyleall} ) { $options{curvestyleall} .= " $options{styleall}"; }
+    else                         { $options{curvestyleall}  =   $options{styleall};  }
+    delete $options{styleall};
   }
-  push @{$options{curvestyle}}, @{$options{style}};
 
+  push @{$options{curvestyle}}, @{$options{style}};
+  delete $options{style};
+
+  if( $options{curvestyleall} && $options{with} )
+  {
+    print STDERR "--curvestyleall and --with are mutually exclusive. Please just use one.\n";
+    exit -1;
+  }
+  if( $options{with} )
+  {
+    $options{curvestyleall} = "with $options{with}";
+    delete $options{with};
+  }
+
+  # If we're plotting histograms, then set the default histogram options for
+  # each histogram curve
+  #
+  # Apply this to plain (non-cumulative) histograms
+  if( !$options{curvestyleall} && $options{histstyle} =~ /freq|fnorm/ )
+  {
+      for my $hist_curve(@{$options{histogram}})
+      {
+          # If we don't specify any options specifically for this histogram, use
+          # the defaults: filled boxes with borders
+          if( !any { $options{curvestyle}[$_*2] eq $hist_curve } 0..(@{$options{curvestyle}}/2 - 1) )
+          {
+              push @{$options{curvestyle}}, ($hist_curve, 'with boxes fill solid border lt -1');
+          }
+      }
+  }
 
   # --legend and --curvestyle options are conceptually hashes, but are parsed as
   # arrays in order to preserve the ordering. I parse both of these into hashes
@@ -229,17 +253,6 @@ sub interpretCommandline
       print STDERR "--stream can only take in values >=0 or 'trigger'\n";
       exit -1;
     }
-  }
-
-  if( $options{curvestyleall} && $options{with} )
-  {
-    print STDERR "--curvestyleall and --with are mutually exclusive. Please just use one.\n";
-    exit -1;
-  }
-  if( $options{with} )
-  {
-    $options{curvestyleall} = "with $options{with}";
-    $options{with} = '';
   }
 
   if ($options{colormap})
@@ -333,9 +346,9 @@ sub interpretCommandline
   # --xlen implies an order to the data, so I force monotonicity
   $options{monotonic} = 1 if defined $options{xlen};
 
-  if( $options{histstyle} !~ /freq|cum|uniq|cnorm/ )
+  if( $options{histstyle} !~ /freq|cum|uniq|cnorm|fnorm/ )
   {
-    print STDERR "unknown histstyle. Allowed are 'freq...', 'cum...', 'uniq...', 'cnorm...'\n";
+    print STDERR "unknown histstyle. Allowed are 'freq...', 'fnorm...', 'cum...', 'uniq...', 'cnorm...'\n";
     exit -1;
   }
 
@@ -497,11 +510,11 @@ sub mainThread
       }
 
       my %terminalOpts =
-      ( eps  => 'postscript solid color enhanced eps',
-        ps   => 'postscript solid color landscape 10',
-        pdf  => 'pdfcairo solid color font ",10" size 11in,8.5in',
-        png  => 'png size 1280,1024',
-        svg  => 'svg');
+      ( eps  => 'postscript noenhanced solid color enhanced eps',
+        ps   => 'postscript noenhanced solid color landscape 12',
+        pdf  => 'pdfcairo noenhanced solid color font ",12" size 11in,8.5in',
+        png  => 'png noenhanced size 1280,1024',
+        svg  => 'svg noenhanced');
 
       if( !defined $options{terminal} &&
            defined $outputfileType    &&
@@ -571,9 +584,7 @@ sub mainThread
     if(@{$options{curvestyle}})
     {
       # @{$options{curvestyle}} is a list where consecutive pairs are (curveID,
-      # style). I use $options{curvestyle} here instead of
-      # $options{curvestyle_hash} because I create a new curve when I see a new
-      # one, and the hash is unordered, thus messing up the ordering
+      # style).
       my $n = scalar @{$options{curvestyle}}/2;
       foreach my $idx (0..$n-1)
       {
@@ -604,11 +615,6 @@ sub mainThread
       "histbin(x) = $options{binwidth} * floor(0.5 + x/$options{binwidth})\n";
 
     setCurveAsHistogram( $_ ) foreach (@{$options{histogram}});
-
-    # set all the axis ranges
-    # If a bound isn't given I want to set it to the empty string, so I can communicate it simply to
-    # gnuplot
-    print PIPE "set xtics\n";
 
     if(@{$options{y2}})
     {
@@ -851,19 +857,6 @@ sub updateCurveOptions
   { $title = $id; }
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
-
-  my ($curvestyleall);
-  if( defined $options{curvestyle_hash}{$id} )
-  {
-    # I have a curve-specific style set with --curvestyle. This style lives in
-    # $curve->{extraoptions}, and it overrides the global styles
-    $curvestyleall = '';
-  }
-  else
-  {
-    $curvestyleall = $options{curvestyleall};
-  }
-
   my $histoptions = $curve->{histoptions} || '';
 
   my $usingoptions = '';
@@ -884,7 +877,7 @@ sub updateCurveOptions
       $usingoptions = "using 1:" . join(':', @rest);
   }
 
-  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions} $curvestyleall";
+  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions} $options{curvestyleall}";
 }
 
 sub getCurve
@@ -1521,11 +1514,11 @@ passing something like
 
 C<--histogram curveID>
 
-
 Set up a this specific curve to plot a histogram. The bin width is given with
-the C<--binwidth> option (assumed 1.0 if omitted). C<--histogram> does I<not>
-touch the drawing style. It is often desired to plot these with boxes, and this
-I<must> be explicitly requested by C<--with boxes>. This works with C<--domain>
+the C<--binwidth> option (assumed 1.0 if omitted). If a drawing style is not
+specified for this curve (C<--curvestyle>) or all curves (C<--with>,
+C<--curvestyleall>) then the default histogram style is set: filled boxes with
+borders. This is what the user generally wants. This works with C<--domain>
 and/or C<--stream>, but in those cases the x-value is used I<only> to cull old
 data because of C<--xlen> or C<--monotonic>. I.e. the x-values are I<not> drawn
 in any way. Can be passed multiple times, or passed a comma- separated list
@@ -1544,14 +1537,11 @@ C<--histstyle style>
 Normally, histograms are generated with the 'smooth frequency' gnuplot style.
 C<--histstyle> can be used to select different C<smooth> settings (see the
 gnuplot C<help smooth> page for more info). Allowed values are 'frequency' (the
-default), 'unique', 'cumulative' and 'cnormal'. 'unique' indicates whether a bin
-has at least one item in it: instead of counting the items, it'll always report
-0 or 1. 'cumulative' is the integral of the 'frequency' histogram. 'cnormal' is
-like 'cumulative', but rescaled to end up at 1.0. Note that there's no
-normalized 'frequency' option because gnuplot does not provide one.
-
-
-C<help smooth>
+default), 'fnormal' (available in very recent gnuplots), 'unique', 'cumulative'
+and 'cnormal'. 'fnormal' is a normalized histogram. 'unique' indicates whether a
+bin has at least one item in it: instead of counting the items, it'll always
+report 0 or 1. 'cumulative' is the integral of the 'frequency' histogram.
+'cnormal' is like 'cumulative', but rescaled to end up at 1.0.
 
 =item
 
@@ -1862,8 +1852,8 @@ in a Thinkpad.
 =head2 Plotting a histogram of file sizes in a directory, granular to 10MB
 
  $ ls -l | awk '{print $5/1e6}' |
-   feedgnuplot --histogram 0 --with boxes
-     --binwidth 10 --set 'style fill solid'
+   feedgnuplot --histogram 0
+     --binwidth 10
      --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
 
 =head1 ACKNOWLEDGEMENT
