@@ -138,17 +138,13 @@ sub interpretCommandline
   # --curvestyleall, so fill that in
   if( $options{styleall} )
   {
-    if($options{curvestyleall} )
-    {
-      $options{curvestyleall} .= " $options{styleall}";
-    }
-    else
-    {
-      $options{curvestyleall} = $options{styleall};
-    }
+    if($options{curvestyleall} ) { $options{curvestyleall} .= " $options{styleall}"; }
+    else                         { $options{curvestyleall}  =   $options{styleall};  }
+    delete $options{styleall};
   }
-  push @{$options{curvestyle}}, @{$options{style}};
 
+  push @{$options{curvestyle}}, @{$options{style}};
+  delete $options{style};
 
   # --legend and --curvestyle options are conceptually hashes, but are parsed as
   # arrays in order to preserve the ordering. I parse both of these into hashes
