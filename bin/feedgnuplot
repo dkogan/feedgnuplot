@@ -146,6 +146,17 @@ sub interpretCommandline
   push @{$options{curvestyle}}, @{$options{style}};
   delete $options{style};
 
+  if( $options{curvestyleall} && $options{with} )
+  {
+    print STDERR "--curvestyleall and --with are mutually exclusive. Please just use one.\n";
+    exit -1;
+  }
+  if( $options{with} )
+  {
+    $options{curvestyleall} = "with $options{with}";
+    delete $options{with};
+  }
+
   # --legend and --curvestyle options are conceptually hashes, but are parsed as
   # arrays in order to preserve the ordering. I parse both of these into hashes
   # because those are useful to have later. After this I can access individual
@@ -225,17 +236,6 @@ sub interpretCommandline
       print STDERR "--stream can only take in values >=0 or 'trigger'\n";
       exit -1;
     }
-  }
-
-  if( $options{curvestyleall} && $options{with} )
-  {
-    print STDERR "--curvestyleall and --with are mutually exclusive. Please just use one.\n";
-    exit -1;
-  }
-  if( $options{with} )
-  {
-    $options{curvestyleall} = "with $options{with}";
-    $options{with} = '';
   }
 
   if ($options{colormap})
