@@ -1,3 +1,11 @@
+feedgnuplot (1.39-1) unstable; urgency=medium
+
+  * Upstream update:
+    - by default, histograms are plotted in expected ways
+    - No enhanced text mode in hardcopies, slightly larger font size
+
+ -- Dima Kogan <dkogan@debian.org>  Sat, 15 Oct 2016 20:45:15 -0700
+
 feedgnuplot (1.37-1) unstable; urgency=medium
 
   * Upstream update: At the end of a streaming plot, include the last
