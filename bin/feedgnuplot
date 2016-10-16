@@ -571,9 +571,7 @@ sub mainThread
     if(@{$options{curvestyle}})
     {
       # @{$options{curvestyle}} is a list where consecutive pairs are (curveID,
-      # style). I use $options{curvestyle} here instead of
-      # $options{curvestyle_hash} because I create a new curve when I see a new
-      # one, and the hash is unordered, thus messing up the ordering
+      # style).
       my $n = scalar @{$options{curvestyle}}/2;
       foreach my $idx (0..$n-1)
       {
@@ -846,19 +844,6 @@ sub updateCurveOptions
   { $title = $id; }
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
-
-  my ($curvestyleall);
-  if( defined $options{curvestyle_hash}{$id} )
-  {
-    # I have a curve-specific style set with --curvestyle. This style lives in
-    # $curve->{extraoptions}, and it overrides the global styles
-    $curvestyleall = '';
-  }
-  else
-  {
-    $curvestyleall = $options{curvestyleall};
-  }
-
   my $histoptions = $curve->{histoptions} || '';
 
   my $usingoptions = '';
@@ -879,7 +864,7 @@ sub updateCurveOptions
       $usingoptions = "using 1:" . join(':', @rest);
   }
 
-  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions} $curvestyleall";
+  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions} $options{curvestyleall}";
 }
 
 sub getCurve
