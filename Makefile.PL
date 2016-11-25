@@ -64,6 +64,7 @@ WriteMakefile
    PL_FILES                   => {},
    EXE_FILES                  => [ 'bin/feedgnuplot' ],
    BUILD_REQUIRES             => { 'String::ShellQuote' => 0,
+                                   'List::MoreUtils'    => 0,
                                    'IPC::Run'           => 0},
    dist                       => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
    clean                      => { FILES => 'feedgnuplot-*' },

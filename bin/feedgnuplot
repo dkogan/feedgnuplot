@@ -8,7 +8,8 @@ use Getopt::Long;
 use Time::HiRes qw( usleep gettimeofday tv_interval );
 use IO::Handle;
 use IO::Select;
-use List::Util qw( first any );
+use List::Util qw( first );
+use List::MoreUtils 'any';
 use Scalar::Util qw( looks_like_number );
 use Text::ParseWords; # for shellwords
 use Pod::Usage;
