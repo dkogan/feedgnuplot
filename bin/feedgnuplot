@@ -125,13 +125,6 @@ sub interpretCommandline
     exit 0;
   }
 
-  # expand options that are given as comma-separated lists
-  for my $listkey (qw(histogram y2))
-  {
-    @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
-      if defined $options{$listkey};
-  }
-
   # --style and --curvestyle are synonyms, as are --styleall and
   # --curvestyleall, so fill that in
   if( $options{styleall} )
@@ -154,6 +147,33 @@ sub interpretCommandline
     $options{curvestyleall} = "with $options{with}";
     delete $options{with};
   }
+
+
+  # expand options that are given as comma-separated lists
+  for my $listkey (qw(histogram y2))
+  {
+    @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
+      if defined $options{$listkey};
+  }
+  for my $listkey (qw(curvestyle rangesize))
+  {
+      next unless defined $options{$listkey};
+      my @in = @{$options{$listkey}};
+      my $N = @in / 2;
+      my @out;
+      for my $i (0..$N-1)
+      {
+          my $key   = $in[2*$i];
+          my $value = $in[2*$i + 1];
+          for my $key_new (split('\s*,\s*', $key))
+          {
+              push @out, $key_new, $value;
+          }
+      }
+
+      @{$options{$listkey}} = @out;
+  }
+
 
   # If we're plotting histograms, then set the default histogram options for
   # each histogram curve
@@ -1548,9 +1568,10 @@ report 0 or 1. 'cumulative' is the integral of the 'frequency' histogram.
 C<--style curveID style>
 
 Additional styles per curve. With C<--dataid>, curveID is the ID. Otherwise,
-it's the index of the curve, starting at 0. Use this option multiple times for
-multiple curves. C<--styleall> does I<not> apply to curves that have a
-C<--style>
+it's the index of the curve, starting at 0. curveID can be a comma-separated
+list of IDs to which the given style should apply. Use this option multiple
+times for multiple curves. C<--styleall> does I<not> apply to curves that have a
+C<--style>.
 
 =item
 
@@ -1695,6 +1716,10 @@ unknown styles are used, with C<--styleall> or C<--with> for instance.
 C<--rangesize> is used to set how many values are needed to represent the range
 of a point for a particular curve. This overrides any defaults that may exist
 for this curve only.
+
+With C<--dataid>, curveID is the ID. Otherwise, it's the index of the curve,
+starting at 0. curveID can be a comma-separated list of IDs to which the given
+rangesize should apply.
 
 =item
 
