@@ -108,9 +108,7 @@ sub interpretCommandline
              'terminal=s',
              'rangesize=s{2}', 'rangesizeall=i', 'extraValuesPerPoint=i',
              'help', 'dump', 'exit', 'version',
-             'geometry=s') or pod2usage( -exitval => 1,
-                                         -verbose => 1, # synopsis and args
-                                         -output  => \*STDERR );
+             'geometry=s') or exit 1;
 
 
   # handle various cmdline-option errors
