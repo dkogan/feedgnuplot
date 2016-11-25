@@ -1882,6 +1882,19 @@ in a Thinkpad.
      --binwidth 10
      --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
 
+=head2 Plotting points on top of an existing image
+
+This can be done by using C<--equation> to pass arbitrary plot input to gnuplot:
+
+ $ < features_xy.data
+   feedgnuplot --points --domain
+     --equation '"image.png" binary filetype=png flipy with rgbimage'
+
+Here an existing image is given to gnuplot verbatim, and data to plot on top of
+it is interpreted by feedgnuplot as usual. C<flipy> is useful here because
+usually the y axis points up, but when looking at images, this is usually
+reversed: the origin is the top-left pixel.
+
 =head1 ACKNOWLEDGEMENT
 
 This program is originally based on the driveGnuPlots.pl script from
