@@ -1,3 +1,13 @@
+feedgnuplot (1.40-1) unstable; urgency=medium
+
+  * Upstream update:
+    - If the options couldn't be parsed I don't dump the whole manpage
+    - --style and --rangesize can now take a comma-separated list of IDs
+    - 'any' is from List::MoreUtils, not List::Util
+    - the sleep-forever delay at end is now > 1000 days
+
+ -- Dima Kogan <dkogan@debian.org>  Fri, 25 Nov 2016 14:49:36 -0800
+
 feedgnuplot (1.39-1) unstable; urgency=medium
 
   * Upstream update:
