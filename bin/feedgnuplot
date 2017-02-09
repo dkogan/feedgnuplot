@@ -981,6 +981,10 @@ sub setCurveAsHistogram
   my ($id, $str) = @_;
 
   my $curve = getCurve($id);
+
+  # With histograms I have 2d plots with rangesize=1. I thus give gnuplot two
+  # values for each point: a domain and a range. For histograms I ignore the
+  # domain, so I get the statistics of the 2nd column: $2
   $curve->{histoptions} = 'using (histbin($2)):(1.0) smooth ' . $options{histstyle};
 
   updateCurveOptions($curve, $id);
@@ -1048,7 +1052,11 @@ sub replot
         # seconds-since-the-epoch BACK to the timefmt. Sheesh
         ($xmin, $xmax) = map {Time::Piece->strptime( $_, '%s' )->strftime( $options{timefmt} ) } ($xmin, $xmax);
       }
-      sendRangeCommand( "xrange", $xmin, $xmax );
+
+      # if we have any histograms, then I'm not really visualizing the domain at
+      # all, and I don't set the range.
+      sendRangeCommand( "xrange", $xmin, $xmax )
+        unless @{$options{histogram}};
     }
 
     plotStoredData();
@@ -1297,7 +1305,12 @@ windowsize> can be given. This will create an constantly-updating, scrolling
 view of the recent past. C<windowsize> should be replaced by the desired length
 of the domain window to plot, in domain units (passed-in values if C<--domain>
 or line numbers otherwise). If the domain is a time/date via C<--timefmt>, then
-C<windowsize> is and I<integer> in seconds.
+C<windowsize> is and I<integer> in seconds. If we're plotting a histogram, then
+C<--xlen> causes a histogram over a moving window to be computed. The subtlely
+here is that with a histogram you don't actually I<see> the domain since only
+the range is analyzed. But the domain is still there, and can be utilized with
+C<--xlen>. With C<--xlen> we can plot I<only> histograms or I<only>
+I<non>-histograms.
 
 =head3 Special data commands
 
@@ -1531,7 +1544,12 @@ C<--xlen xxx>
 
 When using C<--stream>, sets the size of the x-window to plot. Omit this or set
 it to 0 to plot ALL the data. Does not make sense with 3d plots. Implies
-C<--monotonic>
+C<--monotonic>. If we're plotting a histogram, then C<--xlen> causes a histogram
+over a moving window to be computed. The subtlely here is that with a histogram
+you don't actually I<see> the domain since only the range is analyzed. But the
+domain is still there, and can be utilized with C<--xlen>. With C<--xlen> we can
+plot I<only> histograms or I<only> I<non>-histograms.
+
 
 =item
 
@@ -1573,8 +1591,9 @@ specified for this curve (C<--curvestyle>) or all curves (C<--with>,
 C<--curvestyleall>) then the default histogram style is set: filled boxes with
 borders. This is what the user generally wants. This works with C<--domain>
 and/or C<--stream>, but in those cases the x-value is used I<only> to cull old
-data because of C<--xlen> or C<--monotonic>. I.e. the x-values are I<not> drawn
-in any way. Can be passed multiple times, or passed a comma- separated list
+data because of C<--xlen> or C<--monotonic>. I.e. the domain values are I<not>
+drawn in any way. Can be passed multiple times, or passed a comma- separated
+list
 
 =item
 
@@ -1914,6 +1933,17 @@ in a Thinkpad.
    feedgnuplot --histogram 0
      --binwidth 10
      --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
+
+=head2 Plotting a live histogram of the ping round-trip times for the past 20 seconds
+
+ $ ping -A -D 8.8.8.8 |
+   perl -anE 'BEGIN { $| = 1; }
+              $F[0] =~ s/[\[\]]//g or next;
+              $F[7] =~ s/.*=//g    or next;
+              say "$F[0] $F[7]"' |
+   feedgnuplot --stream --domain --histogram 0 --binwidth 10 \
+               --xlabel 'Ping round-trip time (s)'  \
+               --ylabel Frequency --xlen 20
 
 =head2 Plotting points on top of an existing image
 
