@@ -57,6 +57,17 @@ mainThread();
 
 
 
+sub getRangeSize
+{
+    my ($id) = @_;
+
+    # I'd like to use //, but I guess some people are still on perl 5.8
+    return
+      exists $options{rangesize_hash}{$id} ?
+      $options{rangesize_hash}{$id} :
+      $options{rangesize_default};
+}
+
 sub interpretCommandline
 {
   # if I'm using a self-plotting data file with a #! line, then $ARGV[0] will contain ALL of the
@@ -222,7 +233,10 @@ sub interpretCommandline
 
 
   # I now set up the rangesize to always be
-  #  $options{rangesize_hash}{$id} // $options{rangesize_default}
+  #
+  #   $options{rangesize_hash}{$id} // $options{rangesize_default}
+  #
+  # which is available as getRangeSize($id)
   if ( $options{rangesizeall} )
   {
       $options{rangesize_default} = $options{rangesizeall};
@@ -749,20 +763,10 @@ sub mainThread
 
       while(@fields)
       {
-          if($options{dataid})
-          {
-              $id = shift @fields;
-          }
-          else
-          {
-              $id++;
-          }
+          if($options{dataid}) { $id = shift @fields; }
+          else                 { $id++;               }
 
-          # I'd like to use //, but I guess some people are still on perl 5.8
-          my $rangesize = exists $options{rangesize_hash}{$id} ?
-            $options{rangesize_hash}{$id} :
-            $options{rangesize_default};
-
+          my $rangesize = getRangeSize($id);
           last if @fields < $rangesize;
 
           pushPoint(getCurve($id),
@@ -886,12 +890,7 @@ sub updateCurveOptions
       # as 1 + rangesize). I also need to start the range at the first column
       # past the timefmt
 
-      # I'd like to use //, but I guess some people are still on perl 5.8
-      my $rangesize = exists $options{rangesize_hash}{$id} ?
-        $options{rangesize_hash}{$id} :
-        $options{rangesize_default};
-
-      my @rest = map {$_ + $options{timefmt_Ncols}} (1..$rangesize);
+      my @rest = map {$_ + $options{timefmt_Ncols}} (1..getRangeSize($id));
 
       $usingoptions = "using 1:" . join(':', @rest);
   }
