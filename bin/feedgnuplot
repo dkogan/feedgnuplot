@@ -295,6 +295,13 @@ sub interpretCommandline
     $options{curvestyleall} .= ' palette';
   }
 
+  if ( defined $options{binwidth} && !@{$options{histogram}} )
+  {
+    print STDERR "--binwidth doesn't make sense without any histograms\n";
+    exit -1;
+  }
+
+
   if ( $options{'3d'} )
   {
     if ( !$options{domain} )
@@ -327,7 +334,7 @@ sub interpretCommandline
       exit -1;
     }
 
-    if ( defined $options{binwidth} || @{$options{histogram}} )
+    if ( @{$options{histogram}} )
     {
       print STDERR "--3d does not make sense with histograms\n";
       exit -1;
@@ -360,6 +367,16 @@ sub interpretCommandline
     {
       print STDERR "--square_xy only makes sense with --3d\n";
       exit -1;
+    }
+
+    for my $hist_curve(@{$options{histogram}})
+    {
+        my $hist_dim = getRangeSize($hist_curve);
+        if( $hist_dim != 1 )
+        {
+            print STDERR "I only support 1D histograms, but curve '$hist_curve' has '$hist_dim'-D data\n";
+            exit -1;
+        }
     }
   }
 
@@ -921,6 +938,22 @@ sub getCurve
     $curveIndices{$id} =  $#curves;
 
     updateCurveOptions($curves[$#curves], $id);
+
+
+    # --xlen has a meaning if we're not plotting histograms at all or if we're
+    # plotting ONLY histograms. If we're doing both at the same time, there's no
+    # consistent way to assign meaning to xlen
+    if ( defined $options{xlen} &&
+
+         # have at least some histograms
+         @{$options{histogram}} &&
+
+         # there are more curves than histogram curves, i.e. there're some
+         # non-histogram curves
+         @curves > @{$options{histogram}} ) {
+        print STDERR "--xlen only makes sense when plotting ONLY histograms or ONLY NON-histograms\n";
+        exit -1;
+    }
   }
   return $curves[$curveIndices{$id}];
 }
