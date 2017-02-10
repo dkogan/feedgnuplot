@@ -387,7 +387,8 @@ sub interpretCommandline
   }
 
   if($options{stream} && defined $options{xlen} &&
-     ( defined $options{xmin} || defined $options{xmax}))
+     ( defined $options{xmin} || defined $options{xmax}) &&
+    !defined $options{histogram})
   {
     print STDERR "With --stream and --xlen the X bounds are set, so neither --xmin nor --xmax make sense\n";
     exit -1;
