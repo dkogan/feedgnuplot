@@ -15,7 +15,7 @@ use Text::ParseWords; # for shellwords
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.40;
+my $VERSION = 1.41;
 
 my %options;
 interpretCommandline();
@@ -56,6 +56,17 @@ mainThread();
 
 
 
+
+sub getRangeSize
+{
+    my ($id) = @_;
+
+    # I'd like to use //, but I guess some people are still on perl 5.8
+    return
+      exists $options{rangesize_hash}{$id} ?
+      $options{rangesize_hash}{$id} :
+      $options{rangesize_default};
+}
 
 sub interpretCommandline
 {
@@ -222,7 +233,10 @@ sub interpretCommandline
 
 
   # I now set up the rangesize to always be
-  #  $options{rangesize_hash}{$id} // $options{rangesize_default}
+  #
+  #   $options{rangesize_hash}{$id} // $options{rangesize_default}
+  #
+  # which is available as getRangeSize($id)
   if ( $options{rangesizeall} )
   {
       $options{rangesize_default} = $options{rangesizeall};
@@ -281,6 +295,13 @@ sub interpretCommandline
     $options{curvestyleall} .= ' palette';
   }
 
+  if ( defined $options{binwidth} && !@{$options{histogram}} )
+  {
+    print STDERR "--binwidth doesn't make sense without any histograms\n";
+    exit -1;
+  }
+
+
   if ( $options{'3d'} )
   {
     if ( !$options{domain} )
@@ -313,7 +334,7 @@ sub interpretCommandline
       exit -1;
     }
 
-    if ( defined $options{binwidth} || @{$options{histogram}} )
+    if ( @{$options{histogram}} )
     {
       print STDERR "--3d does not make sense with histograms\n";
       exit -1;
@@ -347,6 +368,16 @@ sub interpretCommandline
       print STDERR "--square_xy only makes sense with --3d\n";
       exit -1;
     }
+
+    for my $hist_curve(@{$options{histogram}})
+    {
+        my $hist_dim = getRangeSize($hist_curve);
+        if( $hist_dim != 1 )
+        {
+            print STDERR "I only support 1D histograms, but curve '$hist_curve' has '$hist_dim'-D data\n";
+            exit -1;
+        }
+    }
   }
 
   if(defined $options{xlen} && !$options{stream} )
@@ -356,7 +387,8 @@ sub interpretCommandline
   }
 
   if($options{stream} && defined $options{xlen} &&
-     ( defined $options{xmin} || defined $options{xmax}))
+     ( defined $options{xmin} || defined $options{xmax}) &&
+    !defined $options{histogram})
   {
     print STDERR "With --stream and --xlen the X bounds are set, so neither --xmin nor --xmax make sense\n";
     exit -1;
@@ -749,20 +781,10 @@ sub mainThread
 
       while(@fields)
       {
-          if($options{dataid})
-          {
-              $id = shift @fields;
-          }
-          else
-          {
-              $id++;
-          }
+          if($options{dataid}) { $id = shift @fields; }
+          else                 { $id++;               }
 
-          # I'd like to use //, but I guess some people are still on perl 5.8
-          my $rangesize = exists $options{rangesize_hash}{$id} ?
-            $options{rangesize_hash}{$id} :
-            $options{rangesize_default};
-
+          my $rangesize = getRangeSize($id);
           last if @fields < $rangesize;
 
           pushPoint(getCurve($id),
@@ -886,12 +908,7 @@ sub updateCurveOptions
       # as 1 + rangesize). I also need to start the range at the first column
       # past the timefmt
 
-      # I'd like to use //, but I guess some people are still on perl 5.8
-      my $rangesize = exists $options{rangesize_hash}{$id} ?
-        $options{rangesize_hash}{$id} :
-        $options{rangesize_default};
-
-      my @rest = map {$_ + $options{timefmt_Ncols}} (1..$rangesize);
+      my @rest = map {$_ + $options{timefmt_Ncols}} (1..getRangeSize($id));
 
       $usingoptions = "using 1:" . join(':', @rest);
   }
@@ -922,6 +939,22 @@ sub getCurve
     $curveIndices{$id} =  $#curves;
 
     updateCurveOptions($curves[$#curves], $id);
+
+
+    # --xlen has a meaning if we're not plotting histograms at all or if we're
+    # plotting ONLY histograms. If we're doing both at the same time, there's no
+    # consistent way to assign meaning to xlen
+    if ( defined $options{xlen} &&
+
+         # have at least some histograms
+         @{$options{histogram}} &&
+
+         # there are more curves than histogram curves, i.e. there're some
+         # non-histogram curves
+         @curves > @{$options{histogram}} ) {
+        print STDERR "--xlen only makes sense when plotting ONLY histograms or ONLY NON-histograms\n";
+        exit -1;
+    }
   }
   return $curves[$curveIndices{$id}];
 }
@@ -949,6 +982,10 @@ sub setCurveAsHistogram
   my ($id, $str) = @_;
 
   my $curve = getCurve($id);
+
+  # With histograms I have 2d plots with rangesize=1. I thus give gnuplot two
+  # values for each point: a domain and a range. For histograms I ignore the
+  # domain, so I get the statistics of the 2nd column: $2
   $curve->{histoptions} = 'using (histbin($2)):(1.0) smooth ' . $options{histstyle};
 
   updateCurveOptions($curve, $id);
@@ -1016,7 +1053,11 @@ sub replot
         # seconds-since-the-epoch BACK to the timefmt. Sheesh
         ($xmin, $xmax) = map {Time::Piece->strptime( $_, '%s' )->strftime( $options{timefmt} ) } ($xmin, $xmax);
       }
-      sendRangeCommand( "xrange", $xmin, $xmax );
+
+      # if we have any histograms, then I'm not really visualizing the domain at
+      # all, and I don't set the range.
+      sendRangeCommand( "xrange", $xmin, $xmax )
+        unless @{$options{histogram}};
     }
 
     plotStoredData();
@@ -1265,7 +1306,12 @@ windowsize> can be given. This will create an constantly-updating, scrolling
 view of the recent past. C<windowsize> should be replaced by the desired length
 of the domain window to plot, in domain units (passed-in values if C<--domain>
 or line numbers otherwise). If the domain is a time/date via C<--timefmt>, then
-C<windowsize> is and I<integer> in seconds.
+C<windowsize> is and I<integer> in seconds. If we're plotting a histogram, then
+C<--xlen> causes a histogram over a moving window to be computed. The subtlely
+here is that with a histogram you don't actually I<see> the domain since only
+the range is analyzed. But the domain is still there, and can be utilized with
+C<--xlen>. With C<--xlen> we can plot I<only> histograms or I<only>
+I<non>-histograms.
 
 =head3 Special data commands
 
@@ -1499,7 +1545,12 @@ C<--xlen xxx>
 
 When using C<--stream>, sets the size of the x-window to plot. Omit this or set
 it to 0 to plot ALL the data. Does not make sense with 3d plots. Implies
-C<--monotonic>
+C<--monotonic>. If we're plotting a histogram, then C<--xlen> causes a histogram
+over a moving window to be computed. The subtlely here is that with a histogram
+you don't actually I<see> the domain since only the range is analyzed. But the
+domain is still there, and can be utilized with C<--xlen>. With C<--xlen> we can
+plot I<only> histograms or I<only> I<non>-histograms.
+
 
 =item
 
@@ -1541,8 +1592,9 @@ specified for this curve (C<--curvestyle>) or all curves (C<--with>,
 C<--curvestyleall>) then the default histogram style is set: filled boxes with
 borders. This is what the user generally wants. This works with C<--domain>
 and/or C<--stream>, but in those cases the x-value is used I<only> to cull old
-data because of C<--xlen> or C<--monotonic>. I.e. the x-values are I<not> drawn
-in any way. Can be passed multiple times, or passed a comma- separated list
+data because of C<--xlen> or C<--monotonic>. I.e. the domain values are I<not>
+drawn in any way. Can be passed multiple times, or passed a comma- separated
+list
 
 =item
 
@@ -1882,6 +1934,17 @@ in a Thinkpad.
    feedgnuplot --histogram 0
      --binwidth 10
      --ymin 0 --xlabel 'File size (MB)' --ylabel Frequency
+
+=head2 Plotting a live histogram of the ping round-trip times for the past 20 seconds
+
+ $ ping -A -D 8.8.8.8 |
+   perl -anE 'BEGIN { $| = 1; }
+              $F[0] =~ s/[\[\]]//g or next;
+              $F[7] =~ s/.*=//g    or next;
+              say "$F[0] $F[7]"' |
+   feedgnuplot --stream --domain --histogram 0 --binwidth 10 \
+               --xlabel 'Ping round-trip time (s)'  \
+               --ylabel Frequency --xlen 20
 
 =head2 Plotting points on top of an existing image
 
