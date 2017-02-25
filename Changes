@@ -1,3 +1,11 @@
+feedgnuplot (1.41)
+
+  * Histograms: --xlen can coexist with --xmin/--xmax
+  * Histograms: work as expected with --xlen and --monotonic
+  * Histograms: better sanity checking of options
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 24 Feb 2017 23:42:28 -0800
+
 feedgnuplot (1.40)
 
   * If the options couldn't be parsed I don't dump the whole manpage

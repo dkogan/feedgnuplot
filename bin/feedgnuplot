@@ -15,7 +15,7 @@ use Text::ParseWords; # for shellwords
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.40;
+my $VERSION = 1.41;
 
 my %options;
 interpretCommandline();
