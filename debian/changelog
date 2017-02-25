@@ -1,3 +1,12 @@
+feedgnuplot (1.41-1) unstable; urgency=medium
+
+  * Upstream update:
+    - Histograms: --xlen can coexist with --xmin/--xmax
+    - Histograms: work as expected with --xlen and --monotonic
+    - Histograms: better sanity checking of options
+
+ -- Dima Kogan <dkogan@debian.org>  Fri, 24 Feb 2017 23:53:27 -0800
+
 feedgnuplot (1.40-1) unstable; urgency=medium
 
   * Upstream update:
