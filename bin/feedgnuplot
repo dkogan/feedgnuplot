@@ -1847,16 +1847,15 @@ is possible to send the output produced this way to gnuplot directly.
 
 C<--exit>
 
-This controls the details of what happens when the input data is exhausted, or
-when some part of the C<feedgnuplot> pipeline is killed. This option does
-different things depending on whether C<--stream> is active, so read this
-closely.
+This controls what happens when the input data is exhausted, or when some part
+of the C<feedgnuplot> pipeline is killed. This option does different things
+depending on whether C<--stream> is active, so read this closely.
 
 With interactive gnuplot terminals (qt, x11, wxt), the plot windows live in a
 separate process from the main C<gnuplot> process. It is thus possible for the
 main C<gnuplot> process to exit, while leaving the plot windows up (a caveat is
-that such decapitated windows aren't interactive). To be clear, there are 3
-possible states:
+that such decapitated windows aren't interactive). There are 3 possible states
+of the polotting pipeline:
 
 =over
 
@@ -1871,35 +1870,35 @@ prompt available
 
 =back
 
-The C<--exit> option controls the details of this behavior. The possibilities
-are:
+The possibilities are:
 
 =over
 
-=item No C<--stream>, input pipe is exhausted (all data read in)
+=item No C<--stream>, all data read in
 
 =over
 
-=item default; no C<--exit>
+=item no C<--exit> (default)
 
 Alive. Need to Ctrl-C to get back into the shell
 
 =item C<--exit>
 
 Half-alive. Non-interactive prompt up, and the shell accepts new commands.
-Without C<--stream> the goal is to show a plot, so a Dead state is not useful
-here.
+Without C<--stream> the goal is to show a plot, so a Dead state would not be
+useful.
 
 =back
 
-=item C<--stream>, input pipe is exhausted (all data read in) or the
-C<feedgnuplot> process terminated
+=item C<--stream>, all data read in or the C<feedgnuplot> process terminated
 
 =over
 
-=item default; no C<--exit>
+=item no C<--exit> (default)
 
-Alive. Need to Ctrl-C to get back into the shell
+Alive. Need to Ctrl-C to get back into the shell. This means that when making
+live plots, the first Ctrl-C kills the data feeding process, but leaves the
+final plot up for inspection. A second Ctrl-C kills feedgnuplot as well.
 
 =item C<--exit>
 
