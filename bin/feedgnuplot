@@ -41,17 +41,10 @@ my $last_replot_time = [gettimeofday];
 
 # whether the previous replot was timer based
 my $last_replot_is_from_timer = 1;
-
-
-my $prev_timed_replot_time = [gettimeofday];
 my $this_replot_is_from_timer;
-my $stdin    = IO::Handle->new();
-die "Couldn't open STDIN" unless $stdin->fdopen(fileno(STDIN),"r");
-my $selector = IO::Select->new( $stdin );
 
 
 
-mainThread();
 
 
 
@@ -121,7 +114,6 @@ sub interpretCommandline
              'rangesize=s{2}', 'rangesizeall=i', 'extraValuesPerPoint=i',
              'help', 'dump', 'exit', 'version',
              'geometry=s') or exit 1;
-
 
   # handle various cmdline-option errors
   if ( $options{help} )
@@ -479,16 +471,66 @@ sub makeDomainNumeric
 }
 
 
+my $prev_timed_replot_time = [gettimeofday];
+my $pipe_in;
+my $selector;
+my $line_number = 0;
+my $is_stdin = !@ARGV; # read stdin only if no data files given on the cmdline
+sub openNextFile
+{
+    my $fd;
+    if($is_stdin)
+    {
+        $fd = IO::Handle->new();
+        $fd->fdopen(fileno(STDIN), "r") or die "Couldn't open STDIN";
+    }
+    else
+    {
+        my $filename = shift @ARGV;
+        $fd = IO::File->new($filename, "r") or die "Couldn't open file '$filename'";
+    }
+
+    my $selector = IO::Select->new( $fd );
+    return ($fd, $selector);
+}
 sub getNextLine
 {
+    sub getline_internal
+    {
+        while(1)
+        {
+            my $line = $pipe_in->getline();
+            if( !$is_stdin && !defined $line && $pipe_in->eof() && @ARGV)
+            {
+                # I got to the end of one file, so open the next one (which I'm
+                # sure exists)
+                ($pipe_in, $selector) = openNextFile();
+                next;
+            }
+            return $line;
+        }
+    }
+
+
+
+
+
+    if( !defined $pipe_in )
+    {
+        ($pipe_in, $selector) = openNextFile();
+    }
+
     while(1)
     {
         $this_replot_is_from_timer = undef;
 
         # if we're not streaming, or we're doing triggered-only replotting, simply
         # do a blocking read
-        return $stdin->getline()
-          if (! $options{stream} || $options{stream} < 0);
+        if (! $options{stream} || $options{stream} < 0)
+        {
+            $line_number++;
+            return getline_internal();
+        }
 
 
         my $now = [gettimeofday];
@@ -503,7 +545,8 @@ sub getNextLine
 
         if ($selector->can_read($time_remaining))
         {
-            return $stdin->getline();
+            $line_number++;
+            return getline_internal();
         }
     }
 }
@@ -773,7 +816,7 @@ sub mainThread
       }
       else
       {
-        $domain[0] = $.;
+        $domain[0] = $line_number;
         $domain0_numeric = makeDomainNumeric( $domain[0] );
       }
 
@@ -1080,6 +1123,9 @@ sub pushPoint
 
   $haveNewData = 1;
 }
+
+
+mainThread();
 
 
 =head1 NAME
