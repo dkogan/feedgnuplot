@@ -1,3 +1,10 @@
+feedgnuplot (1.42) unstable; urgency=medium
+
+  * Data can now come from STDIN or files on the cmdline.
+    This fixes a regression. Self-plotting data files work again
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 31 Mar 2017 15:38:47 -0700
+
 feedgnuplot (1.41)
 
   * Histograms: --xlen can coexist with --xmin/--xmax
