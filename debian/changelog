@@ -1,3 +1,12 @@
+feedgnuplot (1.42-1) unstable; urgency=medium
+
+  * Upstream update:
+    - Fixed regression: data can now come from STDIN or files on the
+      cmdline
+    - reworded manpage of --exit
+
+ -- Dima Kogan <dkogan@debian.org>  Tue, 25 Apr 2017 11:02:18 -0700
+
 feedgnuplot (1.41-1) unstable; urgency=medium
 
   * Upstream update:
