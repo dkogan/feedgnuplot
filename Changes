@@ -1,4 +1,10 @@
-feedgnuplot (1.42) unstable; urgency=medium
+feedgnuplot (1.43)
+
+  * Added --image
+
+ -- Dima Kogan <dima@secretsauce.net>  Mon, 19 Jun 2017 13:12:38 -0700
+
+feedgnuplot (1.42)
 
   * Data can now come from STDIN or files on the cmdline.
     This fixes a regression. Self-plotting data files work again

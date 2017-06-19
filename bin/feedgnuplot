@@ -15,7 +15,7 @@ use Text::ParseWords; # for shellwords
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.42;
+my $VERSION = 1.43;
 
 my %options;
 interpretCommandline();
@@ -109,6 +109,7 @@ sub interpretCommandline
              'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
              'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'equation=s@',
+             'image=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
              'rangesize=s{2}', 'rangesizeall=i', 'extraValuesPerPoint=i',
@@ -418,6 +419,27 @@ sub interpretCommandline
         $options{xlen} = 1 + int($options{xlen});
       }
     }
+  }
+
+  # deal with --image. I just fill in --equation, and reverse the y extents if
+  # none are explicitly given
+  if( defined $options{image} )
+  {
+      # images generally have the origin at the top-left instead of the
+      # bottom-left, so given nothing else, I flip the y axis
+      if( !defined $options{ymin} && !defined $options{ymax} &&
+          ! any { /^ *yrange\b/ } @{$options{set}} )
+      {
+          push @{$options{set}}, "yrange [:] reverse";
+      }
+
+      if ( ! -r $options{image} )
+      {
+          die "Couldn't read image '$options{image}'";
+      }
+
+      push @{$options{equation}}, qq{"$options{image}" binary filetype=auto flipy with rgbimage};
+      delete $options{image};
   }
 }
 
@@ -1729,6 +1751,17 @@ times.
 
 =item
 
+C<--image filename>
+
+Overlays the data on top of a raster image given in C<filename>. This is passed
+through to gnuplot via C<--equation>, and is not interpreted by C<feedgnuplot>
+other than checking for existence. Usually images have their origin at the
+top-left corner, while plots have it in the bottom-left corner instead. Thus if
+the y-axis extents are not specified (C<--ymin>, C<--ymax>, C<--set 'yrange
+...'>) this option will also flip around the y axis to make the image appear
+properly. Since this option is just a passthrough to gnuplot, finer control can
+be achieved by passing in C<--equation> and C<--set yrange ...> directly.
+
 C<--equation xxx>
 
 Gnuplot can plot both data and symbolic equations. C<feedgnuplot> generally
@@ -1993,11 +2026,21 @@ in a Thinkpad.
 
 =head2 Plotting points on top of an existing image
 
-This can be done by using C<--equation> to pass arbitrary plot input to gnuplot:
+This can be done with C<--image>:
+
+ $ < features_xy.data
+   feedgnuplot --points --domain --image "image.png"
+
+or with C<--equation>:
 
  $ < features_xy.data
    feedgnuplot --points --domain
-     --equation '"image.png" binary filetype=png flipy with rgbimage'
+     --equation '"image.png" binary filetype=auto flipy with rgbimage'
+     --set 'yrange [:] reverse'
+
+The C<--image> invocation is a convenience wrapper for the C<--equation>
+version. Finer control is available with C<--equation>.
+
 
 Here an existing image is given to gnuplot verbatim, and data to plot on top of
 it is interpreted by feedgnuplot as usual. C<flipy> is useful here because
