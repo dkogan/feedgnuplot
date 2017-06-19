@@ -1,3 +1,9 @@
+feedgnuplot (1.43-1) unstable; urgency=medium
+
+  * added --image as a convenience wrapper for --equation
+
+ -- Dima Kogan <dkogan@debian.org>  Mon, 19 Jun 2017 13:16:18 -0700
+
 feedgnuplot (1.42-1) unstable; urgency=medium
 
   * Upstream update:
