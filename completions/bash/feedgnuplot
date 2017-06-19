@@ -21,6 +21,7 @@ complete -W               \
     --set                 \
     --unset               \
     --equation            \
+    --image               \
     --geometry            \
     --hardcopy            \
     --help                \
