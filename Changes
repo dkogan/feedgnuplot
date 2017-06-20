@@ -1,3 +1,9 @@
+feedgnuplot (1.44)
+
+  * --image draws its output beneath everything else
+
+ -- Dima Kogan <dima@secretsauce.net>  Tue, 20 Jun 2017 16:44:30 -0700
+
 feedgnuplot (1.43)
 
   * Added --image
