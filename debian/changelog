@@ -1,3 +1,9 @@
+feedgnuplot (1.44-1) unstable; urgency=medium
+
+  * --image always goes on the FRONT of the equation list
+
+ -- Dima Kogan <dkogan@debian.org>  Tue, 20 Jun 2017 16:45:42 -0700
+
 feedgnuplot (1.43-1) unstable; urgency=medium
 
   * added --image as a convenience wrapper for --equation
