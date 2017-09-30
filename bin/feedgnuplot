@@ -15,7 +15,8 @@ use Text::ParseWords; # for shellwords
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.44;
+# Makefile.PL assumes this is in ''
+my $VERSION = '1.44';
 
 my %options;
 interpretCommandline();
