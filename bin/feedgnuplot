@@ -720,11 +720,6 @@ sub mainThread
       print(PIPE "set xdata time\n");
     }
 
-    # add the extra global options
-    print(PIPE "$_\n")       foreach (@{$options{extracmds}});
-    print(PIPE "set $_\n")   foreach (@{$options{set}});
-    print(PIPE "unset $_\n") foreach (@{$options{unset}});
-
     # set up histograms
     $options{binwidth} ||= 1;   # if no binwidth given, set it to 1
     print PIPE
@@ -746,6 +741,11 @@ sub mainThread
     sendRangeCommand( "yrange",  $options{ymin}, $options{ymax} );
     sendRangeCommand( "zrange",  $options{zmin}, $options{zmax} );
     sendRangeCommand( "cbrange", $options{zmin}, $options{zmax} ) if($options{colormap});
+
+    # add the extra global options
+    print(PIPE "$_\n")       foreach (@{$options{extracmds}});
+    print(PIPE "set $_\n")   foreach (@{$options{set}});
+    print(PIPE "unset $_\n") foreach (@{$options{unset}});
 
 
 
