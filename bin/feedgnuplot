@@ -979,7 +979,8 @@ sub updateCurveOptions
       $usingoptions = "using 1:" . join(':', @rest);
   }
 
-  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions} $options{curvestyleall}";
+
+  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions}";
 }
 
 sub getCurve
@@ -998,7 +999,11 @@ sub getCurve
 
   if( !exists $curveIndices{$id} )
   {
-    push @curves, {extraoptions      => ' ',
+    push @curves, {# if we have a catch-all style and no specific style, use
+                   # the catch-all style
+                   extraoptions      => (!exists $options{curvestyle_hash}{$id} &&
+                                          exists $options{curvestyleall}) ?
+                                        "$options{curvestyleall} " : ' ',
                    datastring        => '',
                    datastring_meta   => [],
                    datastring_offset => 0}; # push a curve with no data and no options
