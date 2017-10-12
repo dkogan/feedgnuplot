@@ -439,7 +439,7 @@ sub interpretCommandline
           die "Couldn't read image '$options{image}'";
       }
 
-      unshift @{$options{equation}}, qq{"$options{image}" binary filetype=auto flipy with rgbimage};
+      unshift @{$options{equation}}, qq{"$options{image}" binary filetype=auto flipy with rgbimage title "$options{image}"};
       delete $options{image};
   }
 }
