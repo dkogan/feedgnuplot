@@ -1,3 +1,14 @@
+feedgnuplot (1.45-1) unstable; urgency=medium
+
+  * zsh completion: --hardcopy, --image  suggest filenames
+  * --image now produces a nicer legend: just the filename
+  * --curvestyle now overrides --curvestyleall
+    - This is a bug fix
+  * The version is now treated as a string not as a number
+    - So "1.40" is distinct from "1.4"
+
+ -- Dima Kogan <dkogan@debian.org>  Sun, 29 Oct 2017 14:06:26 -0700
+
 feedgnuplot (1.44-1) unstable; urgency=medium
 
   * --image always goes on the FRONT of the equation list
