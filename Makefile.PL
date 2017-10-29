@@ -20,9 +20,9 @@ sub parseversion
 
   while(<PL>)
   {
-    if( /VERSION = ([0-9\.]+)/ )
+    if( /VERSION = '([0-9\.]+)'/ )
     {
-      if ( $1 != $version )
+      if ( $1 ne $version )
       {
         die "Version mismatch. Changes says version is '$version', but 'bin/feedgnuplot' says it is '$1'";
       }

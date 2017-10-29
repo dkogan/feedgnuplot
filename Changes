@@ -1,3 +1,14 @@
+feedgnuplot (1.45)
+
+  * zsh completion: --hardcopy, --image  suggest filenames
+  * --image now produces a nicer legend: just the filename
+  * --curvestyle now overrides --curvestyleall
+    - This is a bug fix
+  * The version is now treated as a string not as a number
+    - So "1.40" is distinct from "1.4"
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 29 Oct 2017 13:56:28 -0700
+
 feedgnuplot (1.44)
 
   * --image draws its output beneath everything else
@@ -43,8 +54,8 @@ feedgnuplot (1.39)
 feedgnuplot (1.38)
 
   * hardcopy defaults:
-   - no enhanced text mode
-   - larger font size
+    - no enhanced text mode
+    - larger font size
 
  -- Dima Kogan <dima@secretsauce.net>  Wed, 27 Jul 2016 22:15:11 -0700
 

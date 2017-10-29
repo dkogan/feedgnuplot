@@ -15,7 +15,8 @@ use Text::ParseWords; # for shellwords
 use Pod::Usage;
 use Time::Piece;
 
-my $VERSION = 1.44;
+# Makefile.PL assumes this is in ''
+my $VERSION = '1.45';
 
 my %options;
 interpretCommandline();
@@ -438,7 +439,7 @@ sub interpretCommandline
           die "Couldn't read image '$options{image}'";
       }
 
-      unshift @{$options{equation}}, qq{"$options{image}" binary filetype=auto flipy with rgbimage};
+      unshift @{$options{equation}}, qq{"$options{image}" binary filetype=auto flipy with rgbimage title "$options{image}"};
       delete $options{image};
   }
 }
@@ -719,11 +720,6 @@ sub mainThread
       print(PIPE "set xdata time\n");
     }
 
-    # add the extra global options
-    print(PIPE "$_\n")       foreach (@{$options{extracmds}});
-    print(PIPE "set $_\n")   foreach (@{$options{set}});
-    print(PIPE "unset $_\n") foreach (@{$options{unset}});
-
     # set up histograms
     $options{binwidth} ||= 1;   # if no binwidth given, set it to 1
     print PIPE
@@ -745,6 +741,11 @@ sub mainThread
     sendRangeCommand( "yrange",  $options{ymin}, $options{ymax} );
     sendRangeCommand( "zrange",  $options{zmin}, $options{zmax} );
     sendRangeCommand( "cbrange", $options{zmin}, $options{zmax} ) if($options{colormap});
+
+    # add the extra global options
+    print(PIPE "$_\n")       foreach (@{$options{extracmds}});
+    print(PIPE "set $_\n")   foreach (@{$options{set}});
+    print(PIPE "unset $_\n") foreach (@{$options{unset}});
 
 
 
@@ -978,7 +979,8 @@ sub updateCurveOptions
       $usingoptions = "using 1:" . join(':', @rest);
   }
 
-  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions} $options{curvestyleall}";
+
+  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions}";
 }
 
 sub getCurve
@@ -997,7 +999,11 @@ sub getCurve
 
   if( !exists $curveIndices{$id} )
   {
-    push @curves, {extraoptions      => ' ',
+    push @curves, {# if we have a catch-all style and no specific style, use
+                   # the catch-all style
+                   extraoptions      => (!exists $options{curvestyle_hash}{$id} &&
+                                          exists $options{curvestyleall}) ?
+                                        "$options{curvestyleall} " : ' ',
                    datastring        => '',
                    datastring_meta   => [],
                    datastring_offset => 0}; # push a curve with no data and no options

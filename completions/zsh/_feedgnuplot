@@ -33,10 +33,10 @@ _arguments -S                                                                   
     '*--set[Additional 'set' gnuplot commands]:set-option'                        \
     '*--unset[Additional 'unset' gnuplot commands]:unset-option'                  \
     '*--equation[Raw symbolic equation]:equation'                                 \
-    '--image[Image file to render beneath the data]:image'                        \
+    '--image[Image file to render beneath the data]:image:_files -g "(#i)*.(jpg|jpeg|png|gif)"' \
     '--square[Plot data with square aspect ratio]'                                \
     '--square_xy[For 3D plots, set square aspect ratio for ONLY the x,y axes]'    \
-    '--hardcopy[Plot to a file]:filename'                                         \
+    '--hardcopy[Plot to a file]:new image filename:_files -g "(#i)*.(jpg|jpeg|png|gif)"' \
     '--maxcurves[The maximum allowed number of curves]:number of curves'          \
     '(--3d)--monotonic[Resets plot if an X in the past is seen]'                  \
     '(--rangesizeall)--extraValuesPerPoint[How many extra values are given for each data range]:N'\
