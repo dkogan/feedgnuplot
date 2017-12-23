@@ -1677,7 +1677,10 @@ C<--xmin/xmax/ymin/ymax/y2min/y2max/zmin/zmax xxx>
 
 Set the range for the given axis. These x-axis bounds are ignored in a streaming
 plot. The y2-axis bound do not apply in 3d plots. The z-axis bounds apply
-I<only> to 3d plots or colormaps.
+I<only> to 3d plots or colormaps. Note that there is no C<--xrange> to set both
+sides at once or C<--xinv> to flip the axis around: anything more than the
+basics supported in this option is clearly obtainable by talking to gnuplot, for
+instance C<--set 'xrange [20:10]'> to set the given inverted bounds.
 
 =item
 
@@ -1819,9 +1822,9 @@ Gnuplot can plot both data and symbolic equations. C<feedgnuplot> generally
 plots data, but with this option can plot symbolic equations I<also>. This is
 generally intended to augment data plots, since for equation-only plots you
 don't need C<feedgnuplot>. C<--equation> can be passed multiple times for
-multiple equations. The given strings are passed to gnuplot directly without any
-thing added or removed, so styling and such should be applied in the string. A
-basic example:
+multiple equations. The given strings are passed to gnuplot directly without
+anything added or removed, so styling and such should be applied in the string.
+A basic example:
 
  seq 100 | awk '{print $1/10, $1/100}' |
    feedgnuplot --with 'lines lw 3' --domain --ymax 1
@@ -1881,11 +1884,13 @@ system's memory when reading bogus data
 
 C<--monotonic>
 
-If C<--domain> is given, checks to make sure that the x- coordinate in the input
+If C<--domain> is given, checks to make sure that the x-coordinate in the input
 data is monotonically increasing. If a given x-variable is in the past, all data
 currently cached for this curve is purged. Without C<--monotonic>, all data is
-kept. Does not make sense with 3d plots. No C<--monotonic> by default. The data is
-replotted before being purged
+kept. Does not make sense with 3d plots. No C<--monotonic> by default. The data
+is replotted before being purged. This is useful in streaming plots where the
+incoming data represents multiple iterations of the same process (repeated
+simulations of the same period in time, for instance).
 
 =item
 
