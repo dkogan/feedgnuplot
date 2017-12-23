@@ -102,6 +102,7 @@ sub interpretCommandline
   $options{with}          = '';
 
   $options{rangesize} = [];
+  $options{tuplesize} = [];
 
   GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
@@ -114,6 +115,7 @@ sub interpretCommandline
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
              'rangesize=s{2}', 'rangesizeall=i',
+             'tuplesize=s{2}', 'tuplesizeall=i',
              'extraValuesPerPoint=i', # deprecated and undocumented
              'help', 'dump', 'exit', 'version',
              'geometry=s') or exit 1;
@@ -162,7 +164,7 @@ sub interpretCommandline
     @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
       if defined $options{$listkey};
   }
-  for my $listkey (qw(curvestyle rangesize))
+  for my $listkey (qw(curvestyle rangesize tuplesize))
   {
       next unless defined $options{$listkey};
       my @in = @{$options{$listkey}};
@@ -180,6 +182,35 @@ sub interpretCommandline
 
       @{$options{$listkey}} = @out;
   }
+
+
+  # convert all tuplesize business to rangesize
+  my $domainsize = $options{'3d'} ? 2 : 1;
+  if (defined $options{tuplesizeall})
+  {
+      if (defined $options{rangesizeall} )
+      {
+          print STDERR "Only one of --rangesizeall and --tuplesizeall may be given\n";
+          exit -1;
+      }
+
+      $options{rangesizeall} = $options{tuplesizeall} - $domainsize;
+      delete $options{tuplesizeall};
+  }
+  if (defined $options{tuplesize})
+  {
+      $options{rangesize} //= [];
+
+      my $N = @{$options{tuplesize}} / 2;
+      for my $i (0..$N-1)
+      {
+          $options{tuplesize}[2*$i + 1] -= $domainsize;
+      }
+
+      push @{$options{rangesize}}, @{$options{tuplesize}};
+      delete $options{tuplesize};
+  }
+
 
 
   # If we're plotting histograms, then set the default histogram options for
@@ -1299,22 +1330,33 @@ conjunction with C<--dataid>.
 Depending on how gnuplot is plotting the data, more than one value may be needed
 to represent the range of a single point. Basic 2D plots have 2 numbers
 representing each point: 1 domain and 1 range. But if plotting with
-C<--circles>, for instance, then there's an extra range value: the radius. A
-similar situation exists with C<--colormap> where each point contains the
-position I<and> the color. There are other gnuplot styles that require more data
-(such as error bars), but none of these are directly supported by the script.
-They can still be used, however, by specifying the specific style with
-C<--style>, and specifying how many values are needed for each point with
-C<--rangesizeall> or C<--rangesize> or C<--extraValuesPerPoint>. Those options
-that specify the range size are required I<only> for styles not explicitly
-supported by feedgnuplot; supported styles do the right thing automatically.
+C<--circles>, for instance, then there's an extra range value: the radius. Many
+other gnuplot styles require more data: errorbars, variable colors (C<with
+points palette>), variable sizes (C<with points ps variable>), labels and so on.
+The feedgnuplot tool itself does not know about all these intricacies, but they
+can still be used, by specifying the specific style with C<--style>, and
+specifying how many values are needed for each point with any of
+C<--rangesizeall, C<--tuplesizeall>, C<--rangesize>, C<--tuplesize>. These
+options are required I<only> for styles not explicitly supported by feedgnuplot;
+supported styles do the right thing automatically.
 
-More examples: if making a 2d plot of y error bars where gnuplot expects a
-(x,y,ydelta) tuple for each point, you want C<--rangesizeall 2> because you have
-one domain value (x) and 2 range values (y,ydelta). Gnuplot can also plot
-lopsided y errorbars by giving a tuple (x,y,ylow,yhigh). This is similar as
-before, but you want C<--rangesizeall 3> instead.
+Specific example: if making a 2d plot of y error bars, the exact format can be
+queried by running C<gnuplot> and invoking C<help yerrorbars>. This tells us
+that there's a 3-column form: C<x y ydelta> and a 4-column form: C<x y ylow
+yhigh>. With 2d plots feedgnuplot will always output the 1-value domain C<x>, so
+the rangesize is 2 and 3 respectively. Thus the following are equivalent:
 
+ $ echo '1 2 0.3
+         2 3 0.4
+         3 4 0.5' | feedgnuplot --domain --rangesizeall 2 --with 'yerrorbars'
+
+ $ echo '1 2 0.3
+         2 3 0.4
+         3 4 0.5' | feedgnuplot --domain --tuplesizeall 3 --with 'yerrorbars'
+
+ $ echo '1 2 1.7 2.3
+         2 3 2.6 3.4
+         3 4 3.5 4.5' | feedgnuplot --domain --rangesizeall 3 --with 'yerrorbars'
 
 =head3 3D data
 
@@ -1564,7 +1606,8 @@ Interpret the X data as a time/date, parsed with the given format
 C<--colormap>
 
 Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
-used to set the extents of the colors. Automatically sets the C<--rangesize>.
+used to set the extents of the colors. Automatically sets the
+C<--rangesize>/C<--tuplesize>.
 
 =item
 
@@ -1592,7 +1635,8 @@ Do [not] draw points
 C<--circles>
 
 Plot with circles. This requires a radius be specified for each point.
-Automatically sets the C<--rangesize>. C<Not> supported for 3d plots.
+Automatically sets the C<--rangesize>/C<--tuplesize>. C<Not> supported for 3d
+plots.
 
 =item
 
@@ -1827,7 +1871,7 @@ file type is desired, use both C<--hardcopy> and C<--terminal>
 
 =item
 
-C<--maxcurves xxx>
+C<--maxcurves N>
 
 The maximum allowed number of curves. This is 100 by default, but can be reset
 with this option. This exists purely to prevent perl from allocating all of the
@@ -1845,7 +1889,7 @@ replotted before being purged
 
 =item
 
-C<--rangesize curveID xxx>
+C<--rangesize curveID N>
 
 The options C<--rangesizeall> and C<--rangesize> set the number of values are
 needed to represent each point being plotted (see L</"Multi-value style
@@ -1862,9 +1906,25 @@ rangesize should apply.
 
 =item
 
-C<--rangesizeall xxx>
+C<--tuplesize curveID N>
+
+Very similar to C<--rangesize>, but instead of specifying the I<range> only,
+this specifies the whole tuple. For instance if we're plotting circles, the
+tuplesize is 3: C<x,y,radius>. In a 2D plot there's a 1-dimensional domain:
+C<x>, so the rangesize is 2: C<y,radius>. This dimensionality can be given
+either way.
+
+=item
+
+C<--rangesizeall N>
 
 Like C<--rangesize>, but applies to I<all> the curves.
+
+=item
+
+C<--tuplesizeall N>
+
+Like C<--tuplesize>, but applies to I<all> the curves.
 
 =item
 
