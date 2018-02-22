@@ -104,7 +104,7 @@ sub interpretCommandline
   $options{rangesize} = [];
   $options{tuplesize} = [];
 
-  GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', '3d!', 'colormap!', 'lines!', 'points!',
+  GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', 'vnlog!', '3d!', 'colormap!', 'lines!', 'points!',
              'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=s', 'xmax=s', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@',
@@ -157,6 +157,11 @@ sub interpretCommandline
     delete $options{with};
   }
 
+  if( $options{dataid} && $options{vnlog} )
+  {
+    print STDERR "--dataid and --vnlog are mutually exclusive. Please just use one.\n";
+    exit -1;
+  }
 
   # expand options that are given as comma-separated lists
   for my $listkey (qw(histogram y2))
@@ -788,6 +793,33 @@ sub mainThread
     # The domain of the current point
     my @domain;
 
+    # column headers from vnlog
+    my @vnlog_headers;
+    if($options{vnlog})
+    {
+        use lib '../../vnlog/lib';
+        use Vnlog::Parser;
+        use Vnlog::Util;
+
+        my $parser = Vnlog::Parser->new();
+        while (defined ($_ = Vnlog::Util::get_unbuffered_line(*STDIN)))
+        {
+            if ( !$parser->parse($_) )
+            {
+                die "";#"Reading '$filename': Error parsing vnlog line '$_': " . $parser->error();
+            }
+
+            my $keys = $parser->getKeys();
+            if (defined $keys)
+            {
+                @vnlog_headers = @$keys;
+                last;
+            }
+        }
+    }
+
+
+
     # The x-axis domain represented as a number. This is exactly the same as
     # $domain[0] unless the x-axis domain uses a timefmt. Then this is the
     # number of seconds since the UNIX epoch.
@@ -875,12 +907,13 @@ sub mainThread
         $domain0_numeric = makeDomainNumeric( $domain[0] );
       }
 
-      my $id = -1;
-
+      my $id      = -1;
+      my $i_curve = 0;
       while(@fields)
       {
-          if($options{dataid}) { $id = shift @fields; }
-          else                 { $id++;               }
+          if   ($options{dataid}) { $id = shift @fields;            }
+          elsif($options{vnlog} ) { $id = $vnlog_headers[$i_curve]; }
+          else                    { $id++;                          }
 
           my $rangesize = getRangeSize($id);
           last if @fields < $rangesize;
@@ -890,6 +923,8 @@ sub mainThread
                          @domain,
                          splice( @fields, 0, $rangesize ) ) . "\n",
                     $domain0_numeric);
+
+          $i_curve++;
       }
     }
 
