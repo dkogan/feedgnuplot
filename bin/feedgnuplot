@@ -925,7 +925,7 @@ sub mainThread
           }
           elsif($options{vnlog} )
           {
-              if( $icurve >= @vnlog_headers )
+              if( $i_curve >= @vnlog_headers )
               {
                   # Got more columns than vnlog headers. The data is probably
                   # bogus, but I don't want to barf at the user, so I silently
