@@ -1,3 +1,11 @@
+feedgnuplot (1.46)
+
+  * Added --tuplesize and --tuplesizeall as alternatives to --rangesize
+    and --rangesizeall. Both forms are supported.
+  * Vnlog integration
+
+ -- Dima Kogan <dima@secretsauce.net>  Thu, 22 Feb 2018 23:37:54 -0800
+
 feedgnuplot (1.45)
 
   * zsh completion: --hardcopy, --image  suggest filenames
