@@ -797,16 +797,20 @@ sub mainThread
     my @vnlog_headers;
     if($options{vnlog})
     {
-        use lib '../../vnlog/lib';
-        use Vnlog::Parser;
-        use Vnlog::Util;
+        require Vnlog::Parser;
+        require Vnlog::Util;
+
+        if ( !defined $pipe_in )
+        {
+            ($pipe_in, $selector) = openNextFile();
+        }
 
         my $parser = Vnlog::Parser->new();
-        while (defined ($_ = Vnlog::Util::get_unbuffered_line(*STDIN)))
+        while (defined ($_ = Vnlog::Util::get_unbuffered_line($pipe_in)))
         {
             if ( !$parser->parse($_) )
             {
-                die "";#"Reading '$filename': Error parsing vnlog line '$_': " . $parser->error();
+                die "Error parsing vnlog: $parser->{error}; looking at line '$_'";
             }
 
             my $keys = $parser->getKeys();
@@ -815,6 +819,10 @@ sub mainThread
                 @vnlog_headers = @$keys;
                 last;
             }
+        }
+        if(!@vnlog_headers)
+        {
+            die "Looked through all of the first file, and never saw a vnlog legend";
         }
     }
 
@@ -911,9 +919,25 @@ sub mainThread
       my $i_curve = 0;
       while(@fields)
       {
-          if   ($options{dataid}) { $id = shift @fields;            }
-          elsif($options{vnlog} ) { $id = $vnlog_headers[$i_curve]; }
-          else                    { $id++;                          }
+          if   ($options{dataid})
+          {
+              $id = shift @fields;
+          }
+          elsif($options{vnlog} )
+          {
+              if( $icurve >= @vnlog_headers )
+              {
+                  # Got more columns than vnlog headers. The data is probably
+                  # bogus, but I don't want to barf at the user, so I silently
+                  # ignore the data
+                  last;
+              }
+              $id = $vnlog_headers[$i_curve];
+          }
+          else
+          {
+              $id++;
+          }
 
           my $rangesize = getRangeSize($id);
           last if @fields < $rangesize;
@@ -1346,19 +1370,31 @@ with the I<X>-value at the start of that line.
 
 =head3 Curve indexing
 
-By default, each column represents a separate curve. This is fine unless sparse
-data is to be plotted. With the C<--dataid> option, each point is represented by
-2 values: a string identifying the curve, and the value itself. If we add
-C<--dataid> to the original example:
+We index the curves in one of 3 ways: sequentially, explicitly with a
+C<--dataid> or by C<--vnlog> headers.
+
+By default, each column represents a separate curve. The first column (after any
+domain) is curve C<0>. The next one is curve C<1> and so on. This is fine unless
+sparse data is to be plotted. With the C<--dataid> option, each point is
+represented by 2 values: a string identifying the curve, and the value itself.
+If we add C<--dataid> to the original example:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' | feedgnuplot --dataid --autolegend
 
 we get 5 different curves with one point in each. The first column, as produced
 by C<awk>, is B<2,4,6,8,10>. These are interpreted as the IDs of the curves to
-be plotted. The C<--autolegend> option adds a legend using the given IDs to
+be plotted.
+
+If we're plotting C<vnlog> data (L<https://www.github.com/dkogan/vnlog>) then we
+can get the curve IDs from the vnlog header. Vnlog is a trivial data format
+where lines starting with C<#> are comments and the first comment contains
+column labels. If we have such data, C<feedgnuplot --vnlog> can interpret these
+column labels if the C<vnlog> perl modules are available.
+
+The C<--autolegend> option adds a legend using the given IDs to
 label the curves. The IDs need not be numbers; generic strings are accepted. As
 many points as desired can appear on a single line. C<--domain> can be used in
-conjunction with C<--dataid>.
+conjunction with C<--dataid> or C<--vnlog>.
 
 =head3 Multi-value style support
 
@@ -1622,6 +1658,19 @@ value, so it is ignored. If another value followed 20, we'd get another
 point in curve ID 20
 
 =back
+
+=item
+
+C<--vnlog>
+
+Vnlog is a trivial data format where lines starting with C<#> are comments and
+the first comment contains column labels. Some tools for working with such data
+are available from the C<vnlog> project: L<https://www.github.com/dkogan/vnlog>.
+With the C<vnlog> perl modules installed, we can read the vnlog column headers
+with C<feedgnuplot --vnlog>. This replaces C<--dataid>, and we can do all the
+normal things with these headers. For instance C<feedgnuplot --vnlog
+--autolegend> will generate plot legends for each column in the vnlog, using the
+vnlog column label in the legend.
 
 =item
 
