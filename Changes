@@ -1,3 +1,9 @@
+feedgnuplot (1.47)
+
+  * Fixed typo. Everything is un-broken now
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 23 Feb 2018 10:21:13 -0800
+
 feedgnuplot (1.46)
 
   * Added --tuplesize and --tuplesizeall as alternatives to --rangesize
