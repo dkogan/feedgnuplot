@@ -877,7 +877,7 @@ sub mainThread
 
             $domain[0] = join (' ', splice( @fields, 0, $options{timefmt_Ncols}) );
             $domain0_numeric = makeDomainNumeric( $domain[0] );
-            $i_column -= $options{timefmt_Ncols};
+            $i_column += $options{timefmt_Ncols};
         }
         elsif(!$options{'3d'})
         {
@@ -886,7 +886,7 @@ sub mainThread
             next if @fields < 1+1;
 
             $domain[0] = $domain0_numeric = shift @fields;
-            $i_column -= 1;
+            $i_column += 1;
         }
         else
         {
@@ -895,7 +895,7 @@ sub mainThread
             next if @fields < 2+1;
 
             @domain = splice(@fields, 0, 2);
-            $i_column -= 2;
+            $i_column += 2;
         }
 
         if( $options{monotonic} )
