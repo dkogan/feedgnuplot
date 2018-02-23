@@ -865,6 +865,7 @@ sub mainThread
       # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
 
       my @fields = split;
+      my $i_column = 0;
 
       if($options{domain})
       {
@@ -876,6 +877,7 @@ sub mainThread
 
             $domain[0] = join (' ', splice( @fields, 0, $options{timefmt_Ncols}) );
             $domain0_numeric = makeDomainNumeric( $domain[0] );
+            $i_column -= $options{timefmt_Ncols};
         }
         elsif(!$options{'3d'})
         {
@@ -884,6 +886,7 @@ sub mainThread
             next if @fields < 1+1;
 
             $domain[0] = $domain0_numeric = shift @fields;
+            $i_column -= 1;
         }
         else
         {
@@ -892,6 +895,7 @@ sub mainThread
             next if @fields < 2+1;
 
             @domain = splice(@fields, 0, 2);
+            $i_column -= 2;
         }
 
         if( $options{monotonic} )
@@ -915,8 +919,7 @@ sub mainThread
         $domain0_numeric = makeDomainNumeric( $domain[0] );
       }
 
-      my $id      = -1;
-      my $i_curve = 0;
+      my $id = -1;
       while(@fields)
       {
           if   ($options{dataid})
@@ -925,14 +928,14 @@ sub mainThread
           }
           elsif($options{vnlog} )
           {
-              if( $i_curve >= @vnlog_headers )
+              if( $i_column >= @vnlog_headers )
               {
                   # Got more columns than vnlog headers. The data is probably
                   # bogus, but I don't want to barf at the user, so I silently
                   # ignore the data
                   last;
               }
-              $id = $vnlog_headers[$i_curve];
+              $id = $vnlog_headers[$i_column];
           }
           else
           {
@@ -948,7 +951,7 @@ sub mainThread
                          splice( @fields, 0, $rangesize ) ) . "\n",
                     $domain0_numeric);
 
-          $i_curve++;
+          $i_column++;
       }
     }
 
