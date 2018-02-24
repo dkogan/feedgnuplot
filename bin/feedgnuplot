@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.47';
+my $VERSION = '1.48';
 
 my %options;
 interpretCommandline();

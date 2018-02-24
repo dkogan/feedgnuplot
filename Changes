@@ -1,3 +1,9 @@
+feedgnuplot (1.48)
+
+  * --vnlog works properly with --domain
+
+ -- Dima Kogan <dima@secretsauce.net>  Sat, 24 Feb 2018 12:33:50 -0800
+
 feedgnuplot (1.47)
 
   * Fixed typo. Everything is un-broken now
