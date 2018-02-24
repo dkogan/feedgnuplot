@@ -1,3 +1,10 @@
+feedgnuplot (1.48-1) unstable; urgency=medium
+
+  * Added --tuplesize and --tuplesizeall
+  * vnlog integration
+
+ -- Dima Kogan <dkogan@debian.org>  Sat, 24 Feb 2018 12:56:05 -0800
+
 feedgnuplot (1.45-1) unstable; urgency=medium
 
   * zsh completion: --hardcopy, --image  suggest filenames
