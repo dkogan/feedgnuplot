@@ -16,7 +16,7 @@ _arguments -S                                                                   
     '--zlabel:Z-axis label:'                                                      \
     '--title:Plot title:'                                                         \
     '--autolegend[Label each plot with its data ID]'                              \
-    '(--3d)--xlen[the size of the x-window to plot]::window size:'                \
+    '(--3d)--xlen[the size of the x-window to plot]:window size:'                 \
     '(--xlen)--xmin:min X:'                                                       \
     '(--xlen)--xmax:max X:'                                                       \
     '--ymin:min Y:'                                                               \

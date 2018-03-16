@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.48';
+my $VERSION = '1.49';
 
 my %options;
 interpretCommandline();
@@ -951,7 +951,7 @@ sub mainThread
                          splice( @fields, 0, $rangesize ) ) . "\n",
                     $domain0_numeric);
 
-          $i_column++;
+          $i_column += $rangesize;
       }
     }
 
