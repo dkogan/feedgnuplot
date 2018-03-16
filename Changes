@@ -1,3 +1,10 @@
+feedgnuplot (1.49)
+
+  * --vnl now works with plots that have rangesize > 1
+  * zsh completion: --xlen argument isn't optional
+
+ -- Dima Kogan <dima@secretsauce.net>  Fri, 16 Mar 2018 13:52:28 -0700
+
 feedgnuplot (1.48)
 
   * --vnlog works properly with --domain
