@@ -1,3 +1,10 @@
+feedgnuplot (1.49-1) unstable; urgency=medium
+
+  * --vnl now works with plots that have rangesize > 1
+  * zsh completion: --xlen argument isn't optional
+
+ -- Dima Kogan <dkogan@debian.org>  Fri, 16 Mar 2018 13:56:27 -0700
+
 feedgnuplot (1.48-1) unstable; urgency=medium
 
   * Added --tuplesize and --tuplesizeall
