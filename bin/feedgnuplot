@@ -951,7 +951,7 @@ sub mainThread
                          splice( @fields, 0, $rangesize ) ) . "\n",
                     $domain0_numeric);
 
-          $i_column++;
+          $i_column += $rangesize;
       }
     }
 
