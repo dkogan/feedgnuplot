@@ -48,7 +48,7 @@ _arguments -S                                                                   
     '*--style[Additional styles for a curve]:curve id: :style:'                   \
     '(--3d)*--histogram:plot to treat as a histogram:'                            \
     '--binwidth:Histogram bin width:'                                             \
-    '--histstyle:Style of histogram:(frequency unique cumulative cnormal)'        \
+    '--histstyle:Style of histogram:(frequency fnormal unique cumulative cnormal)' \
     '--terminal:Terminal options to set with "set terminal":'                     \
     '*--legend[Legend for a curve]:curve id: :legend:'                            \
     '--exit[Exit gnuplot after making the plot]'                                  \
