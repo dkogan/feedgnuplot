@@ -1,3 +1,9 @@
+feedgnuplot (1.49-2) unstable; urgency=medium
+
+  * Updated Vcs-... tags to salsa
+
+ -- Dima Kogan <dkogan@debian.org>  Sun, 17 Jun 2018 22:18:18 -0700
+
 feedgnuplot (1.49-1) unstable; urgency=medium
 
   * --vnl now works with plots that have rangesize > 1
