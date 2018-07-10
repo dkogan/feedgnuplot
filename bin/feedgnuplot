@@ -1413,7 +1413,7 @@ points palette>), variable sizes (C<with points ps variable>), labels and so on.
 The feedgnuplot tool itself does not know about all these intricacies, but they
 can still be used, by specifying the specific style with C<--style>, and
 specifying how many values are needed for each point with any of
-C<--rangesizeall, C<--tuplesizeall>, C<--rangesize>, C<--tuplesize>. These
+C<--rangesizeall>, C<--tuplesizeall>, C<--rangesize>, C<--tuplesize>. These
 options are required I<only> for styles not explicitly supported by feedgnuplot;
 supported styles do the right thing automatically.
 
