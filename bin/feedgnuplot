@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.49';
+my $VERSION = '1.50';
 
 my %options;
 interpretCommandline();
@@ -465,10 +465,13 @@ sub interpretCommandline
   {
       # images generally have the origin at the top-left instead of the
       # bottom-left, so given nothing else, I flip the y axis
-      if( !defined $options{ymin} && !defined $options{ymax} &&
+      if( !defined $options{xmin} && !defined $options{xmax} &&
+          !defined $options{ymin} && !defined $options{ymax} &&
+          ! any { /^ *xrange\b/ } @{$options{set}} &&
           ! any { /^ *yrange\b/ } @{$options{set}} )
       {
-          push @{$options{set}}, "yrange [:] reverse";
+          push @{$options{set}}, "xrange [:] noextend";
+          push @{$options{set}}, "yrange [:] reverse noextend";
       }
 
       if ( ! -r $options{image} )
@@ -987,7 +990,10 @@ sub mainThread
     # we persist gnuplot, so we shouldn't need this sleep. However, once
     # gnuplot exits, but the persistent window sticks around, you can no
     # longer interactively zoom the plot. So we still sleep
-    sleep(100000000) unless $options{dump} || $options{exit};
+    unless($options{dump} || $options{exit})
+    {
+        print PIPE "pause mouse close\n";
+    }
 }
 
 sub pruneOldData
@@ -1410,7 +1416,7 @@ points palette>), variable sizes (C<with points ps variable>), labels and so on.
 The feedgnuplot tool itself does not know about all these intricacies, but they
 can still be used, by specifying the specific style with C<--style>, and
 specifying how many values are needed for each point with any of
-C<--rangesizeall, C<--tuplesizeall>, C<--rangesize>, C<--tuplesize>. These
+C<--rangesizeall>, C<--tuplesizeall>, C<--rangesize>, C<--tuplesize>. These
 options are required I<only> for styles not explicitly supported by feedgnuplot;
 supported styles do the right thing automatically.
 
