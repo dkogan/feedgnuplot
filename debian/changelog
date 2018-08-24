@@ -1,3 +1,14 @@
+feedgnuplot (1.50-1) unstable; urgency=medium
+
+  * Script waits for the plot window to close before exiting
+      Instead of sleeping forever. This is really nice! I no longer need
+      to quit the plot window AND then C-c. Quitting the plot window is
+      now sufficient
+  * by default --image sets range noextend
+  * tab-completion knows about the fnormal distribution
+    
+ -- Dima Kogan <dkogan@debian.org>  Fri, 24 Aug 2018 13:16:35 -0700
+
 feedgnuplot (1.49-2) unstable; urgency=medium
 
   * Updated Vcs-... tags to salsa
