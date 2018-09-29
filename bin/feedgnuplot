@@ -617,51 +617,15 @@ sub getNextLine
 sub mainThread
 {
     local *PIPE;
-    my $dopersist = '';
-
-    if( getGnuplotVersion() >= 4.3 && # --persist not available before this
-
-        # --persist is needed for the "half-alive" state (see documentation for
-        # --exit). This state is only used with these options:
-        !$options{stream} && $options{exit})
-    {
-      $dopersist = '--persist';
-    }
-
-    # We trap SIGINT to kill the data input, but keep the plot up. see
-    # documentation for --exit
-    if ($options{stream} && !$options{exit})
-    {
-        $SIG{INT} = sub
-        {
-            print STDERR "$0 received SIGINT. Send again to quit\n";
-            $SIG{INT} = undef;
-        };
-    }
-
-
-
-
-    if(exists $options{dump})
-    {
-      *PIPE = *STDOUT;
-    }
-    else
-    {
-      my $geometry = defined $options{geometry} ?
-        "-geometry $options{geometry}" : '';
-      open PIPE, "|gnuplot $geometry $dopersist" or die "Can't initialize gnuplot\n";
-    }
-    autoflush PIPE 1;
 
     my $outputfile;
     my $outputfileType;
     if( defined $options{hardcopy})
     {
       $outputfile = $options{hardcopy};
-      if( $outputfile =~ /^[^|]                       # starts with anything other than |
-                          .*                          # stuff in the middle
-                          \.(eps|ps|pdf|png|svg)$/ix) # ends with a known extension
+      if( $outputfile =~ /^[^|]                          # starts with anything other than |
+                          .*                             # stuff in the middle
+                          \.(eps|ps|pdf|png|svg|gp)$/ix) # ends with a known extension
       {
         $outputfileType = lc $1;
       }
@@ -671,7 +635,8 @@ sub mainThread
         ps   => 'postscript noenhanced solid color landscape 12',
         pdf  => 'pdfcairo noenhanced solid color font ",12" size 11in,8.5in',
         png  => 'png noenhanced size 1280,1024',
-        svg  => 'svg noenhanced');
+        svg  => 'svg noenhanced',
+        gp   => 'gp');
 
       if( !defined $options{terminal} &&
            defined $outputfileType    &&
@@ -683,8 +648,89 @@ sub mainThread
       die "Asked to plot to file '$outputfile', but I don't know which terminal to use, and no --terminal given"
         unless $options{terminal};
     }
-    print PIPE "set terminal $options{terminal}\n" if $options{terminal};
-    print PIPE "set output \"$outputfile\"\n"      if $outputfile;
+
+
+    sub gpterminal
+    {
+        return defined $options{terminal} && $options{terminal} eq 'gp';
+    }
+    sub datadump_only
+    {
+        return
+          exists $options{dump} ||
+          gpterminal();
+    }
+    sub search_PATH
+    {
+        for my $pathdir (File::Spec->path())
+        {
+            my $gnuplot_execpath = File::Spec->catfile($pathdir, $_[0]);
+            return $gnuplot_execpath
+              if -x $gnuplot_execpath && ! -d $gnuplot_execpath;
+        }
+        return undef;
+    }
+
+
+
+
+
+    if(datadump_only())
+    {
+        if(gpterminal())
+        {
+            open PIPE, '>', $outputfile;
+
+            my $gnuplotpath = search_PATH('gnuplot');
+            if(!defined $gnuplotpath)
+            {
+                print STDERR "Couldn't find the gnuplot executable path. Creating .gp file still, but omitting #!. This will NOT be self-executable";
+            }
+            else
+            {
+                chmod 0755, $outputfile;
+                print PIPE "#!$gnuplotpath\n";
+            }
+        }
+        else
+        {
+            *PIPE = *STDOUT;
+        }
+    }
+    else
+    {
+        my $dopersist = '';
+
+        if ( getGnuplotVersion() >= 4.3 && # --persist not available before this
+
+             # --persist is needed for the "half-alive" state (see documentation for
+             # --exit). This state is only used with these options:
+             !$options{stream} && $options{exit}) {
+            $dopersist = '--persist';
+        }
+
+        # We trap SIGINT to kill the data input, but keep the plot up. see
+        # documentation for --exit
+        if ($options{stream} && !$options{exit})
+        {
+            $SIG{INT} = sub
+            {
+                print STDERR "$0 received SIGINT. Send again to quit\n";
+                $SIG{INT} = undef;
+            };
+        }
+
+        my $geometry = defined $options{geometry} ?
+          "-geometry $options{geometry}" : '';
+        open PIPE, "|gnuplot $geometry $dopersist" or die "Can't initialize gnuplot\n";
+        autoflush PIPE 1;
+    }
+
+    if(!gpterminal())
+    {
+        print PIPE "set terminal $options{terminal}\n" if $options{terminal};
+        print PIPE "set output \"$outputfile\"\n"      if $outputfile;
+    }
 
     # set up plotting style
     my $style = '';
@@ -961,7 +1007,7 @@ sub mainThread
     # finished reading in all. Plot what we have
     plotStoredData() unless $options{stream} && $options{exit};
 
-    if ( defined $options{hardcopy})
+    if ( defined $options{hardcopy} && !gpterminal())
     {
       print PIPE "set output\n";
 
@@ -990,7 +1036,12 @@ sub mainThread
     # we persist gnuplot, so we shouldn't need this sleep. However, once
     # gnuplot exits, but the persistent window sticks around, you can no
     # longer interactively zoom the plot. So we still sleep
-    unless($options{dump} || $options{exit})
+    if(gpterminal())
+    {
+        print PIPE "pause mouse close\n";
+        close PIPE;
+    }
+    elsif(!($options{dump} || $options{exit}))
     {
         print PIPE "pause mouse close\n";
     }
@@ -1540,15 +1591,20 @@ This command causes feedgnuplot to exit.
 
 The script is able to produce hardcopy output with C<--hardcopy outputfile>. The
 output type can be inferred from the filename, if B<.ps>, B<.eps>, B<.pdf>,
-B<.svg> or B<.png> is requested. If any other file type is requested,
+B<.svg>, B<.png> or B<.gp> is requested. If any other file type is requested,
 C<--terminal> I<must> be passed in to tell gnuplot how to make the plot. If
 C<--terminal> is passed in, then the C<--hardcopy> argument only provides the
 output filename.
 
+The B<.gp> output is special. Instead of asking gnuplot to plot to a particular
+terminal, writing to a B<.gp> simply dumps a self-executable gnuplot script into
+the given file. This is similar to what C<--dump> does, but writes to a file,
+and makes sure that the file can be self-executing.
+
 =head2 Self-plotting data files
 
-This script can be used to enable self-plotting data files. There are 2 ways of
-doing this: with a shebang (#!) or with inline perl data.
+This script can be used to enable self-plotting data files. There are several
+ways of doing this: with a shebang (#!) or with inline perl data.
 
 =head3 Self-plotting data with a #!
 
@@ -1581,6 +1637,11 @@ The caveats here are that on Linux the whole #! line is limited to 127
 characters and that the full path to feedgnuplot must be given. The 127
 character limit is a serious limitation, but this can likely be resolved with a
 kernel patch. I have only tried on Linux 2.6.
+
+=head3 Self-plotting data with gnuplot
+
+Running C<feedgnuplot --hardcopy plotdata.gp ....> will create a self-executable
+gnuplot script in C<plotdata.gp>
 
 =head3 Self-plotting data with perl inline data
 
