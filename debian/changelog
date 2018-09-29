@@ -1,3 +1,9 @@
+feedgnuplot (1.51-1) unstable; urgency=medium
+
+  * Added .gp "terminal" to create self-plotting gnuplot files
+
+ -- Dima Kogan <dkogan@debian.org>  Sat, 29 Sep 2018 11:00:40 -0700
+
 feedgnuplot (1.50-1) unstable; urgency=medium
 
   * Script waits for the plot window to close before exiting
