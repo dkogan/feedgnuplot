@@ -1,4 +1,4 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Source: https://github.com/dkogan/feedgnuplot
 Upstream-Contact: Dima Kogan, <dima@secretsauce.net>
 Upstream-Name: feedgnuplot
