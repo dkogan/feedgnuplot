@@ -1,6 +1,7 @@
 feedgnuplot (1.51-2) UNRELEASED; urgency=medium
 
   * Use secure copyright file specification URI.
+  * Trim trailing whitespace.
 
  -- Jelmer Vernooĳ <jelmer@debian.org>  Sat, 20 Oct 2018 20:50:26 +0000
 
@@ -18,7 +19,7 @@ feedgnuplot (1.50-1) unstable; urgency=medium
       now sufficient
   * by default --image sets range noextend
   * tab-completion knows about the fnormal distribution
-    
+
  -- Dima Kogan <dkogan@debian.org>  Fri, 24 Aug 2018 13:16:35 -0700
 
 feedgnuplot (1.49-2) unstable; urgency=medium
