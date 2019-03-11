@@ -1,3 +1,9 @@
+=head1 TALK
+
+I just gave a talk about this at L<SCaLE
+17x|https://www.socallinuxexpo.org/scale/17x>. Presentation lives
+L<here|https://github.com/dkogan/talk-feedgnuplot-vnlog/blob/master/feedgnuplot-vnlog.org>.
+
 =head1 NAME
 
 feedgnuplot - General purpose pipe-oriented plotting tool
