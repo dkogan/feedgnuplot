@@ -109,7 +109,7 @@ sub interpretCommandline
              'title=s', 'xlen=f', 'ymin=f', 'ymax=f', 'xmin=s', 'xmax=s', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f', 'y2=s@',
              'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
-             'square!', 'square_xy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
+             'square!', 'square_xy!', 'square-xy!', 'squarexy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'equation=s@',
              'image=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
@@ -142,6 +142,10 @@ sub interpretCommandline
     else                         { $options{curvestyleall}  =   $options{styleall};  }
     delete $options{styleall};
   }
+
+  # various square-xy synonyms
+  $options{'square_xy'} = 1 if $options{'square-xy'} || $options{'squarexy'};
+
 
   push @{$options{curvestyle}}, @{$options{style}};
   delete $options{style};
@@ -2005,7 +2009,7 @@ all 3 axes
 
 =item
 
-C<--square_xy>
+C<--square-xy>
 
 For 3D plots, set square aspect ratio for ONLY the x,y axes
 

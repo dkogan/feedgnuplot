@@ -33,7 +33,7 @@ complete -W               \
     --monotonic           \
     --points              \
     --square              \
-    --square_xy           \
+    --square-xy           \
     --stream              \
     --terminal            \
     --timefmt             \
