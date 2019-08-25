@@ -1,3 +1,9 @@
+feedgnuplot (1.52)
+
+  * Added --squarexy and --square-xy as synonyms to --square_xy
+
+ -- Dima Kogan <dima@secretsauce.net>  Sun, 25 Aug 2019 15:32:37 -0700
+
 feedgnuplot (1.51)
 
   * Added .gp "terminal" to create self-plotting gnuplot files
