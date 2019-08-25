@@ -702,7 +702,7 @@ all 3 axes
 
 =item
 
-C<--square_xy>
+C<--square-xy>
 
 For 3D plots, set square aspect ratio for ONLY the x,y axes
 
