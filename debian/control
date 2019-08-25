@@ -3,7 +3,7 @@ Section: science
 Priority: optional
 Build-Depends: debhelper (>= 9), libstring-shellquote-perl, perl, gawk, gnuplot, libipc-run-perl
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
-Uploaders: Dima Kogan <dima@secretsauce.net>
+Uploaders: Dima Kogan <dkogan@debian.org>
 Standards-Version: 3.9.4
 Homepage: https://github.com/dkogan/feedgnuplot
 Vcs-Browser: https://salsa.debian.org/science-team/feedgnuplot
