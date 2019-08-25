@@ -10,11 +10,4 @@ Without a package, an installation can be done with
          make
          make install
 
-This installs feedgnuplot to /usr/local. Adjust the paths as required.
-
-Also, note that this is a self-contained utility. Usually running from the tree
-works just fine:
-
-         git clone https://github.com/dkogan/feedgnuplot.git
-         cd feedgnuplot/bin
-         ./feedgnuplot ...
+This installs feedgnuplot to /usr/local. Adjust the paths as required
