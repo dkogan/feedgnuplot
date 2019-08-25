@@ -1,9 +1,14 @@
-feedgnuplot (1.51-2) UNRELEASED; urgency=medium
+feedgnuplot (1.52-1) unstable; urgency=medium
 
+  [ Jelmer Vernooĳ ]
   * Use secure copyright file specification URI.
   * Trim trailing whitespace.
 
- -- Jelmer Vernooĳ <jelmer@debian.org>  Sat, 20 Oct 2018 20:50:26 +0000
+  [ Dima Kogan ]
+  * New upstream release
+    - --square-xy and --squarexy as synonyms for --square_xy
+
+ -- Dima Kogan <dkogan@debian.org>  Sun, 25 Aug 2019 15:34:56 -0700
 
 feedgnuplot (1.51-1) unstable; urgency=medium
 
