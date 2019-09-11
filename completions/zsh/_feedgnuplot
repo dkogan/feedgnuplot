@@ -13,7 +13,6 @@ _arguments -S                                                                   
     '--ylabel:Y-axis label:'                                                      \
     '--y2label:Y2-axis label:'                                                    \
     '--zlabel:Z-axis label:'                                                      \
-    '--zlabel:Z-axis label:'                                                      \
     '--title:Plot title:'                                                         \
     '--autolegend[Label each plot with its data ID]'                              \
     '(--3d)--xlen[the size of the x-window to plot]:window size:'                 \
@@ -42,6 +41,8 @@ _arguments -S                                                                   
     '(--rangesizeall)--extraValuesPerPoint[How many extra values are given for each data range]:N'\
     '(--extraValuesPerPoint)--rangesizeall[How many values are given for each data range]:N'\
     '*--rangesize[How many values comprise a data range in this curve]:curve id: :N:' \
+    '(--extraValuesPerPoint)--tuplesizeall[How many values are given for each data tuple]:N'\
+    '*--tuplesize[How many values comprise a data tuple in this curve]:curve id: :N:' \
     '--dump[Instead of printing to gnuplot, print to STDOUT]'                     \
     '--geometry[The X11 geometry string]:geometry string:'                        \
     '*--curvestyle[Additional styles for a curve]:curve id: :style:'              \
@@ -54,4 +55,5 @@ _arguments -S                                                                   
     '--exit[Exit gnuplot after making the plot]'                                  \
     '--version'                                                                   \
     '--help'                                                                      \
-    '--timefmt[Format for time/date data]:time format'
+    '--timefmt[Format for time/date data]:time format'                            \
+    '--vnlog[column IDs come from a vnlog header]'

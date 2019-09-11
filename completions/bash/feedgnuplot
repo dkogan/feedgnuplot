@@ -17,6 +17,8 @@ complete -W               \
     --extraValuesPerPoint \
     --rangesizeall        \
     --rangesize           \
+    --tuplesizeall        \
+    --tuplesize           \
     --extracmds           \
     --set                 \
     --unset               \
@@ -52,4 +54,5 @@ complete -W               \
     --ymin                \
     --zlabel              \
     --zmax                \
-    --zmin' feedgnuplot
+    --zmin                \
+    --vnlog ' feedgnuplot
