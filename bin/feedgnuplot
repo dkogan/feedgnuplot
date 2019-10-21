@@ -1188,10 +1188,7 @@ sub getCurve
 
   if( !exists $curveFromID{$id} )
   {
-    my $curve = {# if we have a catch-all style and no specific style, use
-                 # the catch-all style
-                 extraoptions      => (!exists $options{curvestyle_hash}{$id} &&
-                                        exists $options{curvestyleall}) ?
+    my $curve = {extraoptions      => ( exists $options{curvestyleall}) ?
                                       "$options{curvestyleall} " : ' ',
                  everyoptions      => (!exists $options{every_hash}{$id} &&
                                         exists $options{everyall}) ?
