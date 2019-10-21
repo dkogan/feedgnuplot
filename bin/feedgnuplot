@@ -1188,20 +1188,21 @@ sub getCurve
 
   if( !exists $curveFromID{$id} )
   {
-    push @curves, {# if we have a catch-all style and no specific style, use
-                   # the catch-all style
-                   extraoptions      => (!exists $options{curvestyle_hash}{$id} &&
-                                          exists $options{curvestyleall}) ?
-                                        "$options{curvestyleall} " : ' ',
-                   everyoptions      => (!exists $options{every_hash}{$id} &&
-                                          exists $options{everyall}) ?
-                                        "every $options{everyall} " : ' ',
-                   datastring        => '',
-                   datastring_meta   => [],
-                   datastring_offset => 0}; # push a curve with no data and no options
-    $curveFromID{$id} =  $curves[-1];
+    my $curve = {# if we have a catch-all style and no specific style, use
+                 # the catch-all style
+                 extraoptions      => (!exists $options{curvestyle_hash}{$id} &&
+                                        exists $options{curvestyleall}) ?
+                                      "$options{curvestyleall} " : ' ',
+                 everyoptions      => (!exists $options{every_hash}{$id} &&
+                                        exists $options{everyall}) ?
+                                      "every $options{everyall} " : ' ',
+                 datastring        => '',
+                 datastring_meta   => [],
+                 datastring_offset => 0}; # push a curve with no data and no options
+    push @curves, $curve; # push a curve with no data and no options
+    $curveFromID{$id} = $curve;
 
-    updateCurveOptions($curves[-1], $id);
+    updateCurveOptions($curve, $id);
 
 
     # --xlen has a meaning if we're not plotting histograms at all or if we're
@@ -1219,7 +1220,7 @@ sub getCurve
         exit -1;
     }
 
-    return $curves[-1];
+    return $curve;
   }
 
   return $curveFromID{$id};
