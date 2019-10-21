@@ -31,8 +31,8 @@ interpretCommandline();
 # datastring
 my @curves = ();
 
-# list mapping curve names to their indices in the @curves list
-my %curveIndices = ();
+# Maps a curve ID to the corresponding curve
+my %curveFromID = ();
 
 # Whether any new data has arrived since the last replot
 my $haveNewData;
@@ -1186,7 +1186,7 @@ sub getCurve
 
   my ($id) = @_;
 
-  if( !exists $curveIndices{$id} )
+  if( !exists $curveFromID{$id} )
   {
     push @curves, {# if we have a catch-all style and no specific style, use
                    # the catch-all style
@@ -1199,9 +1199,9 @@ sub getCurve
                    datastring        => '',
                    datastring_meta   => [],
                    datastring_offset => 0}; # push a curve with no data and no options
-    $curveIndices{$id} =  $#curves;
+    $curveFromID{$id} =  $curves[-1];
 
-    updateCurveOptions($curves[$#curves], $id);
+    updateCurveOptions($curves[-1], $id);
 
 
     # --xlen has a meaning if we're not plotting histograms at all or if we're
@@ -1218,8 +1218,11 @@ sub getCurve
         print STDERR "--xlen only makes sense when plotting ONLY histograms or ONLY NON-histograms\n";
         exit -1;
     }
+
+    return $curves[-1];
   }
-  return $curves[$curveIndices{$id}];
+
+  return $curveFromID{$id};
 }
 
 sub addCurveOption
