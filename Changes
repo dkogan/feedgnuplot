@@ -1,3 +1,9 @@
+feedgnuplot (1.53)
+
+  * Full support for all 4 axes. Added --x2...
+
+ -- Dima Kogan <dkogan@debian.org>  Wed, 08 Jan 2020 18:55:29 -0800
+
 feedgnuplot (1.52)
 
   * Added --squarexy and --square-xy as synonyms to --square_xy
