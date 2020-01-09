@@ -62,6 +62,7 @@ Simple plotting of piped data:
    2 +-----------------------------------------------------------------+ 0
      1      1.5       2      2.5      3      3.5       4      4.5      5
 
+Here we asked for ASCII plotting, which is useful for documentation.
 
 Simple real-time plotting example: plot how much data is received on the wlan0
 network interface in bytes/second (uses bash, awk and Linux):
@@ -524,10 +525,10 @@ plot I<only> histograms or I<only> I<non>-histograms.
 
 =item
 
-C<--xmin/xmax/ymin/ymax/y2min/y2max/zmin/zmax xxx>
+C<--xmin/xmax/x2min/x2max/ymin/ymax/y2min/y2max/zmin/zmax xxx>
 
 Set the range for the given axis. These x-axis bounds are ignored in a streaming
-plot. The y2-axis bound do not apply in 3d plots. The z-axis bounds apply
+plot. The x2/y2-axis bounds do not apply in 3d plots. The z-axis bounds apply
 I<only> to 3d plots or colormaps. Note that there is no C<--xrange> to set both
 sides at once or C<--xinv> to flip the axis around: anything more than the
 basics supported in this option is clearly obtainable by talking to gnuplot, for
@@ -535,23 +536,29 @@ instance C<--set 'xrange [20:10]'> to set the given inverted bounds.
 
 =item
 
-C<--xlabel/ylabel/y2label/zlabel xxx>
+C<--xlabel/x2label/ylabel/y2label/zlabel xxx>
 
-Label the given axis. The y2-axis label does not apply to 3d plots while the
+Label the given axis. The x2/y2-axis labels do not apply to 3d plots while the
 z-axis label applies I<only> to 3d plots.
 
 =item
 
-C<--y2 xxx>
+C<--x2/--y2/--x1y2/--x2y1/--x2y2 xxx>
 
-Plot the data specified by this curve ID on the y2 axis. Without C<--dataid>,
-the ID is just an ordered 0-based index. Does not apply to 3d plots. Can be
-passed multiple times, or passed a comma-separated list. By default the y2-axis
-curves look the same as the y-axis ones. I.e. the viewer of the resulting plot
-has to be told which is which via an axes label, legend, etc. Prior to version
-1.25 of feedgnuplot the curves plotted on the y2 axis were drawn with a thicker
-line. This is no longer the case, but that behavior can be brought back by
-passing something like
+By default data is plotted against the x1 and y1 axes (the left and bottom one
+respectively). If we want a particular curve plotted against a different axis,
+we can specify that with these options. You pass C<--AXIS ID> where C<AXIS>
+defines the axis (C<x2> or C<y2> or C<x1y2> or C<x2y1> or C<x2y2>) and the C<ID>
+is the curve ID. C<--x2> is a synonym for C<--x2y1> and C<--y2> is a synonym for
+C<--x1y2>. The curve ID is an ordered 0-based index or a specific ID if
+C<--dataid> or C<--vnlog>. None of these apply to 3d plots. Can be passed
+multiple times for different curve IDs, multiple IDs can be passed in as a
+comma-separated list. By default the curves plotted against the various axes
+aren not drawn in any differentiated way: the viewer of the resulting plot has
+to be told which is which via an axes label, legend, colors, etc. Prior to
+version 1.25 of C<feedgnuplot> the curves plotted on the y2 axis were drawn with
+a thicker line. This is no longer the case, but that behavior can be brought
+back by passing something like
 
  --y2 curveid --style curveid 'linewidth 3'
 
