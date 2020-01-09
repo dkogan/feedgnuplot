@@ -10,22 +10,28 @@ _arguments -S                                                                   
     '--points'                                                                    \
     '--circles'                                                                   \
     '--xlabel:X-axis label:'                                                      \
+    '--x2label:X2-axis label:'                                                    \
     '--ylabel:Y-axis label:'                                                      \
     '--y2label:Y2-axis label:'                                                    \
-    '--zlabel:Z-axis label:'                                                      \
     '--zlabel:Z-axis label:'                                                      \
     '--title:Plot title:'                                                         \
     '--autolegend[Label each plot with its data ID]'                              \
     '(--3d)--xlen[the size of the x-window to plot]:window size:'                 \
     '(--xlen)--xmin:min X:'                                                       \
     '(--xlen)--xmax:max X:'                                                       \
+    '--x2min:min X2:'                                                             \
+    '--x2max:max X2:'                                                             \
     '--ymin:min Y:'                                                               \
     '--ymax:max Y:'                                                               \
     '--y2min:min Y2:'                                                             \
     '--y2max:max Y2:'                                                             \
     '--zmin:min Z:'                                                               \
     '--zmax:max Z:'                                                               \
-    '*--y2:plot to place on the Y2 axis:'                                         \
+    '*--x2:curve to place on the X2Y1 axis:'                                      \
+    '*--y2:curve to place on the X1Y2 axis:'                                      \
+    '*--x2y1:curve to place on the X2Y1 axis:'                                    \
+    '*--x1y2:curve to place on the X1Y2 axis:'                                    \
+    '*--x2y2:curve to place on the X2Y2 axis:'                                    \
     '(--with)--curvestyleall[Additional styles for ALL curves]:style'             \
     '(--with)--styleall[Additional styles for ALL curves]:style'                  \
     '(--curvestyleall)--with[Additional styles for ALL curves]:style'             \
@@ -42,6 +48,8 @@ _arguments -S                                                                   
     '(--rangesizeall)--extraValuesPerPoint[How many extra values are given for each data range]:N'\
     '(--extraValuesPerPoint)--rangesizeall[How many values are given for each data range]:N'\
     '*--rangesize[How many values comprise a data range in this curve]:curve id: :N:' \
+    '(--extraValuesPerPoint)--tuplesizeall[How many values are given for each data tuple]:N'\
+    '*--tuplesize[How many values comprise a data tuple in this curve]:curve id: :N:' \
     '--dump[Instead of printing to gnuplot, print to STDOUT]'                     \
     '--geometry[The X11 geometry string]:geometry string:'                        \
     '*--curvestyle[Additional styles for a curve]:curve id: :style:'              \
@@ -54,4 +62,5 @@ _arguments -S                                                                   
     '--exit[Exit gnuplot after making the plot]'                                  \
     '--version'                                                                   \
     '--help'                                                                      \
-    '--timefmt[Format for time/date data]:time format'
+    '--timefmt[Format for time/date data]:time format'                            \
+    '--vnlog[column IDs come from a vnlog header]'

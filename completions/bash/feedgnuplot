@@ -17,6 +17,8 @@ complete -W               \
     --extraValuesPerPoint \
     --rangesizeall        \
     --rangesize           \
+    --tuplesizeall        \
+    --tuplesize           \
     --extracmds           \
     --set                 \
     --unset               \
@@ -39,17 +41,25 @@ complete -W               \
     --timefmt             \
     --title               \
     --version             \
+    --x2                  \
+    --y2                  \
+    --x2y1                \
+    --x1y2                \
+    --x2y2                \
     --xlabel              \
     --xlen                \
     --xmax                \
     --xmin                \
-    --y2                  \
-    --y2label             \
-    --y2max               \
-    --y2min               \
+    --x2label             \
+    --x2max               \
+    --x2min               \
     --ylabel              \
     --ymax                \
     --ymin                \
+    --y2label             \
+    --y2max               \
+    --y2min               \
     --zlabel              \
     --zmax                \
-    --zmin' feedgnuplot
+    --zmin                \
+    --vnlog ' feedgnuplot
