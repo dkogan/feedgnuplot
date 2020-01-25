@@ -90,6 +90,7 @@ sub interpretCommandline
   $options{legend}     = [];
   $options{curvestyle} = [];
   $options{style}      = [];
+  $options{every}      = [];
   $options{histogram}  = [];
   $options{x1y2}       = [];
   $options{x2y1}       = [];
@@ -114,6 +115,7 @@ sub interpretCommandline
              'zmin=f', 'zmax=f',
              'x2=s@', 'y2=s@', 'x1y2=s@', 'x2y1=s@', 'x2y2=s@',
              'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
+             'every=s{2}', 'everyall=s',
              'square!', 'square_xy!', 'square-xy!', 'squarexy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'equation=s@',
              'image=s',
@@ -178,7 +180,7 @@ sub interpretCommandline
     @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
       if defined $options{$listkey};
   }
-  for my $listkey (qw(curvestyle rangesize tuplesize))
+  for my $listkey (qw(curvestyle rangesize tuplesize every))
   {
       next unless defined $options{$listkey};
       my @in = @{$options{$listkey}};
@@ -253,7 +255,7 @@ sub interpretCommandline
   # arrays in order to preserve the ordering. I parse both of these into hashes
   # because those are useful to have later. After this I can access individual
   # legends with $options{legend_hash}{curveid}
-  for my $listkey (qw(legend curvestyle rangesize))
+  for my $listkey (qw(legend curvestyle rangesize every))
   {
     $options{"${listkey}_hash"} = {};
 
@@ -812,6 +814,17 @@ sub mainThread
                        $options{curvestyle}[$idx*2 + 1]);
       }
     }
+    if(@{$options{every}})
+    {
+      # @{$options{every}} is a list where consecutive pairs are (curveID,
+      # every).
+      my $n = scalar @{$options{every}}/2;
+      foreach my $idx (0..$n-1)
+      {
+        addEveryOption($options{every}[$idx*2    ],
+                       $options{every}[$idx*2 + 1]);
+      }
+    }
 
     addCurveOption($_, 'axes x1y2') foreach (@{$options{x1y2}});
     addCurveOption($_, 'axes x2y1') foreach (@{$options{x2y1}});
@@ -1156,7 +1169,7 @@ sub updateCurveOptions
   }
 
 
-  $curve->{options} = "$histoptions $usingoptions $titleoption $curve->{extraoptions}";
+  $curve->{options} = "$curve->{everyoptions} $histoptions $usingoptions $titleoption $curve->{extraoptions}";
 }
 
 sub getCurve
@@ -1180,6 +1193,9 @@ sub getCurve
                    extraoptions      => (!exists $options{curvestyle_hash}{$id} &&
                                           exists $options{curvestyleall}) ?
                                         "$options{curvestyleall} " : ' ',
+                   everyoptions      => (!exists $options{every_hash}{$id} &&
+                                          exists $options{everyall}) ?
+                                        "every $options{everyall} " : ' ',
                    datastring        => '',
                    datastring_meta   => [],
                    datastring_offset => 0}; # push a curve with no data and no options
@@ -1212,6 +1228,14 @@ sub addCurveOption
 
   my $curve = getCurve($id);
   $curve->{extraoptions} .= "$str ";
+  updateCurveOptions($curve, $id);
+}
+sub addEveryOption
+{
+  my ($id, $str) = @_;
+
+  my $curve = getCurve($id);
+  $curve->{everyoptions} .= "every $str ";
   updateCurveOptions($curve, $id);
 }
 
