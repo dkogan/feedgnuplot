@@ -1,3 +1,11 @@
+feedgnuplot (1.54-1) unstable; urgency=medium
+
+  * New upstream release
+    - Added --every and --everyall to decimate the input data
+    - --timefmt can be used with --histogram
+
+ -- Dima Kogan <dkogan@debian.org>  Fri, 17 Apr 2020 14:21:07 -0700
+
 feedgnuplot (1.53-1) unstable; urgency=medium
 
   * New upstream release
