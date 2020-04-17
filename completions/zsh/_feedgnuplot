@@ -54,6 +54,8 @@ _arguments -S                                                                   
     '--geometry[The X11 geometry string]:geometry string:'                        \
     '*--curvestyle[Additional styles for a curve]:curve id: :style:'              \
     '*--style[Additional styles for a curve]:curve id: :style:'                   \
+    '*--every[Decimation factor for a curve]:curve id: :decimation factor:'       \
+    '--everyall[Decimation factor for ALL curves]:decimation factor'              \
     '(--3d)*--histogram:plot to treat as a histogram:'                            \
     '--binwidth:Histogram bin width:'                                             \
     '--histstyle:Style of histogram:(frequency fnormal unique cumulative cnormal)' \
