@@ -397,9 +397,9 @@ sub interpretCommandline
   }
   else
   {
-    if ( $options{timefmt} && !$options{domain} )
+    if ( $options{timefmt} && !$options{domain} && !@{$options{histogram}} )
     {
-      print STDERR "--timefmt makes sense only with --domain\n";
+      print STDERR "--timefmt makes sense only with --domain or --histogram\n";
       exit -1;
     }
 
@@ -1002,8 +1002,8 @@ sub mainThread
       }
       else
       {
-        $domain[0] = $line_number;
-        $domain0_numeric = makeDomainNumeric( $domain[0] );
+        $domain[0]       = $line_number;
+        $domain0_numeric = $line_number;
       }
 
       my $id = -1;
@@ -1156,7 +1156,7 @@ sub updateCurveOptions
   my $histoptions = $curve->{histoptions} || '';
 
   my $usingoptions = '';
-  if( $options{timefmt} )
+  if( $options{timefmt} && !$histoptions )
   {
       # with --timefmt I need an explicit 'using' specification. I specify the
       # columns as 1:2:3..... I need the right number of columns (this is given
