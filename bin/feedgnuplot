@@ -1994,6 +1994,21 @@ Exclusive with C<--styleall>.
 
 =item
 
+C<--every curveID factor>
+
+Decimates the input. Instead of plotting every point in the given curve, plot
+one point per factor. This is useful to quickly process huge datasets. For
+instance, to plot 1% of the data, pass a factor of 100.
+
+=item
+
+C<--everyallID factor>
+
+Decimates the input. This works exactly like C<--every>, except it applies to
+I<all> the curves.
+
+=item
+
 C<--extracmds xxx>
 
 Additional commands to pass on to gnuplot verbatim. These could contain extra
