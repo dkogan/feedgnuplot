@@ -9,6 +9,8 @@ complete -W               \
     --curvestyleall       \
     --style               \
     --styleall            \
+    --every               \
+    --everyall            \
     --with                \
     --dataid              \
     --domain              \
