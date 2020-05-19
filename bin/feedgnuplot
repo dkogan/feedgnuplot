@@ -2247,7 +2247,9 @@ also.
 C<--geometry>
 
 Specifies the size, position of the plot window. This applies I<only> to the
-C<x11> gnuplot terminal, and has no effect otherwise.
+C<x11> gnuplot terminal, and has no effect otherwise. To control the window size
+for any other terminal, ask for the terminal explicitly, with the options
+specifying the size. For instance C<--terminal 'qt size 1024,768'>
 
 =item
 
