@@ -2246,7 +2246,8 @@ also.
 
 C<--geometry>
 
-If using X11, specifies the size, position of the plot window
+Specifies the size, position of the plot window. This applies I<only> to the
+C<x11> gnuplot terminal, and has no effect otherwise.
 
 =item
 
