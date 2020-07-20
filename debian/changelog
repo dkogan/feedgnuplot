@@ -1,3 +1,10 @@
+feedgnuplot (1.55-1) unstable; urgency=medium
+
+  * New upstream release
+    - Fixed regression in 1.54: --style overrides --with
+
+ -- Dima Kogan <dkogan@debian.org>  Mon, 20 Jul 2020 15:55:13 -0700
+
 feedgnuplot (1.54-1) unstable; urgency=medium
 
   * New upstream release
