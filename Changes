@@ -1,3 +1,10 @@
+feedgnuplot (1.55)
+
+  * Fixed regression introduced in 1.54:
+    --style now correctly overrides --with
+
+ -- Dima Kogan <dkogan@debian.org>  Mon, 20 Jul 2020 15:51:23 -0700
+
 feedgnuplot (1.54)
 
   * Added --every and --everyall to decimate the input data

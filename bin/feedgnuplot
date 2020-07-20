@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.54';
+my $VERSION = '1.55';
 
 my %options;
 interpretCommandline();
@@ -1188,7 +1188,10 @@ sub getCurve
 
   if( !exists $curveFromID{$id} )
   {
-    my $curve = {extraoptions      => ( exists $options{curvestyleall}) ?
+    my $curve = {# if we have a catch-all style and no specific style, use
+                 # the catch-all style
+                 extraoptions      => (!exists $options{curvestyle_hash}{$id} &&
+                                        exists $options{curvestyleall}) ?
                                       "$options{curvestyleall} " : ' ',
                  everyoptions      => (!exists $options{every_hash}{$id} &&
                                         exists $options{everyall}) ?
@@ -2246,7 +2249,10 @@ also.
 
 C<--geometry>
 
-If using X11, specifies the size, position of the plot window
+Specifies the size, position of the plot window. This applies I<only> to the
+C<x11> gnuplot terminal, and has no effect otherwise. To control the window size
+for any other terminal, ask for the terminal explicitly, with the options
+specifying the size. For instance C<--terminal 'qt size 1024,768'>
 
 =item
 
