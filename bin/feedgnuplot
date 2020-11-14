@@ -2309,7 +2309,7 @@ in a Thinkpad.
 
 =head2 Plotting a live histogram of the ping round-trip times for the past 20 seconds
 
- $ ping -A -D 8.8.8.8 |
+ $ ping -D 8.8.8.8 |
    perl -anE 'BEGIN { $| = 1; }
               $F[0] =~ s/[\[\]]//g or next;
               $F[7] =~ s/.*=//g    or next;
