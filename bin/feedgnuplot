@@ -2005,7 +2005,7 @@ instance, to plot 1% of the data, pass a factor of 100.
 
 =item
 
-C<--everyallID factor>
+C<--everyall factor>
 
 Decimates the input. This works exactly like C<--every>, except it applies to
 I<all> the curves.
