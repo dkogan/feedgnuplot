@@ -1,3 +1,9 @@
+feedgnuplot (1.56) unstable; urgency=medium
+
+  * Updated default hardcopy settings
+
+ -- Dima Kogan <dkogan@debian.org>  Wed, 03 Feb 2021 14:42:15 -0800
+
 feedgnuplot (1.55)
 
   * Fixed regression introduced in 1.54:
