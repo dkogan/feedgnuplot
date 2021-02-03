@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.55';
+my $VERSION = '1.56';
 
 my %options;
 interpretCommandline();
@@ -649,11 +649,11 @@ sub mainThread
       }
 
       my %terminalOpts =
-      ( eps  => 'postscript noenhanced solid color enhanced eps',
+      ( eps  => 'postscript noenhanced solid color eps',
         ps   => 'postscript noenhanced solid color landscape 12',
-        pdf  => 'pdfcairo noenhanced solid color font ",12" size 11in,8.5in',
-        png  => 'png noenhanced size 1280,1024',
-        svg  => 'svg noenhanced',
+        pdf  => 'pdfcairo noenhanced solid color font ",12" size 8in,6in',
+        png  => 'pngcairo noenhanced size 1024,768 transparent crop font ",12"',
+        svg  => 'svg noenhanced solid dynamic size 800,600 font ",14"',
         gp   => 'gp');
 
       if( !defined $options{terminal} &&
@@ -2005,7 +2005,7 @@ instance, to plot 1% of the data, pass a factor of 100.
 
 =item
 
-C<--everyallID factor>
+C<--everyall factor>
 
 Decimates the input. This works exactly like C<--every>, except it applies to
 I<all> the curves.
@@ -2309,7 +2309,7 @@ in a Thinkpad.
 
 =head2 Plotting a live histogram of the ping round-trip times for the past 20 seconds
 
- $ ping -A -D 8.8.8.8 |
+ $ ping -D 8.8.8.8 |
    perl -anE 'BEGIN { $| = 1; }
               $F[0] =~ s/[\[\]]//g or next;
               $F[7] =~ s/.*=//g    or next;
