@@ -1,3 +1,10 @@
+feedgnuplot (1.56-1) unstable; urgency=medium
+
+  * New upstream release
+    - Updated default hardcopy settings
+
+ -- Dima Kogan <dkogan@debian.org>  Wed, 03 Feb 2021 14:44:44 -0800
+
 feedgnuplot (1.55-1) unstable; urgency=medium
 
   * New upstream release
