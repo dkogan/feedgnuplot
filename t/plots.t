@@ -322,7 +322,7 @@ sub readfile
 {
     my $path = $_[0];
 
-    open my $fd, '<', $path or die "Couldn't open '$path'";
+    open my $fd, '<', $path or return '';
     local $/ = undef;
     my $dat = <$fd>;
     close $fd;
