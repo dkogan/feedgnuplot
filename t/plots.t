@@ -39,7 +39,7 @@ BEGIN {
   }
 }
 
-use Test::More tests => 58;
+use Test::More tests => 60;
 use File::Temp 'tempfile';
 use IPC::Run 'run';
 use String::ShellQuote;
@@ -163,6 +163,11 @@ tryplot( testname => 'Error bars (using rangesizeall)',
                       qw(--rangesizeall 2 --with errorbars)],
          refplot  => 'error-bars-using-rangesizeall.ref' );
 
+tryplot( testname => 'Error bars (using tuplesize)',
+         cmd      => q{seq 5 | gawk '{print $1,$1,$1/10}'},
+         options  => [qw(--domain),
+                      qw(--tuplesizeall 3 --with errorbars)],
+         refplot  => 'error-bars-using-tuplesize.ref' );
 
 tryplot( testname => 'Error bars (using rangesize, rangesizeall)',
          cmd      => q{seq 5 | gawk '{print $1,"vert",$1,$1/10,"horiz",5-$1,$1-$1/5,$1+$1/20}'},
@@ -170,6 +175,13 @@ tryplot( testname => 'Error bars (using rangesize, rangesizeall)',
                       qw(--rangesize vert 2 --rangesizeall 3 --with xerrorbars --style vert), 'with errorbars',
                       qw(--xmin 1 --xmax 5 --ymin 0.5 --ymax 5.5)],
          refplot  => 'error-bars-using-rangesize-rangesizeall.ref' );
+
+tryplot( testname => 'Error bars (using tuplesize, tuplesizeall)',
+         cmd      => q{seq 5 | gawk '{print $1,"vert",$1,$1/10,"horiz",5-$1,$1-$1/5,$1+$1/20}'},
+         options  => [qw(--domain --dataid),
+                      qw(--tuplesize vert 3 --tuplesizeall 4 --with xerrorbars --style vert), 'with errorbars',
+                      qw(--xmin 1 --xmax 5 --ymin 0.5 --ymax 5.5)],
+         refplot  => 'error-bars-using-tuplesize-tuplesizeall.ref' );
 
 
 SKIP:
