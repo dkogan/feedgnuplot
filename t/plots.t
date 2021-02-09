@@ -183,6 +183,44 @@ tryplot( testname => 'Error bars (using tuplesize, tuplesizeall)',
                       qw(--xmin 1 --xmax 5 --ymin 0.5 --ymax 5.5)],
          refplot  => 'error-bars-using-tuplesize-tuplesizeall.ref' );
 
+tryplot( testname => 'timefmt without vnl',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--lines --points --domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"'],
+         refplot  => 'timefmt-without-vnl.ref' );
+
+tryplot( testname => 'timefmt without vnl with style 0 default 1',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"',
+                      '--style', '0', 'with lines lt 7'],
+         refplot  => 'timefmt-without-vnl-with-style0-default1.ref' );
+
+tryplot( testname => 'timefmt without vnl with style',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"',
+                      '--style', '0', 'with lines lt 7',
+                      '--style', '1', 'with lines lt 5' ],
+         refplot  => 'timefmt-without-vnl-with-style.ref' );
+
+tryplot( testname => 'timefmt with vnl with style 0 default 1',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"',
+                      '--vnl',
+                      '--style', 'a', 'with lines lt 7'],
+         refplot  => 'timefmt-with-vnl-with-style0-default1.ref' );
+
+tryplot( testname => 'timefmt with vnl with style',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"',
+                      '--vnl',
+                      '--style', 'a', 'with lines lt 7',
+                      '--style', 'b', 'with lines lt 5' ],
+         refplot  => 'timefmt-with-vnl-with-style.ref' );
+
 
 SKIP:
 {
