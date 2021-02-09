@@ -45,7 +45,6 @@ use IPC::Run 'run';
 use String::ShellQuote;
 use FindBin qw($Bin);
 
-
 tryplot( testname => 'basic line plot',
          cmd      => 'seq 5',
          options  => [qw(--lines --points)],
@@ -276,6 +275,9 @@ sub tryplot
   # Ignore any screen refresh characters gnuplot may be outputting
   $out =~ s/\s*\n//g;
 
+  # Don't complain about mismatched benign warnings
+  $err =~ s/^.*?warning: empty [xy] range.*?$\\n//gmi;
+
   my $refplot_filename = "$Bin/$args{refplot}";
   my $refplot_data     = readfile($refplot_filename);
 
@@ -300,8 +302,8 @@ sub tryplot
               print("Overwrote '$refplot_filename'\n");
           }
       }
+      print("\n\n");
   }
-  print("\n\n");
 }
 
 sub readfile
