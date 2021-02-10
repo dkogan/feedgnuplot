@@ -1034,11 +1034,20 @@ sub mainThread
           my $rangesize = getRangeSize($id);
           last if @fields < $rangesize;
 
-          pushPoint(getCurve($id),
-                    join(' ',
-                         @domain,
-                         splice( @fields, 0, $rangesize ) ) . "\n",
-                    $domain0_numeric);
+
+          # Done. The curve is created. I add a point to the plot.
+          my $curve = getCurve($id);
+
+          push @{$curve->{datastring_meta}},
+          { offset_start => length( $curve->{datastring} ) +
+                            $curve->{datastring_offset},
+            domain       => $domain0_numeric };
+          $curve->{datastring} .=
+            join(' ',
+                 @domain,
+                 splice( @fields, 0, $rangesize ) ) . "\n";
+          $haveNewData = 1;
+
 
           $i_column += $rangesize;
       }
@@ -1344,18 +1353,6 @@ sub replot
     $last_replot_time          = $now;
     $last_replot_is_from_timer = $this_replot_is_from_timer;
   }
-}
-
-# function to add a point to the plot. Assumes that the curve indexed by $idx already exists
-sub pushPoint
-{
-  my ($curve, $datastring, $domain0_numeric) = @_;
-
-  push @{$curve->{datastring_meta}}, { offset_start => length( $curve->{datastring} ) + $curve->{datastring_offset},
-                                       domain       => $domain0_numeric };
-  $curve->{datastring} .= $datastring;
-
-  $haveNewData = 1;
 }
 
 
