@@ -107,8 +107,10 @@ sub interpretCommandline
   $options{rangesize} = [];
   $options{tuplesize} = [];
 
-  GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', 'vnlog!', '3d!', 'colormap!', 'lines!', 'points!',
-             'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'x2label=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
+  GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', 'vnlog!',
+             '3d!', 'colormap!', 'lines!', 'points!', 'circles',
+             'legend=s{2}', 'autolegend!',
+             'xlabel=s', 'x2label=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f',
              'xmin=s', 'xmax=s', 'x2min=s', 'x2max=s',
              'ymin=f', 'ymax=f', 'y2min=f', 'y2max=f',
