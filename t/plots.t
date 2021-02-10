@@ -39,7 +39,7 @@ BEGIN {
   }
 }
 
-use Test::More tests => 60;
+use Test::More tests => 82;
 use File::Temp 'tempfile';
 use IPC::Run 'run';
 use String::ShellQuote;
@@ -221,6 +221,63 @@ tryplot( testname => 'timefmt with vnl with style',
                       '--style', 'b', 'with lines lt 5' ],
          refplot  => 'timefmt-with-vnl-with-style.ref' );
 
+my $data_xticlabels = <<EOF;
+# x label a b
+ 5  aaa   2 1
+ 6  bbb   3 2
+10  ccc   5 4
+11  ddd   2 1
+EOF
+
+tryplot( testname => 'basic xticlabels no domain',
+         cmd      => qq{echo "$data_xticlabels" | vnl-filter -p label,a,b},
+         options  => ['--vnl',
+                      '--xticlabels',
+                      '--with', 'boxes fill solid border lt -1',
+                      '--ymin', '0'],
+         refplot  => 'basic-xticlabels-no-domain.ref' );
+
+tryplot( testname => 'basic xticlabels domain',
+         cmd      => qq{echo "$data_xticlabels"},
+         options  => [qw(--vnl --domain),
+                      '--xticlabels',
+                      '--with', 'boxes fill solid border lt -1',
+                      '--ymin', '0'],
+         refplot  => 'basic-xticlabels-domain.ref' );
+
+tryplot( testname => 'xticlabels clustered',
+         cmd      => qq{echo "$data_xticlabels" | vnl-filter -p label,a,b},
+         options  => [qw(--vnl),
+                      '--xticlabels',
+                      '--set', 'style data histogram',
+                      '--set', 'style histogram cluster gap 2',
+                      '--set', 'style fill solid border lt -1',
+                      '--ymin', '0'],
+         refplot  => 'xticlabels-clustered.ref' );
+
+tryplot( testname => 'xticlabels styles',
+         cmd      => qq{echo "$data_xticlabels"},
+         options  => [qw(--vnl --domain),
+                      '--xticlabels',
+                      '--style', 'a', 'with points',
+                      '--style', 'b', 'with lines',
+                      '--xmin', '4.5',
+                      '--xmax', '11.5',
+                      '--ymin', '0',
+                      '--ymax', '6'],
+         refplot  => 'xticlabels-styles.ref' );
+
+tryplot( testname => 'xticlabels styles with tuplesize',
+         cmd      => qq{echo "$data_xticlabels"},
+         options  => [qw(--vnl --domain),
+                      '--xticlabels',
+                      '--tuplesizeall', '3',
+                      '--with', 'linespoints pt variable',
+                      '--xmin', '4.5',
+                      '--xmax', '11.5',
+                      '--ymin', '0',
+                      '--ymax', '6'],
+         refplot  => 'xticlabels-styles-with-tuplesize.ref' );
 
 SKIP:
 {
