@@ -107,7 +107,8 @@ sub interpretCommandline
   $options{rangesize} = [];
   $options{tuplesize} = [];
 
-  GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', 'vnlog!',
+  GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', 'vnlog!', 'xticlabels!',
+
              '3d!', 'colormap!', 'lines!', 'points!', 'circles',
              'legend=s{2}', 'autolegend!',
              'xlabel=s', 'x2label=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
@@ -876,12 +877,6 @@ sub mainThread
 
 
 
-    # latest domain variable present in our data
-    my $latestX;
-
-    # The domain of the current point
-    my @domain;
-
     # column headers from vnlog
     my @vnlog_headers;
     if($options{vnlog})
@@ -944,14 +939,29 @@ sub mainThread
       }
 
       # parse the incoming data lines. The format is
-      # x id0 dat0 id1 dat1 ....
+      # x xticlabels id0 dat0 id1 dat1 ....
       # where idX is the ID of the curve that datX corresponds to
       #
-      # $options{domain} indicates whether the initial 'x' is given or not (if not, the line
-      # number is used)
-      # $options{dataid} indicates whether idX is given or not (if not, the point order in the
-      # line is used)
-      # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
+      # - $options{domain} indicates whether the initial 'x' is given or not (if not, the line
+      #   number is used)
+      #
+      # - $options{xticlabels} indicates whether the 'xticlabels' is given or not
+      #
+      # - $options{dataid} indicates whether idX is given or not (if not, the point order in the
+      #   line is used)
+      #
+      # - 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
+
+      # latest domain variable present in our data
+      my $latestX;
+
+      # The domain of the current point
+      my @domain;
+
+      # The x-axis tic label for this point. Used only if --xticlabels
+      my $xticlabel = '';
+
+
 
       my @fields = split;
       my $i_column = 0;
@@ -1008,6 +1018,17 @@ sub mainThread
         $domain0_numeric = $line_number;
       }
 
+      if ($options{xticlabels})
+      {
+          # no point in doing anything unless I have at least the xticlabel
+          # and 1 piece of data
+          next if @fields < 1+1;
+
+          $xticlabel = '"' . (shift @fields) . '"';
+          $i_column += 1;
+      }
+
+
       my $id = -1;
       while(@fields)
       {
@@ -1045,6 +1066,7 @@ sub mainThread
           $curve->{datastring} .=
             join(' ',
                  @domain,
+                 $xticlabel,
                  splice( @fields, 0, $rangesize ) ) . "\n";
           $haveNewData = 1;
 
@@ -1173,12 +1195,25 @@ sub updateCurveOptions
       # columns as 1:2:3..... I need the right number of columns (this is given
       # as 1 + rangesize). I also need to start the range at the first column
       # past the timefmt
-
       my @rest = map {$_ + $options{timefmt_Ncols}} (1..getRangeSize($id));
-
       $usingoptions = "using 1:" . join(':', @rest);
   }
-
+  elsif( $options{xticlabels})
+  {
+      # if no --domain: I ignore the sequential first column, and I do
+      #   3:4...:xticlabels(2)
+      # if --domain: I do NOT ignore the domain, and I do
+      #   1:3:4...:xticlabels(2)
+      my @rest = map {$_ + 2} (1..getRangeSize($id));
+      if ( $options{domain})
+      {
+          $usingoptions = "using 1:" . join(':', @rest) . ":xticlabels(2)";
+      }
+      else
+      {
+          $usingoptions = "using " . join(':', @rest) . ":xticlabels(2)";
+      }
+  }
 
   $curve->{options} = "$curve->{everyoptions} $histoptions $usingoptions $titleoption $curve->{extraoptions}";
 }
