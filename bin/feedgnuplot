@@ -960,7 +960,7 @@ sub mainThread
       {
         if( $options{timefmt} )
         {
-            # no point if doing anything unless I have at least the domain and
+            # no point in doing anything unless I have at least the domain and
             # 1 piece of data
             next if @fields < $options{timefmt_Ncols}+1;
 
@@ -970,7 +970,7 @@ sub mainThread
         }
         elsif(!$options{'3d'})
         {
-            # no point if doing anything unless I have at least the domain and
+            # no point in doing anything unless I have at least the domain and
             # 1 piece of data
             next if @fields < 1+1;
 
@@ -979,7 +979,7 @@ sub mainThread
         }
         else
         {
-            # no point if doing anything unless I have at least the domain and
+            # no point in doing anything unless I have at least the domain and
             # 1 piece of data
             next if @fields < 2+1;
 
