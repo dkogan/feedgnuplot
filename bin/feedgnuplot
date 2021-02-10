@@ -877,6 +877,9 @@ sub mainThread
 
 
 
+    # latest domain variable present in our data
+    my $latestX;
+
     # column headers from vnlog
     my @vnlog_headers;
     if($options{vnlog})
@@ -951,9 +954,6 @@ sub mainThread
       #   line is used)
       #
       # - 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
-
-      # latest domain variable present in our data
-      my $latestX;
 
       # The domain of the current point
       my @domain;
