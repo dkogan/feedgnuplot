@@ -19,45 +19,55 @@ feedgnuplot
 This was a trivial plot, and was trivially-easy to make: we gave the tool one
 column of data with no specific instructions, and we got a plot.
 
-Here each point we plotted was 2-dimensional (has an =x= value an a =y= value),
-but we passed in only one number for each point. This is what is expected
-without =--domain=, so =feedgnuplot= filled in sequential integers (0, 1, 2,
-...) for the =x= coordinate. Without =--domain= and without =--dataid=, each line
-of input is interpreted as =y0 y1 y2...=. So we can plot a sin and a cos
+The interpretation of the input data is controlled by two arguments: ==--domain=
+and =--dataid=. Here we passed neither, so each line of input is interpreted as
+=y0 y1 y2...= with sequential integers (0, 1, 2, ...) used for the =x=
+coordinate. Let's pass in more than one =y= per line to plot a sine and a cosine
 together:
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th); say "$c $s"' | \
-feedgnuplot
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          say "$c $s"' | \
+feedgnuplot --lines --points
 #+END_SRC
 
 #+RESULTS:
 [[file:guide-2.svg]]
 
+Here I also passed =--lines --points= to make more legible plots.
+
 Note that, the lines may have different numbers of points. To plot the cosine
-from every line, but a sine from every 5th line:
+from every line, but the sine from every 5th line:
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th);
-          if($.%5) { say "$c"; }
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          if($.%5) { say "$c";    }
           else     { say "$c $s"; }' | \
-feedgnuplot
+feedgnuplot --lines --points
 #+END_SRC
 
 #+RESULTS:
 [[file:guide-3.svg]]
 
-If we pass in two columns and =--domain=, =feedgnuplot= will use one for the =x=,
-and the other for the =y=. With =--domain= and without =--dataid=, each line of
-input is interpreted as =x y0 y1 y2...=. Let's plot =sin(theta)= vs.
-=cos(theta)=, i.e. a circle:
+Each =y= is referred to as a "dataset" or "curve" in the code and documentation.
+
+With =--domain=, the =x= values are read from the data instead of simply
+encoding line numbers: each line of input is interpreted as =x y0 y1 y2...=.
+Let's plot =sin(theta)= vs. =cos(theta)=, i.e. a circle:
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th); say "$c $s"' | \
-feedgnuplot --domain
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          say "$c $s"' | \
+feedgnuplot --lines --points --domain
 #+END_SRC
 
 #+RESULTS:
@@ -69,8 +79,11 @@ We can scale the axes /together/ by passing =--square=, and we get a circle:
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th); say "$c $s"' | \
-feedgnuplot --domain --square
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          say "$c $s"' | \
+feedgnuplot --lines --points --domain --square
 #+END_SRC
 
 #+RESULTS:
@@ -80,18 +93,20 @@ Again, we can have multiple =y= in each line, and each line may have a different
 number of =y=. Let's plot a circle /and/ an ellipse, sampled more coarsely:
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th);
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
           if($.%5) { say "$c $s"; }
           else     { $s2 = $s/2;
                      say "$c $s $s2"; }' | \
-feedgnuplot --domain --square
+feedgnuplot --lines --points --domain --square
 #+END_SRC
 
 #+RESULTS:
 [[file:guide-6.svg]]
 
 We just plotted something where each point is represented by 2 values: =x= and
-=y=. When making 2D plots, this is the most common situation, but others are
+=y=. When making 2D plots, this is the most common case, but others are
 possible. What if we want to color-code our points using another column of data?
 We feed in the new column, and we tell =feedgnuplot= that we now have /3/ values
 per point (the tuple size), and we tell =gnuplot= how we want this plot to be
@@ -101,9 +116,10 @@ made. Color-coding by the angle, in degrees:
 seq 100 | \
 perl -nE '$thdeg = $_/100.*360.;
           $th = $_/100.*2.*3.14159;
-          $s=sin($th); $c=cos($th);
+          $s  = sin($th);
+          $c  = cos($th);
           say "$c $s $thdeg";' | \
-feedgnuplot --domain --square \
+feedgnuplot --lines --points --domain --square \
             --tuplesizeall 3  \
             --styleall 'with points palette'
 #+END_SRC
@@ -135,10 +151,44 @@ perl -nE '$thdeg = $_/100.*360.;
           if($.%5) { say "$c $s $thdeg" }
           else     { $s2 = $s/2;
                      say "$c $s $thdeg $s2"; }' | \
-feedgnuplot --domain --square \
-            --tuplesize 0 3  \
-            --style 0 'with points palette'
+feedgnuplot --lines --points --domain --square \
+            --tuplesize 0 3   \
+            --style     0 'with points palette' \
+            --legend    0 'circle' \
+            --legend    1 'ellipse'
 #+END_SRC
 
 #+RESULTS:
 [[file:guide-8.svg]]
+
+Here we also asked for dataset labels to make it clear to the viewer what's
+what.
+
+The other significant option involved in the interpretation of data is
+=--dataid=. This labels each dataset in the data, so instead of referring to
+dataset =0=, you could refer to dataset =circle=. With =--domain --dataid=, each
+line of input is interpreted as =x id0 y0 id1 y1...=, with the number of =y= in
+each dataset reflecting the tuple size. Naturally, =--dataid= without =--domain=
+is identical, except without the leading =x=. The previous plot can be
+reproduced with =--dataid=:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$thdeg = $_/100.*360.;
+          $th = $_/100.*2.*3.14159;
+          $s=sin($th); $c=cos($th);
+          if($.%5) { say "$c circle $s $thdeg" }
+          else     { $s2 = $s/2;
+                     say "$c circle $s $thdeg ellipse $s2"; }' | \
+feedgnuplot --lines --points --domain --dataid --square \
+            --tuplesize circle 3   \
+            --style     circle 'with points palette' \
+            --autolegend
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-9.svg]]
+
+Note that instead of labelling the datasets explicitly, we can pass
+=--autolegend=, and the ID will be used to label each dataset. This works
+without =--dataid= also, but the IDs are then the unhelpful sequential integers.
