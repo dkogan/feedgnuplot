@@ -9,8 +9,8 @@ First, a trivial plot: let's plot a sinusoid
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-    perl -nE 'say sin($_/5.)' | \
-    feedgnuplot
+perl -nE 'say sin($_/5.)' | \
+feedgnuplot
 #+END_SRC
 
 #+RESULTS:
@@ -28,8 +28,8 @@ together:
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-    perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th); say "$c $s"' | \
-    feedgnuplot
+perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th); say "$c $s"' | \
+feedgnuplot
 #+END_SRC
 
 #+RESULTS:
@@ -40,10 +40,10 @@ from every line, but a sine from every 5th line:
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-    perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th);
-              if($.%5) { say "$c"; }
-              else     { say "$c $s"; }' | \
-    feedgnuplot
+perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th);
+          if($.%5) { say "$c"; }
+          else     { say "$c $s"; }' | \
+feedgnuplot
 #+END_SRC
 
 #+RESULTS:
@@ -56,8 +56,8 @@ input is interpreted as =x y0 y1 y2...=. Let's plot =sin(theta)= vs.
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-    perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th); say "$c $s"' | \
-    feedgnuplot --domain
+perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th); say "$c $s"' | \
+feedgnuplot --domain
 #+END_SRC
 
 #+RESULTS:
@@ -69,8 +69,8 @@ We can scale the axes /together/ by passing =--square=, and we get a circle:
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-    perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th); say "$c $s"' | \
-    feedgnuplot --domain --square
+perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th); say "$c $s"' | \
+feedgnuplot --domain --square
 #+END_SRC
 
 #+RESULTS:
@@ -80,11 +80,11 @@ Again, we can have multiple =y= in each line, and each line may have a different
 number of =y=. Let's plot a circle /and/ an ellipse, sampled more coarsely:
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-    perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th);
-              if($.%5) { say "$c $s"; }
-              else     { $s2 = $s/2;
-                         say "$c $s $s2"; }' | \
-    feedgnuplot --domain --square
+perl -nE '$th = $_/100.*2.*3.14159; $s=sin($th); $c=cos($th);
+          if($.%5) { say "$c $s"; }
+          else     { $s2 = $s/2;
+                     say "$c $s $s2"; }' | \
+feedgnuplot --domain --square
 #+END_SRC
 
 #+RESULTS:
@@ -95,17 +95,17 @@ We just plotted something where each point is represented by 2 values: =x= and
 possible. What if we want to color-code our points using another column of data?
 We feed in the new column, and we tell =feedgnuplot= that we now have /3/ values
 per point (the tuple size), and we tell =gnuplot= how we want this plot to be
-made:
+made. Color-coding by the angle, in degrees:
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-    perl -nE '$thdeg = $_/100.*360.;
-              $th = $_/100.*2.*3.14159;
-              $s=sin($th); $c=cos($th);
-              say "$c $s $thdeg";' | \
-    feedgnuplot --domain --square \
-                --tuplesizeall 3  \
-                --styleall 'with points palette'
+perl -nE '$thdeg = $_/100.*360.;
+          $th = $_/100.*2.*3.14159;
+          $s=sin($th); $c=cos($th);
+          say "$c $s $thdeg";' | \
+feedgnuplot --domain --square \
+            --tuplesizeall 3  \
+            --styleall 'with points palette'
 #+END_SRC
 
 #+RESULTS:
@@ -119,26 +119,26 @@ plenty of documentation about styling details.
 
 The above =--styleall= argument may be identically replaced with a shorthand:
 
-#+BEGIN_SRC sh :results none :exports none
---with points palette'
-#+END_SRC
+#+BEGIN_EXAMPLE
+--with 'points palette'
+#+END_EXAMPLE
 
 The styles and tuple sizes can be different for each dataset. For instance, to
-apply the colors only to the circle, leaving the ellipse with the default tuple
-size and style:
+apply the colors only to the circle (dataset 0), leaving the ellipse (dataset 1)
+with the default tuple size and style:
 
 #+BEGIN_SRC sh :results file link :exports both
 seq 100 | \
-    perl -nE '$thdeg = $_/100.*360.;
-              $th = $_/100.*2.*3.14159;
-              $s=sin($th); $c=cos($th);
-              if($.%5) { say "$c $s $thdeg" }
-              else     { $s2 = $s/2;
-                         say "$c $s $thdeg $s2"; }' | \
-    feedgnuplot --domain --square \
-                --tuplesize 0 3  \
-                --style 0 'with points palette'
+perl -nE '$thdeg = $_/100.*360.;
+          $th = $_/100.*2.*3.14159;
+          $s=sin($th); $c=cos($th);
+          if($.%5) { say "$c $s $thdeg" }
+          else     { $s2 = $s/2;
+                     say "$c $s $thdeg $s2"; }' | \
+feedgnuplot --domain --square \
+            --tuplesize 0 3  \
+            --style 0 'with points palette'
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-9.svg]]
+[[file:guide-8.svg]]
