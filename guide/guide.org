@@ -1,5 +1,3 @@
-* Guide
-
 This is an overview of the capabilities of =feedgnuplot= and a set of example
 recipes. The [[https://github.com/dkogan/feedgnuplot/][documentation]] provides a complete reference. The capabilities of
 gnuplot itself are demonstrated at [[http://www.gnuplot.info/demo/][its demo page]].
@@ -139,6 +137,14 @@ The above =--styleall= argument may be identically replaced with a shorthand:
 --with 'points palette'
 #+END_EXAMPLE
 
+Note that the =--lines --points= specify the /default/ style only, so these
+options do nothing here, and if we want lines /and/ points, we ask for those in
+the style:
+
+#+BEGIN_EXAMPLE
+--with 'linespoints palette'
+#+END_EXAMPLE
+
 The styles and tuple sizes can be different for each dataset. For instance, to
 apply the colors only to the circle (dataset 0), leaving the ellipse (dataset 1)
 with the default tuple size and style:
@@ -189,6 +195,55 @@ feedgnuplot --lines --points --domain --dataid --square \
 #+RESULTS:
 [[file:guide-9.svg]]
 
-Note that instead of labelling the datasets explicitly, we can pass
-=--autolegend=, and the ID will be used to label each dataset. This works
-without =--dataid= also, but the IDs are then the unhelpful sequential integers.
+Note that instead of labelling the datasets explicitly, we passed =--autolegend=
+to use the ID as the label for each dataset. This works without =--dataid= also,
+but the IDs are then the unhelpful sequential integers.
+
+* Recipes
+This is a good overview of the syntax and of the data interpretation. Let's demo
+some fancy plots to serve as a cookbook.
+
+Since the actual plotting is handled by =gnuplot=, its documentation and [[http://www.gnuplot.info/demo/][demos]]
+are the primary reference on how to do stuff.
+
+** Line, point sizes, thicknesses, styles
+Most often, we're plotting lines or points. The most common styling keywords
+are:
+
+- =pt= (or equivalently =pointtype=)
+- =ps= (or equivalently =pointsize=)
+- =lt= (or equivalently =linetype=)
+- =lw= (or equivalently =linewidth=)
+- =lc= (or equivalently =linecolor=)
+- =dt= (or equivalently =dashtype=)
+
+For details about these and all other styles, see the =gnuplot= documentation.
+For instance, the first little bit of the docs about the different line widths:
+
+#+BEGIN_SRC sh :results output verbatim :exports both
+gnuplot -e 'help linewidth' | head -n 20
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+ Each terminal has a default set of line and point types, which can be seen
+ by using the command `test`.  `set style line` defines a set of line types
+ and widths and point types and sizes so that you can refer to them later by
+ an index instead of repeating all the information at each invocation.
+
+ Syntax:
+       set style line <index> default
+       set style line <index> {{linetype  | lt} <line_type> | <colorspec>}
+                              {{linecolor | lc} <colorspec>}
+                              {{linewidth | lw} <line_width>}
+                              {{pointtype | pt} <point_type>}
+                              {{pointsize | ps} <point_size>}
+                              {{pointinterval | pi} <interval>}
+                              {{pointnumber | pn} <max_symbols>}
+                              {{dashtype | dt} <dashtype>}
+                              {palette}
+       unset style line
+       show style line
+
+ `default` sets all line style parameters to those of the linetype with
+#+end_example

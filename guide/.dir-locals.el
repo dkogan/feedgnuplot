@@ -23,14 +23,26 @@
   ;; This sets a default :file tag, set to a unique filename. I want each demo to
   ;; produce an image, but I don't care what it is called. I omit the :file tag
   ;; completely, and this advice takes care of it
+  (defun dima-info-local-get-property
+      (params what)
+    (condition-case nil
+        (cdr (assq what params))
+      (error "")))
+  (defun dima-org-babel-is-feedgnuplot
+      (params)
+    (and
+     (or (not (assq :file params))
+         (string-match "^guide-[0-9]+\\.svg$" (cdr (assq :file params))))
+     (string-match "\\<both\\>" (dima-info-local-get-property params :exports) )
+     (string-match "\\<file\\>" (dima-info-local-get-property params :results ))))
   (defun dima-org-babel-sh-unique-plot-filename
       (f &optional arg info params)
 
     (let ((info-local (or info (org-babel-get-src-block-info t))))
       (if (and info-local
                (string= (car info-local) "sh")
-               (not (assq :file (caddr info-local))))
-          ;; We're looking at an sh block with no :file. Add a default :file
+               (dima-org-babel-is-feedgnuplot (caddr info-local)))
+          ;; We're looking at a feedgnuplot block. Add a default :file
           (funcall f arg info
                    (cons (cons ':file
                                (format "guide-%d.svg"
@@ -38,7 +50,7 @@
                                            (setq dima-unique-plot-number (1+ dima-unique-plot-number))
                                          (error (setq dima-unique-plot-number 0)))))
                          params))
-        ;; already have a :file or not sh. Just do the normal thing
+        ;; Not feedgnuplot. Just do the normal thing
         (funcall f arg info params))))
 
   (unless
@@ -64,11 +76,12 @@
   ;; need --hardcopy when generating the plots. I add the --hardcopy to the
   ;; command before running it
   (defun dima-org-babel-sh-set-demo-output (f body params)
-    (with-temp-buffer
-      (insert body)
-      (end-of-buffer)
-      (insert (format " --terminal 'svg noenhanced solid size 800,600 font \",14\"' --hardcopy %s" (cdr (assq :file params))))
-      (setq body (buffer-substring-no-properties (point-min) (point-max))))
+    (when (dima-org-babel-is-feedgnuplot params)
+      (with-temp-buffer
+        (insert body)
+        (end-of-buffer)
+        (insert (format " --terminal 'svg noenhanced solid size 800,600 font \",14\"' --hardcopy %s" (cdr (assq :file params))))
+        (setq body (buffer-substring-no-properties (point-min) (point-max)))))
     (funcall f body params))
   (unless
       (advice-member-p
