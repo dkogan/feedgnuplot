@@ -1,0 +1,13 @@
+This is an overview of the capabilities of =feedgnuplot=. The [[https://github.com/dkogan/feedgnuplot/][documentation]]
+provides a complete reference.
+
+* Recipes
+
+First, a trivial plot: let's plot a sinusoid
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | perl -nE 'say sin($_/5.)' | feedgnuplot --lines
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-1.svg]]
