@@ -480,3 +480,28 @@ feedgnuplot --dataid --histo 1,2,3 --binwidth $binwidth \
 #+RESULTS:
 [[file:guide-17.svg]]
 
+** Vector fields
+Documentation in gnuplot available like this:
+
+#+BEGIN_SRC sh :results none :exports code
+gnuplot -e 'help vectors'
+#+END_SRC
+
+The docs say that in 2D we want 4 columns: =x, y, xdelta, ydelta= and in 3D we
+want 6 columns: =x, y, z, xdelta, ydelta, zdelta=. And we can have a variable
+arrowstyle. A vector field in 2D:
+
+#+BEGIN_SRC sh :results file link :exports both
+perl -E '$, = " ";
+     for $x (-5..5) { for $y (-5..5) {
+       $r = sqrt($x*$x + $y*$y);
+       say $x, $y, $y/sqrt($r+0.1)*0.5, -$x/sqrt($r+0.1)*0.5;
+     } }' | \
+feedgnuplot --domain \
+            --tuplesizeall 4 \
+            --with 'vectors filled head' \
+            --square
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-18.svg]]
