@@ -247,3 +247,100 @@ gnuplot -e 'help linewidth' | head -n 20
 
  `default` sets all line style parameters to those of the linetype with
 #+end_example
+
+gnuplot has a =test= command, which produces a demo of the various available
+styles. This documentation uses the =svg= terminal (what gnuplot calls a
+backend). So for the =svg= terminal, the various styles look like this:
+
+#+begin_src gnuplot :results file link :exports both :file gnuplot-terminal-test.svg
+test
+#+end_src
+
+#+RESULTS:
+[[file:gnuplot-terminal-test.svg]]
+
+So for instance if you plot =--with 'linespoints pt 4 dt 2 lc 7'= you'll get a
+red dashed line with square points. By default you'd be using one of the
+interactive graphical terminals (=x11= or =qt=), which would have largely
+similar styling.
+
+Let's make a plot with some variable colors and point sizes:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq -10 10 | \
+perl -nE '$, = " ";
+          say "parabola", $_*$_, abs($_)/2, $_*50;
+          say "line",     $_*3. + 30.;' | \
+feedgnuplot --dataid \
+            --tuplesize parabola 4   \
+            --style     parabola 'with points pointtype 7 pointsize variable palette' \
+            --style     line     'with lines lw 3 lc "red" dashtype 2' \
+            --set 'cbrange [-600:600]'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-10.svg]]
+
+** Error bars
+As before, the =gnuplot= documentation has the styling details:
+
+#+BEGIN_SRC sh :results none :exports code
+gnuplot -e 'help xerrorbars'
+gnuplot -e 'help yerrorbars'
+gnuplot -e 'help xyerrorbars'
+#+END_SRC
+
+For brevity, I'm not including the contents of those help pages here. These tell
+us how to specify errorbars: how many columns to pass in, what they mean, etc.
+Example:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq -10 10 | \
+perl -nE '$, = " ";
+          chomp;
+          $x = $_;
+          $y = $x*$x * 10 + 20;
+          say $x+1, "parabola", $y;
+          say $x+1, "parabola_symmetric_xyerrorbars", $y, $x*$x/80, $x*$x/4;
+          say $x, "parabola_unsymmetric_xyerrorbars", $y, $x-$x*$x/80, $x+$x*$x/40, $y-$x*$x/4, $y+$x*$x/8;
+          say $x, "line_unsymmetric_yerrorbars", $x*20+500, 40;' | \
+feedgnuplot --domain --dataid \
+            --tuplesize parabola 2   \
+            --style     parabola "with lines" \
+            --tuplesize parabola_symmetric_xyerrorbars 4   \
+            --style     parabola_symmetric_xyerrorbars "with xyerrorbars" \
+            --legend    parabola_symmetric_xyerrorbars "using the 'x y xdelta ydelta' style" \
+            --tuplesize parabola_unsymmetric_xyerrorbars 6   \
+            --style     parabola_unsymmetric_xyerrorbars "with xyerrorbars" \
+            --legend    parabola_unsymmetric_xyerrorbars "using the 'x y xlow xhigh ylow yhigh' style" \
+            --tuplesize line_unsymmetric_yerrorbars 3   \
+            --style     line_unsymmetric_yerrorbars "with yerrorbars" \
+            --legend    line_unsymmetric_yerrorbars "using the 'x y ydelta' style" \
+            --xmin -10 --xmax 10 \
+            --set 'key box opaque'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-11.svg]]
+
+** Polar coordinates
+See
+
+#+BEGIN_SRC sh :results none :exports code
+gnuplot -e 'help polar'
+#+END_SRC
+
+Let's plot a simple =rho = theta= spiral:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$x = $_/10; \
+          say "$x $x"' | \
+feedgnuplot --domain       \
+            --with 'lines' \
+            --set 'polar'  \
+            --square
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-12.svg]]
