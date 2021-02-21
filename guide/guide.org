@@ -1,6 +1,6 @@
-This is an overview of the capabilities of =feedgnuplot= and a set of example
-recipes. The [[https://github.com/dkogan/feedgnuplot/][documentation]] provides a complete reference. The capabilities of
-gnuplot itself are demonstrated at [[http://www.gnuplot.info/demo/][its demo page]].
+This is a tutorial and gallery demonstrating =feedgnuplot= usage. The
+[[https://github.com/dkogan/feedgnuplot/][documentation]] provides a complete reference, and [[https://github.com/dkogan/feedgnuplot/#recipes][application-specific usage
+examples]]. The capabilities of gnuplot itself are demonstrated at [[http://www.gnuplot.info/demo/][its demo page]].
 
 * Tutorial
 First, a trivial plot: let's plot a sinusoid
@@ -199,7 +199,25 @@ Note that instead of labelling the datasets explicitly, we passed =--autolegend=
 to use the ID as the label for each dataset. This works without =--dataid= also,
 but the IDs are then the unhelpful sequential integers.
 
-* Recipes
+Instead of identifying columns using explicit IDs inside the data stream (as
+with =--dataid=), it's possible to read [[https://www.github.com/dkogan/vnlog][vnlog]] data, which contains a single
+header line identifying the columns. For instance:
+
+#+BEGIN_SRC sh :results file link :exports both
+( echo '# th';
+  seq 100 | perl -nE 'say $_/100.*2.*3.14159;' ) | \
+vnl-filter -p 'c=cos(th),s=sin(th),th_deg=th*180./3.14159,s2=sin(th)/2' | \
+feedgnuplot --lines --points --domain --vnl --square \
+            --tuplesize s 3   \
+            --style     s 'with points palette' \
+            --legend s  circle \
+            --legend s2 ellipse
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-10.svg]]
+
+* Gallery
 This is a good overview of the syntax and of the data interpretation. Let's demo
 some fancy plots to serve as a cookbook.
 
@@ -279,7 +297,7 @@ feedgnuplot --dataid \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-10.svg]]
+[[file:guide-11.svg]]
 
 Here we used =--set= to set the range of the colorbar. =--set= (and =--unset=)
 map to the gnuplot =set= (and =--unset=) command.
@@ -324,7 +342,7 @@ feedgnuplot --domain --dataid \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-11.svg]]
+[[file:guide-12.svg]]
 
 ** Polar coordinates
 See
@@ -346,7 +364,41 @@ feedgnuplot --domain       \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-12.svg]]
+[[file:guide-13.svg]]
+
+** Timestamps
+=feedgnuplot= can interpret data given as timestamps in an arbitrary format
+parseable with =strftime()=. Unlike everything else in =feedgnuplot=, these
+timestamps /may/ contain whitespace. For instance:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 5 | gawk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}' | \
+feedgnuplot --domain \
+            --lines --points \
+            --timefmt '%d %b %Y %H:%M:%S' \
+            --xmin '20 Oct 2013 06:05:00' \
+            --xmax '20 Oct 2013 06:05:20'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-14.svg]]
+
+=--timefmt= controls how to parse the /input/. The formatting of the /output/ is
+auto-selected by gnuplot, and sometimes we want to control it. To show the hour
+and minute and seconds on the x axis:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 5 | gawk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}' | \
+feedgnuplot --domain \
+            --lines --points \
+            --timefmt '%d %b %Y %H:%M:%S' \
+            --xmin '20 Oct 2013 06:05:00' \
+            --xmax '20 Oct 2013 06:05:20' \
+            --set 'format x "%H:%M:%S"'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-15.svg]]
 
 ** Labels
 Docs:
@@ -372,7 +424,7 @@ feedgnuplot --domain          \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-13.svg]]
+[[file:guide-16.svg]]
 
 More complex example (varied orientations and colors):
 
@@ -390,7 +442,7 @@ feedgnuplot --domain          \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-14.svg]]
+[[file:guide-17.svg]]
 
 ** 3D plots
 We can plot in 3D by passing =--3d=. When plotting interactively, you can use
@@ -425,7 +477,7 @@ feedgnuplot --domain --dataid --3d \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-15.svg]]
+[[file:guide-18.svg]]
 
 ** Histograms
 =gnuplot= (and =feedgnuplot=) has support for histograms. So we can give it
@@ -450,7 +502,7 @@ feedgnuplot --histo 0 --binwidth $binwidth \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-16.svg]]
+[[file:guide-19.svg]]
 
 If we want multiple histograms drawn on top of one another, the styling should
 be adjusted so that they both remain visible. Let's vary the size of the sum,
@@ -478,7 +530,117 @@ feedgnuplot --dataid --histo 1,2,3 --binwidth $binwidth \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-17.svg]]
+[[file:guide-20.svg]]
+
+** Labeled bar charts
+=feedgnuplot= supports bar charts to be drawn with labels appearing in the data.
+These aren't "histograms", where gnuplot bins the data for us, but rather the
+data is given to us, ready to plot. We pass =--xticlabels= to indicate that the
+x-axis tic labels come from the data. This changes the interpretation of the
+input: with =--domain=, each line begins with =x label ....=. Without
+=--domain=, each line begins with =label ...=.
+
+Basic example without =--domain=:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+vnl-filter -p label,a,b | \
+feedgnuplot --vnl \
+            --xticlabels \
+            --style a 'with boxes fill pattern 4 border lt -1' \
+            --style b 'with boxes fill pattern 5 border lt -1' \
+            --ymin 0 --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-21.svg]]
+
+We can also pass =--domain= to read the =x= positions from the data also:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+feedgnuplot --vnl --domain \
+            --xticlabels \
+            --style a 'with boxes fill pattern 4 border lt -1' \
+            --style b 'with boxes fill pattern 5 border lt -1' \
+            --ymin 0 --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-22.svg]]
+
+And we can use gnuplot's clustering capabilities:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+vnl-filter -p label,a,b | \
+feedgnuplot --vnl \
+            --xticlabels \
+            --set 'style data histogram' \
+            --set 'style histogram cluster gap 2' \
+            --set 'style fill solid border lt -1' \
+            --autolegend \
+            --ymin 0 --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-23.svg]]
+
+Or we can vertically stack the bars in each cluster:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+vnl-filter -p label,a,b | \
+feedgnuplot --vnl \
+            --xticlabels \
+            --set 'style data histogram' \
+            --set 'style histogram rowstacked' \
+            --set 'boxwidth 0.8' \
+            --set 'style fill solid border lt -1' \
+            --autolegend \
+            --ymin 0 --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-24.svg]]
+
+Using =--xticlabels= to plot bars is probably the most common usage, but
+=--xticlabels= means /only/ that we read the x-axis tic labels from the data, so
+we can plot anything. For instance:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+feedgnuplot --vnl --domain \
+            --xticlabels \
+            --tuplesizeall 3 \
+            --with 'points pt 7 ps 2 palette' \
+            --xmin 4 --xmax 12 \
+            --ymin 0 --ymax 6 \
+            --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-25.svg]]
 
 ** Vector fields
 Documentation in gnuplot available like this:
@@ -504,4 +666,4 @@ feedgnuplot --domain \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-18.svg]]
+[[file:guide-26.svg]]
