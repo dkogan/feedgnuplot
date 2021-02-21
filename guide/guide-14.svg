@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"  standalone="no"?>
+<svg 
+ width="800" height="600"
+ viewBox="0 0 800 600"
+ xmlns="http://www.w3.org/2000/svg"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+
+<title>Gnuplot</title>
+<desc>Produced by GNUPLOT 5.4 patchlevel 1 </desc>
+
+<g id="gnuplot_canvas">
+
+<rect x="0" y="0" width="800" height="600" fill="none"/>
+<defs>
+
+	<circle id='gpDot' r='0.5' stroke-width='0.5' stroke='currentColor'/>
+	<path id='gpPt0' stroke-width='0.190' stroke='currentColor' d='M-1,0 h2 M0,-1 v2'/>
+	<path id='gpPt1' stroke-width='0.190' stroke='currentColor' d='M-1,-1 L1,1 M1,-1 L-1,1'/>
+	<path id='gpPt2' stroke-width='0.190' stroke='currentColor' d='M-1,0 L1,0 M0,-1 L0,1 M-1,-1 L1,1 M-1,1 L1,-1'/>
+	<rect id='gpPt3' stroke-width='0.190' stroke='currentColor' x='-1' y='-1' width='2' height='2'/>
+	<rect id='gpPt4' stroke-width='0.190' stroke='currentColor' fill='currentColor' x='-1' y='-1' width='2' height='2'/>
+	<circle id='gpPt5' stroke-width='0.190' stroke='currentColor' cx='0' cy='0' r='1'/>
+	<use xlink:href='#gpPt5' id='gpPt6' fill='currentColor' stroke='none'/>
+	<path id='gpPt7' stroke-width='0.190' stroke='currentColor' d='M0,-1.33 L-1.33,0.67 L1.33,0.67 z'/>
+	<use xlink:href='#gpPt7' id='gpPt8' fill='currentColor' stroke='none'/>
+	<use xlink:href='#gpPt7' id='gpPt9' stroke='currentColor' transform='rotate(180)'/>
+	<use xlink:href='#gpPt9' id='gpPt10' fill='currentColor' stroke='none'/>
+	<use xlink:href='#gpPt3' id='gpPt11' stroke='currentColor' transform='rotate(45)'/>
+	<use xlink:href='#gpPt11' id='gpPt12' fill='currentColor' stroke='none'/>
+	<path id='gpPt13' stroke-width='0.190' stroke='currentColor' d='M0,1.330 L1.265,0.411 L0.782,-1.067 L-0.782,-1.076 L-1.265,0.411 z'/>
+	<use xlink:href='#gpPt13' id='gpPt14' fill='currentColor' stroke='none'/>
+	<filter id='textbox' filterUnits='objectBoundingBox' x='0' y='0' height='1' width='1'>
+	  <feFlood flood-color='white' flood-opacity='1' result='bgnd'/>
+	  <feComposite in='SourceGraphic' in2='bgnd' operator='atop'/>
+	</filter>
+	<filter id='greybox' filterUnits='objectBoundingBox' x='0' y='0' height='1' width='1'>
+	  <feFlood flood-color='lightgrey' flood-opacity='1' result='grey'/>
+	  <feComposite in='SourceGraphic' in2='grey' operator='atop'/>
+	</filter>
+</defs>
+<g fill="none" color="white" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,558.00 L54.55,558.00 M667.61,558.00 L657.11,558.00  '/>	<g transform="translate(34.26,562.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 0</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,468.50 L54.55,468.50 M667.61,468.50 L657.11,468.50  '/>	<g transform="translate(34.26,473.05)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 1</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,379.00 L54.55,379.00 M667.61,379.00 L657.11,379.00  '/>	<g transform="translate(34.26,383.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 2</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,289.50 L54.55,289.50 M667.61,289.50 L657.11,289.50  '/>	<g transform="translate(34.26,294.05)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 3</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,200.01 L54.55,200.01 M667.61,200.01 L657.11,200.01  '/>	<g transform="translate(34.26,204.56)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 4</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,110.51 L54.55,110.51 M667.61,110.51 L657.11,110.51  '/>	<g transform="translate(34.26,115.06)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 5</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,21.01 L54.55,21.01 M667.61,21.01 L657.11,21.01  '/>	<g transform="translate(34.26,25.56)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 6</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,558.00 L44.05,547.50 M44.05,21.01 L44.05,31.51  '/>	<g transform="translate(44.05,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text> 0</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M168.76,558.00 L168.76,547.50 M168.76,21.01 L168.76,31.51  '/>	<g transform="translate(168.76,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text> 1</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M293.47,558.00 L293.47,547.50 M293.47,21.01 L293.47,31.51  '/>	<g transform="translate(293.47,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text> 2</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M418.19,558.00 L418.19,547.50 M418.19,21.01 L418.19,31.51  '/>	<g transform="translate(418.19,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text> 3</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M542.90,558.00 L542.90,547.50 M542.90,21.01 L542.90,31.51  '/>	<g transform="translate(542.90,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text> 4</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M667.61,558.00 L667.61,547.50 M667.61,21.01 L667.61,31.51  '/>	<g transform="translate(667.61,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text> 5</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,21.01 L44.05,558.00 L667.61,558.00 L667.61,21.01 L44.05,21.01 Z  '/></g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+	<g id="gnuplot_plot_1" ><title>gnuplot_plot_1</title>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<g transform="translate(168.76,473.05)" stroke="none" fill="rgb(0,0,0)" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text>aaa</text>
+	</g>
+	<g transform="translate(295.74,293.45) rotate(-30)" stroke="none" fill="rgb(228,131,0)" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text>bbb</text>
+	</g>
+	<g transform="translate(547.45,110.51) rotate(-90)" stroke="none" fill="rgb(255,255,0)" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text>ccc</text>
+	</g>
+</g>
+	</g>
+<g fill="none" color="white" stroke="rgb(255, 255,   0)" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M44.05,21.01 L44.05,558.00 L667.61,558.00 L667.61,21.01 L44.05,21.01 Z  '/>	<g stroke='none' shape-rendering='crispEdges'>
+		<polygon fill = 'rgb(  1,   0,   0)' points = '683.20,558.00 714.37,558.00 714.37,553.80 683.20,553.80 '/>
+		<polygon fill = 'rgb( 23,   0,  13)' points = '683.20,553.81 714.37,553.81 714.37,549.60 683.20,549.60 '/>
+		<polygon fill = 'rgb( 32,   0,  25)' points = '683.20,549.61 714.37,549.61 714.37,545.41 683.20,545.41 '/>
+		<polygon fill = 'rgb( 39,   0,  37)' points = '683.20,545.42 714.37,545.42 714.37,541.21 683.20,541.21 '/>
+		<polygon fill = 'rgb( 45,   0,  50)' points = '683.20,541.22 714.37,541.22 714.37,537.02 683.20,537.02 '/>
+		<polygon fill = 'rgb( 50,   0,  62)' points = '683.20,537.03 714.37,537.03 714.37,532.82 683.20,532.82 '/>
+		<polygon fill = 'rgb( 55,   0,  74)' points = '683.20,532.83 714.37,532.83 714.37,528.63 683.20,528.63 '/>
+		<polygon fill = 'rgb( 60,   0,  86)' points = '683.20,528.64 714.37,528.64 714.37,524.43 683.20,524.43 '/>
+		<polygon fill = 'rgb( 64,   0,  98)' points = '683.20,524.44 714.37,524.44 714.37,520.24 683.20,520.24 '/>
+		<polygon fill = 'rgb( 68,   0, 109)' points = '683.20,520.25 714.37,520.25 714.37,516.04 683.20,516.04 '/>
+		<polygon fill = 'rgb( 71,   0, 120)' points = '683.20,516.05 714.37,516.05 714.37,511.85 683.20,511.85 '/>
+		<polygon fill = 'rgb( 75,   0, 131)' points = '683.20,511.86 714.37,511.86 714.37,507.65 683.20,507.65 '/>
+		<polygon fill = 'rgb( 78,   0, 142)' points = '683.20,507.66 714.37,507.66 714.37,503.46 683.20,503.46 '/>
+		<polygon fill = 'rgb( 81,   0, 152)' points = '683.20,503.47 714.37,503.47 714.37,499.26 683.20,499.26 '/>
+		<polygon fill = 'rgb( 84,   0, 162)' points = '683.20,499.27 714.37,499.27 714.37,495.07 683.20,495.07 '/>
+		<polygon fill = 'rgb( 87,   0, 171)' points = '683.20,495.08 714.37,495.08 714.37,490.87 683.20,490.87 '/>
+		<polygon fill = 'rgb( 90,   0, 180)' points = '683.20,490.88 714.37,490.88 714.37,486.68 683.20,486.68 '/>
+		<polygon fill = 'rgb( 93,   1, 189)' points = '683.20,486.69 714.37,486.69 714.37,482.48 683.20,482.48 '/>
+		<polygon fill = 'rgb( 96,   1, 197)' points = '683.20,482.49 714.37,482.49 714.37,478.29 683.20,478.29 '/>
+		<polygon fill = 'rgb( 98,   1, 205)' points = '683.20,478.30 714.37,478.30 714.37,474.09 683.20,474.09 '/>
+		<polygon fill = 'rgb(101,   1, 212)' points = '683.20,474.10 714.37,474.10 714.37,469.90 683.20,469.90 '/>
+		<polygon fill = 'rgb(103,   1, 219)' points = '683.20,469.91 714.37,469.91 714.37,465.70 683.20,465.70 '/>
+		<polygon fill = 'rgb(106,   1, 225)' points = '683.20,465.71 714.37,465.71 714.37,461.50 683.20,461.50 '/>
+		<polygon fill = 'rgb(108,   1, 231)' points = '683.20,461.51 714.37,461.51 714.37,457.31 683.20,457.31 '/>
+		<polygon fill = 'rgb(110,   2, 236)' points = '683.20,457.32 714.37,457.32 714.37,453.11 683.20,453.11 '/>
+		<polygon fill = 'rgb(113,   2, 240)' points = '683.20,453.12 714.37,453.12 714.37,448.92 683.20,448.92 '/>
+		<polygon fill = 'rgb(115,   2, 244)' points = '683.20,448.93 714.37,448.93 714.37,444.72 683.20,444.72 '/>
+		<polygon fill = 'rgb(117,   2, 247)' points = '683.20,444.73 714.37,444.73 714.37,440.53 683.20,440.53 '/>
+		<polygon fill = 'rgb(119,   3, 250)' points = '683.20,440.54 714.37,440.54 714.37,436.33 683.20,436.33 '/>
+		<polygon fill = 'rgb(121,   3, 252)' points = '683.20,436.34 714.37,436.34 714.37,432.14 683.20,432.14 '/>
+		<polygon fill = 'rgb(123,   3, 254)' points = '683.20,432.15 714.37,432.15 714.37,427.94 683.20,427.94 '/>
+		<polygon fill = 'rgb(125,   4, 255)' points = '683.20,427.95 714.37,427.95 714.37,423.75 683.20,423.75 '/>
+		<polygon fill = 'rgb(128,   4, 255)' points = '683.20,423.76 714.37,423.76 714.37,419.55 683.20,419.55 '/>
+		<polygon fill = 'rgb(129,   4, 255)' points = '683.20,419.56 714.37,419.56 714.37,415.36 683.20,415.36 '/>
+		<polygon fill = 'rgb(131,   5, 254)' points = '683.20,415.37 714.37,415.37 714.37,411.16 683.20,411.16 '/>
+		<polygon fill = 'rgb(133,   5, 252)' points = '683.20,411.17 714.37,411.17 714.37,406.97 683.20,406.97 '/>
+		<polygon fill = 'rgb(135,   6, 250)' points = '683.20,406.98 714.37,406.98 714.37,402.77 683.20,402.77 '/>
+		<polygon fill = 'rgb(137,   6, 247)' points = '683.20,402.78 714.37,402.78 714.37,398.58 683.20,398.58 '/>
+		<polygon fill = 'rgb(139,   7, 244)' points = '683.20,398.59 714.37,398.59 714.37,394.38 683.20,394.38 '/>
+		<polygon fill = 'rgb(141,   7, 240)' points = '683.20,394.39 714.37,394.39 714.37,390.19 683.20,390.19 '/>
+		<polygon fill = 'rgb(143,   8, 236)' points = '683.20,390.20 714.37,390.20 714.37,385.99 683.20,385.99 '/>
+		<polygon fill = 'rgb(144,   8, 231)' points = '683.20,386.00 714.37,386.00 714.37,381.80 683.20,381.80 '/>
+		<polygon fill = 'rgb(146,   9, 225)' points = '683.20,381.81 714.37,381.81 714.37,377.60 683.20,377.60 '/>
+		<polygon fill = 'rgb(148,  10, 219)' points = '683.20,377.61 714.37,377.61 714.37,373.40 683.20,373.40 '/>
+		<polygon fill = 'rgb(150,  10, 212)' points = '683.20,373.41 714.37,373.41 714.37,369.21 683.20,369.21 '/>
+		<polygon fill = 'rgb(151,  11, 205)' points = '683.20,369.22 714.37,369.22 714.37,365.01 683.20,365.01 '/>
+		<polygon fill = 'rgb(153,  12, 197)' points = '683.20,365.02 714.37,365.02 714.37,360.82 683.20,360.82 '/>
+		<polygon fill = 'rgb(155,  13, 189)' points = '683.20,360.83 714.37,360.83 714.37,356.62 683.20,356.62 '/>
+		<polygon fill = 'rgb(156,  13, 180)' points = '683.20,356.63 714.37,356.63 714.37,352.43 683.20,352.43 '/>
+		<polygon fill = 'rgb(158,  14, 171)' points = '683.20,352.44 714.37,352.44 714.37,348.23 683.20,348.23 '/>
+		<polygon fill = 'rgb(159,  15, 162)' points = '683.20,348.24 714.37,348.24 714.37,344.04 683.20,344.04 '/>
+		<polygon fill = 'rgb(161,  16, 152)' points = '683.20,344.05 714.37,344.05 714.37,339.84 683.20,339.84 '/>
+		<polygon fill = 'rgb(163,  17, 142)' points = '683.20,339.85 714.37,339.85 714.37,335.65 683.20,335.65 '/>
+		<polygon fill = 'rgb(164,  18, 131)' points = '683.20,335.66 714.37,335.66 714.37,331.45 683.20,331.45 '/>
+		<polygon fill = 'rgb(166,  19, 120)' points = '683.20,331.46 714.37,331.46 714.37,327.26 683.20,327.26 '/>
+		<polygon fill = 'rgb(167,  20, 109)' points = '683.20,327.27 714.37,327.27 714.37,323.06 683.20,323.06 '/>
+		<polygon fill = 'rgb(169,  21,  98)' points = '683.20,323.07 714.37,323.07 714.37,318.87 683.20,318.87 '/>
+		<polygon fill = 'rgb(170,  23,  86)' points = '683.20,318.88 714.37,318.88 714.37,314.67 683.20,314.67 '/>
+		<polygon fill = 'rgb(172,  24,  74)' points = '683.20,314.68 714.37,314.68 714.37,310.48 683.20,310.48 '/>
+		<polygon fill = 'rgb(173,  25,  62)' points = '683.20,310.49 714.37,310.49 714.37,306.28 683.20,306.28 '/>
+		<polygon fill = 'rgb(175,  26,  50)' points = '683.20,306.29 714.37,306.29 714.37,302.09 683.20,302.09 '/>
+		<polygon fill = 'rgb(176,  28,  37)' points = '683.20,302.10 714.37,302.10 714.37,297.89 683.20,297.89 '/>
+		<polygon fill = 'rgb(177,  29,  25)' points = '683.20,297.90 714.37,297.90 714.37,293.70 683.20,293.70 '/>
+		<polygon fill = 'rgb(179,  30,  13)' points = '683.20,293.71 714.37,293.71 714.37,289.50 683.20,289.50 '/>
+		<polygon fill = 'rgb(180,  32,   0)' points = '683.20,289.51 714.37,289.51 714.37,285.30 683.20,285.30 '/>
+		<polygon fill = 'rgb(182,  33,   0)' points = '683.20,285.31 714.37,285.31 714.37,281.11 683.20,281.11 '/>
+		<polygon fill = 'rgb(183,  35,   0)' points = '683.20,281.12 714.37,281.12 714.37,276.91 683.20,276.91 '/>
+		<polygon fill = 'rgb(184,  37,   0)' points = '683.20,276.92 714.37,276.92 714.37,272.72 683.20,272.72 '/>
+		<polygon fill = 'rgb(186,  38,   0)' points = '683.20,272.73 714.37,272.73 714.37,268.52 683.20,268.52 '/>
+		<polygon fill = 'rgb(187,  40,   0)' points = '683.20,268.53 714.37,268.53 714.37,264.33 683.20,264.33 '/>
+		<polygon fill = 'rgb(189,  42,   0)' points = '683.20,264.34 714.37,264.34 714.37,260.13 683.20,260.13 '/>
+		<polygon fill = 'rgb(190,  44,   0)' points = '683.20,260.14 714.37,260.14 714.37,255.94 683.20,255.94 '/>
+		<polygon fill = 'rgb(191,  45,   0)' points = '683.20,255.95 714.37,255.95 714.37,251.74 683.20,251.74 '/>
+		<polygon fill = 'rgb(193,  47,   0)' points = '683.20,251.75 714.37,251.75 714.37,247.55 683.20,247.55 '/>
+		<polygon fill = 'rgb(194,  49,   0)' points = '683.20,247.56 714.37,247.56 714.37,243.35 683.20,243.35 '/>
+		<polygon fill = 'rgb(195,  51,   0)' points = '683.20,243.36 714.37,243.36 714.37,239.16 683.20,239.16 '/>
+		<polygon fill = 'rgb(196,  53,   0)' points = '683.20,239.17 714.37,239.17 714.37,234.96 683.20,234.96 '/>
+		<polygon fill = 'rgb(198,  56,   0)' points = '683.20,234.97 714.37,234.97 714.37,230.77 683.20,230.77 '/>
+		<polygon fill = 'rgb(199,  58,   0)' points = '683.20,230.78 714.37,230.78 714.37,226.57 683.20,226.57 '/>
+		<polygon fill = 'rgb(200,  60,   0)' points = '683.20,226.58 714.37,226.58 714.37,222.38 683.20,222.38 '/>
+		<polygon fill = 'rgb(202,  62,   0)' points = '683.20,222.39 714.37,222.39 714.37,218.18 683.20,218.18 '/>
+		<polygon fill = 'rgb(203,  65,   0)' points = '683.20,218.19 714.37,218.19 714.37,213.99 683.20,213.99 '/>
+		<polygon fill = 'rgb(204,  67,   0)' points = '683.20,214.00 714.37,214.00 714.37,209.79 683.20,209.79 '/>
+		<polygon fill = 'rgb(205,  70,   0)' points = '683.20,209.80 714.37,209.80 714.37,205.60 683.20,205.60 '/>
+		<polygon fill = 'rgb(207,  72,   0)' points = '683.20,205.61 714.37,205.61 714.37,201.40 683.20,201.40 '/>
+		<polygon fill = 'rgb(208,  75,   0)' points = '683.20,201.41 714.37,201.41 714.37,197.20 683.20,197.20 '/>
+		<polygon fill = 'rgb(209,  77,   0)' points = '683.20,197.21 714.37,197.21 714.37,193.01 683.20,193.01 '/>
+		<polygon fill = 'rgb(210,  80,   0)' points = '683.20,193.02 714.37,193.02 714.37,188.81 683.20,188.81 '/>
+		<polygon fill = 'rgb(211,  83,   0)' points = '683.20,188.82 714.37,188.82 714.37,184.62 683.20,184.62 '/>
+		<polygon fill = 'rgb(213,  86,   0)' points = '683.20,184.63 714.37,184.63 714.37,180.42 683.20,180.42 '/>
+		<polygon fill = 'rgb(214,  89,   0)' points = '683.20,180.43 714.37,180.43 714.37,176.23 683.20,176.23 '/>
+		<polygon fill = 'rgb(215,  92,   0)' points = '683.20,176.24 714.37,176.24 714.37,172.03 683.20,172.03 '/>
+		<polygon fill = 'rgb(216,  95,   0)' points = '683.20,172.04 714.37,172.04 714.37,167.84 683.20,167.84 '/>
+		<polygon fill = 'rgb(217,  98,   0)' points = '683.20,167.85 714.37,167.85 714.37,163.64 683.20,163.64 '/>
+		<polygon fill = 'rgb(219, 101,   0)' points = '683.20,163.65 714.37,163.65 714.37,159.45 683.20,159.45 '/>
+		<polygon fill = 'rgb(220, 104,   0)' points = '683.20,159.46 714.37,159.46 714.37,155.25 683.20,155.25 '/>
+		<polygon fill = 'rgb(221, 108,   0)' points = '683.20,155.26 714.37,155.26 714.37,151.06 683.20,151.06 '/>
+		<polygon fill = 'rgb(222, 111,   0)' points = '683.20,151.07 714.37,151.07 714.37,146.86 683.20,146.86 '/>
+		<polygon fill = 'rgb(223, 114,   0)' points = '683.20,146.87 714.37,146.87 714.37,142.67 683.20,142.67 '/>
+		<polygon fill = 'rgb(224, 118,   0)' points = '683.20,142.68 714.37,142.68 714.37,138.47 683.20,138.47 '/>
+		<polygon fill = 'rgb(225, 122,   0)' points = '683.20,138.48 714.37,138.48 714.37,134.28 683.20,134.28 '/>
+		<polygon fill = 'rgb(227, 125,   0)' points = '683.20,134.29 714.37,134.29 714.37,130.08 683.20,130.08 '/>
+		<polygon fill = 'rgb(228, 129,   0)' points = '683.20,130.09 714.37,130.09 714.37,125.89 683.20,125.89 '/>
+		<polygon fill = 'rgb(229, 133,   0)' points = '683.20,125.90 714.37,125.90 714.37,121.69 683.20,121.69 '/>
+		<polygon fill = 'rgb(230, 137,   0)' points = '683.20,121.70 714.37,121.70 714.37,117.50 683.20,117.50 '/>
+		<polygon fill = 'rgb(231, 141,   0)' points = '683.20,117.51 714.37,117.51 714.37,113.30 683.20,113.30 '/>
+		<polygon fill = 'rgb(232, 145,   0)' points = '683.20,113.31 714.37,113.31 714.37,109.10 683.20,109.10 '/>
+		<polygon fill = 'rgb(233, 149,   0)' points = '683.20,109.11 714.37,109.11 714.37,104.91 683.20,104.91 '/>
+		<polygon fill = 'rgb(234, 153,   0)' points = '683.20,104.92 714.37,104.92 714.37,100.71 683.20,100.71 '/>
+		<polygon fill = 'rgb(235, 157,   0)' points = '683.20,100.72 714.37,100.72 714.37,96.52 683.20,96.52 '/>
+		<polygon fill = 'rgb(236, 162,   0)' points = '683.20,96.53 714.37,96.53 714.37,92.32 683.20,92.32 '/>
+		<polygon fill = 'rgb(237, 166,   0)' points = '683.20,92.33 714.37,92.33 714.37,88.13 683.20,88.13 '/>
+		<polygon fill = 'rgb(239, 171,   0)' points = '683.20,88.14 714.37,88.14 714.37,83.93 683.20,83.93 '/>
+		<polygon fill = 'rgb(240, 175,   0)' points = '683.20,83.94 714.37,83.94 714.37,79.74 683.20,79.74 '/>
+		<polygon fill = 'rgb(241, 180,   0)' points = '683.20,79.75 714.37,79.75 714.37,75.54 683.20,75.54 '/>
+		<polygon fill = 'rgb(242, 185,   0)' points = '683.20,75.55 714.37,75.55 714.37,71.35 683.20,71.35 '/>
+		<polygon fill = 'rgb(243, 190,   0)' points = '683.20,71.36 714.37,71.36 714.37,67.15 683.20,67.15 '/>
+		<polygon fill = 'rgb(244, 195,   0)' points = '683.20,67.16 714.37,67.16 714.37,62.96 683.20,62.96 '/>
+		<polygon fill = 'rgb(245, 200,   0)' points = '683.20,62.97 714.37,62.97 714.37,58.76 683.20,58.76 '/>
+		<polygon fill = 'rgb(246, 205,   0)' points = '683.20,58.77 714.37,58.77 714.37,54.57 683.20,54.57 '/>
+		<polygon fill = 'rgb(247, 210,   0)' points = '683.20,54.58 714.37,54.58 714.37,50.37 683.20,50.37 '/>
+		<polygon fill = 'rgb(248, 215,   0)' points = '683.20,50.38 714.37,50.38 714.37,46.18 683.20,46.18 '/>
+		<polygon fill = 'rgb(249, 221,   0)' points = '683.20,46.19 714.37,46.19 714.37,41.98 683.20,41.98 '/>
+		<polygon fill = 'rgb(250, 226,   0)' points = '683.20,41.99 714.37,41.99 714.37,37.79 683.20,37.79 '/>
+		<polygon fill = 'rgb(251, 232,   0)' points = '683.20,37.80 714.37,37.80 714.37,33.59 683.20,33.59 '/>
+		<polygon fill = 'rgb(252, 237,   0)' points = '683.20,33.60 714.37,33.60 714.37,29.40 683.20,29.40 '/>
+		<polygon fill = 'rgb(253, 243,   0)' points = '683.20,29.41 714.37,29.41 714.37,25.20 683.20,25.20 '/>
+		<polygon fill = 'rgb(254, 249,   0)' points = '683.20,25.21 714.37,25.21 714.37,21.01 683.20,21.01 '/>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M683.20,558.00 L714.37,558.00 L714.37,21.01 L683.20,21.01 L683.20,558.00 Z  '/></g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M714.37,558.00 L703.87,558.00  '/>	<g transform="translate(724.16,562.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="start">
+		<text> 10</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M683.20,558.00 L693.70,558.00 M714.37,450.61 L703.87,450.61  '/>	<g transform="translate(724.16,455.16)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="start">
+		<text> 12</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M683.20,450.61 L693.70,450.61 M714.37,343.21 L703.87,343.21  '/>	<g transform="translate(724.16,347.76)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="start">
+		<text> 14</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M683.20,343.21 L693.70,343.21 M714.37,235.81 L703.87,235.81  '/>	<g transform="translate(724.16,240.36)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="start">
+		<text> 16</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M683.20,235.81 L693.70,235.81 M714.37,128.41 L703.87,128.41  '/>	<g transform="translate(724.16,132.96)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="start">
+		<text> 18</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M683.20,128.41 L693.70,128.41 M714.37,21.01 L703.87,21.01  '/>	<g transform="translate(724.16,25.56)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="start">
+		<text> 20</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M683.20,21.01 L693.70,21.01  '/></g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+</g>
+</svg>
+

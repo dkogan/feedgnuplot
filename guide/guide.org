@@ -344,3 +344,47 @@ feedgnuplot --domain       \
 
 #+RESULTS:
 [[file:guide-12.svg]]
+
+** Labels
+Docs:
+
+#+BEGIN_SRC sh :results none :exports code
+gnuplot -e 'help labels'
+gnuplot -e 'help set label'
+#+END_SRC
+
+Basic example:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo \
+    "1 1 aaa
+     2 3 bbb
+     4 5 ccc" | \
+feedgnuplot --domain          \
+            --with 'labels'   \
+            --tuplesizeall 3  \
+            --xmin 0 --xmax 5 \
+            --ymin 0 --ymax 6 \
+            --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-13.svg]]
+
+More complex example (varied orientations and colors):
+
+#+BEGIN_SRC sh :results file link :exports both
+echo \
+    "1 1 aaa 0  10
+     2 3 bbb 30 18
+     4 5 ccc 90 20" | \
+feedgnuplot --domain          \
+            --with 'labels rotate variable textcolor palette' \
+            --tuplesizeall 5  \
+            --xmin 0 --xmax 5 \
+            --ymin 0 --ymax 6 \
+            --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-14.svg]]
