@@ -73,10 +73,13 @@ network interface in bytes/second (uses bash, awk and Linux):
 
 =head1 DESCRIPTION
 
-This is a flexible, command-line-oriented frontend to Gnuplot. It creates
-plots from data coming in on STDIN or given in a filename passed on the
-commandline. Various data representations are supported, as is hardcopy
-output and streaming display of live data. A simple example:
+This is a flexible, command-line-oriented frontend to Gnuplot. It creates plots
+from data coming in on STDIN or given in a filename passed on the commandline.
+Various data representations are supported, as is hardcopy output and streaming
+display of live data. For a tutorial and a gallery please see the guide at
+L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>
+
+A simple example:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' | feedgnuplot
 
@@ -649,7 +652,7 @@ instance, to plot 1% of the data, pass a factor of 100.
 
 =item
 
-C<--everyallID factor>
+C<--everyall factor>
 
 Decimates the input. This works exactly like C<--every>, except it applies to
 I<all> the curves.
@@ -689,6 +692,8 @@ the y-axis extents are not specified (C<--ymin>, C<--ymax>, C<--set 'yrange
 properly. Since this option is just a passthrough to gnuplot, finer control can
 be achieved by passing in C<--equation> and C<--set yrange ...> directly.
 
+=item
+
 C<--equation xxx>
 
 Gnuplot can plot both data and symbolic equations. C<feedgnuplot> generally
@@ -714,6 +719,18 @@ separately, as in this example. More complicated example:
 
 Here the data I generate is points along the unit circle. I plot these as
 points, and I I<also> plot a true circle as a parametric equation.
+
+=item
+
+C<--equation-below xxx>
+
+Synonym for C<--equation>. These are rendered I<below> all the other data.
+
+=item
+
+C<--equation-above xxx>
+
+Like C<--equation>, but is rendered I<on top> of all the other data.
 
 =item
 
@@ -893,7 +910,10 @@ also.
 
 C<--geometry>
 
-If using X11, specifies the size, position of the plot window
+Specifies the size, position of the plot window. This applies I<only> to the
+C<x11> gnuplot terminal, and has no effect otherwise. To control the window size
+for any other terminal, ask for the terminal explicitly, with the options
+specifying the size. For instance C<--terminal 'qt size 1024,768'>
 
 =item
 
@@ -904,6 +924,9 @@ Print the version and exit
 =back
 
 =head1 RECIPES
+
+For a tutorial and a gallery please see the guide at
+L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>
 
 =head2 Basic plotting of piped data
 
@@ -950,7 +973,7 @@ in a Thinkpad.
 
 =head2 Plotting a live histogram of the ping round-trip times for the past 20 seconds
 
- $ ping -A -D 8.8.8.8 |
+ $ ping -D 8.8.8.8 |
    perl -anE 'BEGIN { $| = 1; }
               $F[0] =~ s/[\[\]]//g or next;
               $F[7] =~ s/.*=//g    or next;
@@ -998,7 +1021,7 @@ Dima Kogan, C<< <dima@secretsauce.net> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011-2012 Dima Kogan.
+Copyright 2011-2021 Dima Kogan.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
