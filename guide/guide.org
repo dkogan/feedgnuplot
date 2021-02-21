@@ -538,7 +538,8 @@ These aren't "histograms", where gnuplot bins the data for us, but rather the
 data is given to us, ready to plot. We pass =--xticlabels= to indicate that the
 x-axis tic labels come from the data. This changes the interpretation of the
 input: with =--domain=, each line begins with =x label ....=. Without
-=--domain=, each line begins with =label ...=.
+=--domain=, each line begins with =label ...=. This does /not/ affect the
+tuple size.
 
 Basic example without =--domain=:
 
