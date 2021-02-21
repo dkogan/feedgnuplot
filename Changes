@@ -1,3 +1,11 @@
+feedgnuplot (1.57) unstable; urgency=medium
+
+  * Added --xticlabels to label the x-axis tics from the data
+  * Added --equation-above and --equation-below to control the equation
+    drawing sequence
+
+ -- Dima Kogan <dkogan@debian.org>  Sun, 21 Feb 2021 13:56:23 -0800
+
 feedgnuplot (1.56) unstable; urgency=medium
 
   * Updated default hardcopy settings

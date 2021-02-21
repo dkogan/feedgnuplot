@@ -39,6 +39,8 @@ _arguments -S                                                                   
     '*--set[Additional 'set' gnuplot commands]:set-option'                        \
     '*--unset[Additional 'unset' gnuplot commands]:unset-option'                  \
     '*--equation[Raw symbolic equation]:equation'                                 \
+    '*--equation-below[Raw symbolic equation]:equation'                           \
+    '*--equation-above[Raw symbolic equation to plot on top]:equation'            \
     '--image[Image file to render beneath the data]:image:_files -g "(#i)*.(jpg|jpeg|png|gif)"' \
     '--square[Plot data with square aspect ratio]'                                \
     '--square-xy[For 3D plots, set square aspect ratio for ONLY the x,y axes]'    \
@@ -65,4 +67,5 @@ _arguments -S                                                                   
     '--version'                                                                   \
     '--help'                                                                      \
     '--timefmt[Format for time/date data]:time format'                            \
+    '--xticlabels[x-axis tic labels are read from the data]'                      \
     '--vnlog[column IDs come from a vnlog header]'

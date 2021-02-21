@@ -1,0 +1,670 @@
+This is a tutorial and gallery demonstrating =feedgnuplot= usage. The
+[[https://github.com/dkogan/feedgnuplot/][documentation]] provides a complete reference, and [[https://github.com/dkogan/feedgnuplot/#recipes][application-specific usage
+examples]]. The capabilities of gnuplot itself are demonstrated at [[http://www.gnuplot.info/demo/][its demo page]].
+
+* Tutorial
+First, a trivial plot: let's plot a sinusoid
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE 'say sin($_/5.)' | \
+feedgnuplot
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-1.svg]]
+
+This was a trivial plot, and was trivially-easy to make: we gave the tool one
+column of data with no specific instructions, and we got a plot.
+
+The interpretation of the input data is controlled by two arguments: ==--domain=
+and =--dataid=. Here we passed neither, so each line of input is interpreted as
+=y0 y1 y2...= with sequential integers (0, 1, 2, ...) used for the =x=
+coordinate. Let's pass in more than one =y= per line to plot a sine and a cosine
+together:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          say "$c $s"' | \
+feedgnuplot --lines --points
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-2.svg]]
+
+Here I also passed =--lines --points= to make more legible plots.
+
+Note that, the lines may have different numbers of points. To plot the cosine
+from every line, but the sine from every 5th line:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          if($.%5) { say "$c";    }
+          else     { say "$c $s"; }' | \
+feedgnuplot --lines --points
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-3.svg]]
+
+Each =y= is referred to as a "dataset" or "curve" in the code and documentation.
+
+With =--domain=, the =x= values are read from the data instead of simply
+encoding line numbers: each line of input is interpreted as =x y0 y1 y2...=.
+Let's plot =sin(theta)= vs. =cos(theta)=, i.e. a circle:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          say "$c $s"' | \
+feedgnuplot --lines --points --domain
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-4.svg]]
+
+Hmmm. We asked for a circle, but this looks more like an ellipse. Why? Because
+gnuplot is autoscaling the =x= and =y= axes independently to fill the plot window.
+We can scale the axes /together/ by passing =--square=, and we get a circle:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          say "$c $s"' | \
+feedgnuplot --lines --points --domain --square
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-5.svg]]
+
+Again, we can have multiple =y= in each line, and each line may have a different
+number of =y=. Let's plot a circle /and/ an ellipse, sampled more coarsely:
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          if($.%5) { say "$c $s"; }
+          else     { $s2 = $s/2;
+                     say "$c $s $s2"; }' | \
+feedgnuplot --lines --points --domain --square
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-6.svg]]
+
+We just plotted something where each point is represented by 2 values: =x= and
+=y=. When making 2D plots, this is the most common case, but others are
+possible. What if we want to color-code our points using another column of data?
+We feed in the new column, and we tell =feedgnuplot= that we now have /3/ values
+per point (the tuple size), and we tell =gnuplot= how we want this plot to be
+made. Color-coding by the angle, in degrees:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$thdeg = $_/100.*360.;
+          $th = $_/100.*2.*3.14159;
+          $s  = sin($th);
+          $c  = cos($th);
+          say "$c $s $thdeg";' | \
+feedgnuplot --domain --square \
+            --tuplesizeall 3  \
+            --styleall 'with linespoints palette'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-7.svg]]
+
+Here we said that /all/ the datasets have 3 values per point. And that /all/ the
+datasets should be plotted with that particular style. The styles are strings
+that are passed on to =gnuplot= verbatim. So the full power of =gnuplot= is
+available, and there's nothing =feedgnuplot=-specific to learn. =gnuplot= has
+plenty of documentation about styling details.
+
+The above =--styleall= argument may be identically replaced with a shorthand:
+
+#+BEGIN_EXAMPLE
+--with 'points palette'
+#+END_EXAMPLE
+
+Note that the =--lines --points= specify the /default/ style only, so these
+options do nothing here, and if we want lines /and/ points, we ask for those in
+the style:
+
+#+BEGIN_EXAMPLE
+--with 'linespoints palette'
+#+END_EXAMPLE
+
+The styles and tuple sizes can be different for each dataset. For instance, to
+apply the colors only to the circle (dataset 0), leaving the ellipse (dataset 1)
+with the default tuple size and style:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$thdeg = $_/100.*360.;
+          $th = $_/100.*2.*3.14159;
+          $s=sin($th); $c=cos($th);
+          if($.%5) { say "$c $s $thdeg" }
+          else     { $s2 = $s/2;
+                     say "$c $s $thdeg $s2"; }' | \
+feedgnuplot --lines --points --domain --square \
+            --tuplesize 0 3   \
+            --style     0 'with points palette' \
+            --legend    0 'circle' \
+            --legend    1 'ellipse'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-8.svg]]
+
+Here we also asked for dataset labels to make it clear to the viewer what's
+what.
+
+The other significant option involved in the interpretation of data is
+=--dataid=. This labels each dataset in the data, so instead of referring to
+dataset =0=, you could refer to dataset =circle=. With =--domain --dataid=, each
+line of input is interpreted as =x id0 y0 id1 y1...=, with the number of =y= in
+each dataset reflecting the tuple size. Naturally, =--dataid= without =--domain=
+is identical, except without the leading =x=. The previous plot can be
+reproduced with =--dataid=:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$thdeg = $_/100.*360.;
+          $th = $_/100.*2.*3.14159;
+          $s=sin($th); $c=cos($th);
+          if($.%5) { say "$c circle $s $thdeg" }
+          else     { $s2 = $s/2;
+                     say "$c circle $s $thdeg ellipse $s2"; }' | \
+feedgnuplot --lines --points --domain --dataid --square \
+            --tuplesize circle 3   \
+            --style     circle 'with points palette' \
+            --autolegend
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-9.svg]]
+
+Note that instead of labelling the datasets explicitly, we passed =--autolegend=
+to use the ID as the label for each dataset. This works without =--dataid= also,
+but the IDs are then the unhelpful sequential integers.
+
+Instead of identifying columns using explicit IDs inside the data stream (as
+with =--dataid=), it's possible to read [[https://www.github.com/dkogan/vnlog][vnlog]] data, which contains a single
+header line identifying the columns. For instance:
+
+#+BEGIN_SRC sh :results file link :exports both
+( echo '# th';
+  seq 100 | perl -nE 'say $_/100.*2.*3.14159;' ) | \
+vnl-filter -p 'c=cos(th),s=sin(th),th_deg=th*180./3.14159,s2=sin(th)/2' | \
+feedgnuplot --lines --points --domain --vnl --square \
+            --tuplesize s 3   \
+            --style     s 'with points palette' \
+            --legend s  circle \
+            --legend s2 ellipse
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-10.svg]]
+
+* Gallery
+This is a good overview of the syntax and of the data interpretation. Let's demo
+some fancy plots to serve as a cookbook.
+
+Since the actual plotting is handled by =gnuplot=, its documentation and [[http://www.gnuplot.info/demo/][demos]]
+are the primary reference on how to do stuff.
+
+** Line, point sizes, thicknesses, styles
+Most often, we're plotting lines or points. The most common styling keywords
+are:
+
+- =pt= (or equivalently =pointtype=)
+- =ps= (or equivalently =pointsize=)
+- =lt= (or equivalently =linetype=)
+- =lw= (or equivalently =linewidth=)
+- =lc= (or equivalently =linecolor=)
+- =dt= (or equivalently =dashtype=)
+
+For details about these and all other styles, see the =gnuplot= documentation.
+For instance, the first little bit of the docs about the different line widths:
+
+#+BEGIN_SRC sh :results output verbatim :exports both
+gnuplot -e 'help linewidth' | head -n 20
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+ Each terminal has a default set of line and point types, which can be seen
+ by using the command `test`.  `set style line` defines a set of line types
+ and widths and point types and sizes so that you can refer to them later by
+ an index instead of repeating all the information at each invocation.
+
+ Syntax:
+       set style line <index> default
+       set style line <index> {{linetype  | lt} <line_type> | <colorspec>}
+                              {{linecolor | lc} <colorspec>}
+                              {{linewidth | lw} <line_width>}
+                              {{pointtype | pt} <point_type>}
+                              {{pointsize | ps} <point_size>}
+                              {{pointinterval | pi} <interval>}
+                              {{pointnumber | pn} <max_symbols>}
+                              {{dashtype | dt} <dashtype>}
+                              {palette}
+       unset style line
+       show style line
+
+ `default` sets all line style parameters to those of the linetype with
+#+end_example
+
+gnuplot has a =test= command, which produces a demo of the various available
+styles. This documentation uses the =svg= terminal (what gnuplot calls a
+backend). So for the =svg= terminal, the various styles look like this:
+
+#+begin_src gnuplot :results file link :exports both :file gnuplot-terminal-test.svg
+test
+#+end_src
+
+#+RESULTS:
+[[file:gnuplot-terminal-test.svg]]
+
+So for instance if you plot =--with 'linespoints pt 4 dt 2 lc 7'= you'll get a
+red dashed line with square points. By default you'd be using one of the
+interactive graphical terminals (=x11= or =qt=), which would have largely
+similar styling.
+
+Let's make a plot with some variable colors and point sizes:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq -10 10 | \
+perl -nE '$, = " ";
+          say "parabola", $_*$_, abs($_)/2, $_*50;
+          say "line",     $_*3. + 30.;' | \
+feedgnuplot --dataid \
+            --tuplesize parabola 4   \
+            --style     parabola 'with points pointtype 7 pointsize variable palette' \
+            --style     line     'with lines lw 3 lc "red" dashtype 2' \
+            --set 'cbrange [-600:600]'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-11.svg]]
+
+Here we used =--set= to set the range of the colorbar. =--set= (and =--unset=)
+map to the gnuplot =set= (and =--unset=) command.
+
+** Error bars
+As before, the =gnuplot= documentation has the styling details:
+
+#+BEGIN_SRC sh :results none :exports code
+gnuplot -e 'help xerrorbars'
+gnuplot -e 'help yerrorbars'
+gnuplot -e 'help xyerrorbars'
+#+END_SRC
+
+For brevity, I'm not including the contents of those help pages here. These tell
+us how to specify errorbars: how many columns to pass in, what they mean, etc.
+Example:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq -10 10 | \
+perl -nE '$, = " ";
+          chomp;
+          $x = $_;
+          $y = $x*$x * 10 + 20;
+          say $x+1, "parabola", $y;
+          say $x+1, "parabola_symmetric_xyerrorbars", $y, $x*$x/80, $x*$x/4;
+          say $x, "parabola_unsymmetric_xyerrorbars", $y, $x-$x*$x/80, $x+$x*$x/40, $y-$x*$x/4, $y+$x*$x/8;
+          say $x, "line_unsymmetric_yerrorbars", $x*20+500, 40;' | \
+feedgnuplot --domain --dataid \
+            --tuplesize parabola 2   \
+            --style     parabola "with lines" \
+            --tuplesize parabola_symmetric_xyerrorbars 4   \
+            --style     parabola_symmetric_xyerrorbars "with xyerrorbars" \
+            --legend    parabola_symmetric_xyerrorbars "using the 'x y xdelta ydelta' style" \
+            --tuplesize parabola_unsymmetric_xyerrorbars 6   \
+            --style     parabola_unsymmetric_xyerrorbars "with xyerrorbars" \
+            --legend    parabola_unsymmetric_xyerrorbars "using the 'x y xlow xhigh ylow yhigh' style" \
+            --tuplesize line_unsymmetric_yerrorbars 3   \
+            --style     line_unsymmetric_yerrorbars "with yerrorbars" \
+            --legend    line_unsymmetric_yerrorbars "using the 'x y ydelta' style" \
+            --xmin -10 --xmax 10 \
+            --set 'key box opaque'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-12.svg]]
+
+** Polar coordinates
+See
+
+#+BEGIN_SRC sh :results none :exports code
+gnuplot -e 'help polar'
+#+END_SRC
+
+Let's plot a simple =rho = theta= spiral:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 100 | \
+perl -nE '$x = $_/10; \
+          say "$x $x"' | \
+feedgnuplot --domain       \
+            --with 'lines' \
+            --set 'polar'  \
+            --square
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-13.svg]]
+
+** Timestamps
+=feedgnuplot= can interpret data given as timestamps in an arbitrary format
+parseable with =strftime()=. Unlike everything else in =feedgnuplot=, these
+timestamps /may/ contain whitespace. For instance:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 5 | gawk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}' | \
+feedgnuplot --domain \
+            --lines --points \
+            --timefmt '%d %b %Y %H:%M:%S' \
+            --xmin '20 Oct 2013 06:05:00' \
+            --xmax '20 Oct 2013 06:05:20'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-14.svg]]
+
+=--timefmt= controls how to parse the /input/. The formatting of the /output/ is
+auto-selected by gnuplot, and sometimes we want to control it. To show the hour
+and minute and seconds on the x axis:
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 5 | gawk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}' | \
+feedgnuplot --domain \
+            --lines --points \
+            --timefmt '%d %b %Y %H:%M:%S' \
+            --xmin '20 Oct 2013 06:05:00' \
+            --xmax '20 Oct 2013 06:05:20' \
+            --set 'format x "%H:%M:%S"'
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-15.svg]]
+
+** Labels
+Docs:
+
+#+BEGIN_SRC sh :results none :exports code
+gnuplot -e 'help labels'
+gnuplot -e 'help set label'
+#+END_SRC
+
+Basic example:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo \
+    "1 1 aaa
+     2 3 bbb
+     4 5 ccc" | \
+feedgnuplot --domain          \
+            --with 'labels'   \
+            --tuplesizeall 3  \
+            --xmin 0 --xmax 5 \
+            --ymin 0 --ymax 6 \
+            --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-16.svg]]
+
+More complex example (varied orientations and colors):
+
+#+BEGIN_SRC sh :results file link :exports both
+echo \
+    "1 1 aaa 0  10
+     2 3 bbb 30 18
+     4 5 ccc 90 20" | \
+feedgnuplot --domain          \
+            --with 'labels rotate variable textcolor palette' \
+            --tuplesizeall 5  \
+            --xmin 0 --xmax 5 \
+            --ymin 0 --ymax 6 \
+            --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-17.svg]]
+
+** 3D plots
+We can plot in 3D by passing =--3d=. When plotting interactively, you can use
+the mouse to rotate the plot, and look at it from different directions.
+Otherwise, the viewing angle can be set with =--set 'view ...'=. See
+
+#+BEGIN_SRC sh :results none :exports code
+gnuplot -e 'help set view'
+#+END_SRC
+
+Unlike 2D plots, 3D plots have a 2-dimensional domain, and =--domain= is
+/required/. So each line is interpreted =x y z0 z1 z2...=.
+
+A double-helix with variable color and variable pointsize
+
+#+BEGIN_SRC sh :results file link :exports both
+seq 200 | \
+perl -nE '$, = " ";
+          $th = $_/10;
+          $z  = $_/40;
+          $c  = cos($th);
+          $s  = sin($th);
+          $size = 0.5 + abs($c);
+          $color = $z;
+          say  $c,  $s, 0, $z, $size, $color;
+          say -$c, -$s, 1, $z, $size, $color;' | \
+feedgnuplot --domain --dataid --3d \
+            --with 'points pointsize variable pointtype 7 palette' \
+            --tuplesizeall 5 \
+            --title "Double helix" \
+            --squarexy
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-18.svg]]
+
+** Histograms
+=gnuplot= (and =feedgnuplot=) has support for histograms. So we can give it
+data, and have it bin it for us. Pre-sorting the data is unnecessary. Let's look
+at the central limit theorem: we look at the distribution of sums of 10 uniform
+samples in [-1,1]: it should be normal-ish. And let's draw the expected perfect
+PDF on top (as an equation, evaluated by =gnuplot=).
+
+#+BEGIN_SRC sh :results file link :exports both
+N=20000;
+Nsum=10;
+binwidth=.1;
+seq $N | \
+perl -nE '$Nsum = '$Nsum';
+          $var  = '$Nsum' / 3.;
+          $s = 0; for $i (1..$Nsum) { $s += rand()*2-1; }
+          say $s/sqrt($var);' | \
+feedgnuplot --histo 0 --binwidth $binwidth \
+            --equation-above "($N * sqrt(2.*pi) * erf($binwidth/(2.*sqrt(2.)))) * \
+                              exp(-(x*x)/(2.)) / \
+                              sqrt(2.*pi) title \"Limit gaussian\" with lines lw 2"
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-19.svg]]
+
+If we want multiple histograms drawn on top of one another, the styling should
+be adjusted so that they both remain visible. Let's vary the size of the sum,
+and look at the effects: bigger sums should be more gaussian-like:
+
+#+BEGIN_SRC sh :results file link :exports both
+N=20000;
+binwidth=.1;
+for Nsum in 1 2 3; do
+  seq $N | \
+  perl -nE '$, = " ";
+            $Nsum = '$Nsum';
+            $var  = '$Nsum' / 3.;
+            $s = 0; for $i (1..$Nsum) { $s += rand()*2-1; }
+            say $Nsum,$s/sqrt($var);';
+done | \
+feedgnuplot --dataid --histo 1,2,3 --binwidth $binwidth \
+            --autolegend \
+            --style 1  'with boxes fill transparent solid 0.3 border lt -1' \
+            --style 2  'with boxes fill transparent pattern 4 border lt -1' \
+            --style 3  'with boxes fill transparent pattern 5 border lt -1' \
+            --equation-above "($N * sqrt(2.*pi) * erf($binwidth/(2.*sqrt(2.)))) * \
+                              exp(-(x*x)/(2.)) / \
+                              sqrt(2.*pi) title \"Limit gaussian\" with lines lw 2"
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-20.svg]]
+
+** Labeled bar charts
+=feedgnuplot= supports bar charts to be drawn with labels appearing in the data.
+These aren't "histograms", where gnuplot bins the data for us, but rather the
+data is given to us, ready to plot. We pass =--xticlabels= to indicate that the
+x-axis tic labels come from the data. This changes the interpretation of the
+input: with =--domain=, each line begins with =x label ....=. Without
+=--domain=, each line begins with =label ...=. This does /not/ affect the
+tuple size.
+
+Basic example without =--domain=:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+vnl-filter -p label,a,b | \
+feedgnuplot --vnl \
+            --xticlabels \
+            --style a 'with boxes fill pattern 4 border lt -1' \
+            --style b 'with boxes fill pattern 5 border lt -1' \
+            --ymin 0 --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-21.svg]]
+
+We can also pass =--domain= to read the =x= positions from the data also:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+feedgnuplot --vnl --domain \
+            --xticlabels \
+            --style a 'with boxes fill pattern 4 border lt -1' \
+            --style b 'with boxes fill pattern 5 border lt -1' \
+            --ymin 0 --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-22.svg]]
+
+And we can use gnuplot's clustering capabilities:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+vnl-filter -p label,a,b | \
+feedgnuplot --vnl \
+            --xticlabels \
+            --set 'style data histogram' \
+            --set 'style histogram cluster gap 2' \
+            --set 'style fill solid border lt -1' \
+            --autolegend \
+            --ymin 0 --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-23.svg]]
+
+Or we can vertically stack the bars in each cluster:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+vnl-filter -p label,a,b | \
+feedgnuplot --vnl \
+            --xticlabels \
+            --set 'style data histogram' \
+            --set 'style histogram rowstacked' \
+            --set 'boxwidth 0.8' \
+            --set 'style fill solid border lt -1' \
+            --autolegend \
+            --ymin 0 --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-24.svg]]
+
+Using =--xticlabels= to plot bars is probably the most common usage, but
+=--xticlabels= means /only/ that we read the x-axis tic labels from the data, so
+we can plot anything. For instance:
+
+#+BEGIN_SRC sh :results file link :exports both
+echo "# x label a b
+       5  aaa   2 1
+       6  bbb   3 2
+      10  ccc   5 4
+      11  ddd   2 1" | \
+feedgnuplot --vnl --domain \
+            --xticlabels \
+            --tuplesizeall 3 \
+            --with 'points pt 7 ps 2 palette' \
+            --xmin 4 --xmax 12 \
+            --ymin 0 --ymax 6 \
+            --unset grid
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-25.svg]]
+
+** Vector fields
+Documentation in gnuplot available like this:
+
+#+BEGIN_SRC sh :results none :exports code
+gnuplot -e 'help vectors'
+#+END_SRC
+
+The docs say that in 2D we want 4 columns: =x, y, xdelta, ydelta= and in 3D we
+want 6 columns: =x, y, z, xdelta, ydelta, zdelta=. And we can have a variable
+arrowstyle. A vector field in 2D:
+
+#+BEGIN_SRC sh :results file link :exports both
+perl -E '$, = " ";
+     for $x (-5..5) { for $y (-5..5) {
+       $r = sqrt($x*$x + $y*$y);
+       say $x, $y, $y/sqrt($r+0.1)*0.5, -$x/sqrt($r+0.1)*0.5;
+     } }' | \
+feedgnuplot --domain \
+            --tuplesizeall 4 \
+            --with 'vectors filled head' \
+            --square
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-26.svg]]

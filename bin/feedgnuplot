@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.56';
+my $VERSION = '1.57';
 
 my %options;
 interpretCommandline();
@@ -99,6 +99,8 @@ sub interpretCommandline
   $options{set}        = [];
   $options{unset}      = [];
   $options{equation}   = [];
+  $options{'equation-below'} = [];
+  $options{'equation-above'} = [];
 
   $options{curvestyleall} = '';
   $options{styleall}      = '';
@@ -107,8 +109,11 @@ sub interpretCommandline
   $options{rangesize} = [];
   $options{tuplesize} = [];
 
-  GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', 'vnlog!', '3d!', 'colormap!', 'lines!', 'points!',
-             'circles', 'legend=s{2}', 'autolegend!', 'xlabel=s', 'x2label=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
+  GetOptions(\%options, 'stream:s', 'domain!', 'dataid!', 'vnlog!', 'xticlabels!',
+
+             '3d!', 'colormap!', 'lines!', 'points!', 'circles',
+             'legend=s{2}', 'autolegend!',
+             'xlabel=s', 'x2label=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
              'title=s', 'xlen=f',
              'xmin=s', 'xmax=s', 'x2min=s', 'x2max=s',
              'ymin=f', 'ymax=f', 'y2min=f', 'y2max=f',
@@ -117,7 +122,7 @@ sub interpretCommandline
              'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
              'every=s{2}', 'everyall=s',
              'square!', 'square_xy!', 'square-xy!', 'squarexy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
-             'equation=s@',
+             'equation=s@', 'equation-below=s@', 'equation-above=s@',
              'image=s',
              'histogram=s@', 'binwidth=f', 'histstyle=s',
              'terminal=s',
@@ -394,6 +399,12 @@ sub interpretCommandline
       print STDERR "--3d does not make sense with circles (gnuplot doesn't support this)\n";
       exit -1;
     }
+
+    if ( $options{xticlabels} )
+    {
+      print STDERR "--3d makes no sense with --xticlabels\n";
+      exit -1;
+    }
   }
   else
   {
@@ -415,6 +426,12 @@ sub interpretCommandline
     if ( defined $options{square_xy} )
     {
       print STDERR "--square_xy only makes sense with --3d\n";
+      exit -1;
+    }
+
+    if ( $options{xticlabels} && @{$options{histogram}})
+    {
+      print STDERR "--histogram makes no sense with --xticlabels\n";
       exit -1;
     }
 
@@ -500,6 +517,10 @@ sub interpretCommandline
       unshift @{$options{equation}}, qq{"$options{image}" binary filetype=auto flipy with rgbimage title "$options{image}"};
       delete $options{image};
   }
+
+  # --equation-below is a synonym of --equation
+  push @{$options{equation}}, @{$options{'equation-below'}};
+  @{$options{'equation-below'}} = [];
 }
 
 sub getGnuplotVersion
@@ -877,9 +898,6 @@ sub mainThread
     # latest domain variable present in our data
     my $latestX;
 
-    # The domain of the current point
-    my @domain;
-
     # column headers from vnlog
     my @vnlog_headers;
     if($options{vnlog})
@@ -942,14 +960,26 @@ sub mainThread
       }
 
       # parse the incoming data lines. The format is
-      # x id0 dat0 id1 dat1 ....
+      # x xticlabels id0 dat0 id1 dat1 ....
       # where idX is the ID of the curve that datX corresponds to
       #
-      # $options{domain} indicates whether the initial 'x' is given or not (if not, the line
-      # number is used)
-      # $options{dataid} indicates whether idX is given or not (if not, the point order in the
-      # line is used)
-      # 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
+      # - $options{domain} indicates whether the initial 'x' is given or not (if not, the line
+      #   number is used)
+      #
+      # - $options{xticlabels} indicates whether the 'xticlabels' is given or not
+      #
+      # - $options{dataid} indicates whether idX is given or not (if not, the point order in the
+      #   line is used)
+      #
+      # - 3d plots require $options{domain}, and dictate "x y" for the domain instead of just "x"
+
+      # The domain of the current point
+      my @domain;
+
+      # The x-axis tic label for this point. Used only if --xticlabels
+      my $xticlabel = '';
+
+
 
       my @fields = split;
       my $i_column = 0;
@@ -958,7 +988,7 @@ sub mainThread
       {
         if( $options{timefmt} )
         {
-            # no point if doing anything unless I have at least the domain and
+            # no point in doing anything unless I have at least the domain and
             # 1 piece of data
             next if @fields < $options{timefmt_Ncols}+1;
 
@@ -968,7 +998,7 @@ sub mainThread
         }
         elsif(!$options{'3d'})
         {
-            # no point if doing anything unless I have at least the domain and
+            # no point in doing anything unless I have at least the domain and
             # 1 piece of data
             next if @fields < 1+1;
 
@@ -977,7 +1007,7 @@ sub mainThread
         }
         else
         {
-            # no point if doing anything unless I have at least the domain and
+            # no point in doing anything unless I have at least the domain and
             # 1 piece of data
             next if @fields < 2+1;
 
@@ -1006,6 +1036,17 @@ sub mainThread
         $domain0_numeric = $line_number;
       }
 
+      if ($options{xticlabels})
+      {
+          # no point in doing anything unless I have at least the xticlabel
+          # and 1 piece of data
+          next if @fields < 1+1;
+
+          $xticlabel = '"' . (shift @fields) . '"';
+          $i_column += 1;
+      }
+
+
       my $id = -1;
       while(@fields)
       {
@@ -1032,11 +1073,21 @@ sub mainThread
           my $rangesize = getRangeSize($id);
           last if @fields < $rangesize;
 
-          pushPoint(getCurve($id),
-                    join(' ',
-                         @domain,
-                         splice( @fields, 0, $rangesize ) ) . "\n",
-                    $domain0_numeric);
+
+          # Done. The curve is created. I add a point to the plot.
+          my $curve = getCurve($id);
+
+          push @{$curve->{datastring_meta}},
+          { offset_start => length( $curve->{datastring} ) +
+                            $curve->{datastring_offset},
+            domain       => $domain0_numeric };
+          $curve->{datastring} .=
+            join(' ',
+                 @domain,
+                 $xticlabel,
+                 splice( @fields, 0, $rangesize ) ) . "\n";
+          $haveNewData = 1;
+
 
           $i_column += $rangesize;
       }
@@ -1123,7 +1174,8 @@ sub plotStoredData
   my @extraopts = map {$_->{options}} @nonemptyCurves;
 
   my $body = join('', map { "$_," } @{$options{equation}});
-  $body .= join(', ' , map({ "'-' $_" } @extraopts) );
+  $body   .= join(', ' , map({ "'-' $_" } @extraopts) );
+  $body   .= join('', map { ",$_" } @{$options{'equation-above'}});
 
   if($options{'3d'}) { print PIPE "splot $body\n"; }
   else               { print PIPE  "plot $body\n"; }
@@ -1162,12 +1214,25 @@ sub updateCurveOptions
       # columns as 1:2:3..... I need the right number of columns (this is given
       # as 1 + rangesize). I also need to start the range at the first column
       # past the timefmt
-
       my @rest = map {$_ + $options{timefmt_Ncols}} (1..getRangeSize($id));
-
       $usingoptions = "using 1:" . join(':', @rest);
   }
-
+  elsif( $options{xticlabels})
+  {
+      # if no --domain: I ignore the sequential first column, and I do
+      #   3:4...:xticlabels(2)
+      # if --domain: I do NOT ignore the domain, and I do
+      #   1:3:4...:xticlabels(2)
+      my @rest = map {$_ + 2} (1..getRangeSize($id));
+      if ( $options{domain})
+      {
+          $usingoptions = "using 1:" . join(':', @rest) . ":xticlabels(2)";
+      }
+      else
+      {
+          $usingoptions = "using " . join(':', @rest) . ":xticlabels(2)";
+      }
+  }
 
   $curve->{options} = "$curve->{everyoptions} $histoptions $usingoptions $titleoption $curve->{extraoptions}";
 }
@@ -1344,18 +1409,6 @@ sub replot
   }
 }
 
-# function to add a point to the plot. Assumes that the curve indexed by $idx already exists
-sub pushPoint
-{
-  my ($curve, $datastring, $domain0_numeric) = @_;
-
-  push @{$curve->{datastring_meta}}, { offset_start => length( $curve->{datastring} ) + $curve->{datastring_offset},
-                                       domain       => $domain0_numeric };
-  $curve->{datastring} .= $datastring;
-
-  $haveNewData = 1;
-}
-
 
 mainThread();
 
@@ -1429,10 +1482,13 @@ network interface in bytes/second (uses bash, awk and Linux):
 
 =head1 DESCRIPTION
 
-This is a flexible, command-line-oriented frontend to Gnuplot. It creates
-plots from data coming in on STDIN or given in a filename passed on the
-commandline. Various data representations are supported, as is hardcopy
-output and streaming display of live data. A simple example:
+This is a flexible, command-line-oriented frontend to Gnuplot. It creates plots
+from data coming in on STDIN or given in a filename passed on the commandline.
+Various data representations are supported, as is hardcopy output and streaming
+display of live data. For a tutorial and a gallery please see the guide at
+L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>
+
+A simple example:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' | feedgnuplot
 
@@ -1934,6 +1990,18 @@ list
 
 =item
 
+C<--xticlabels>
+
+If given, the x-axis tic labels are not numerical, but are read from the data.
+This changes the interpretation of the input data: with C<--domain>, each line
+begins with C<x label ....>. Without C<--domain>, each line begins with C<label
+...>. This does I<not> affect the tuple size. This makes sense only without
+C<--3d>. Please see the guide
+(L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>) for usage
+examples.
+
+=item
+
 C<--binwidth width>
 
 The width of bins when making histograms. This setting applies to ALL histograms
@@ -2045,6 +2113,8 @@ the y-axis extents are not specified (C<--ymin>, C<--ymax>, C<--set 'yrange
 properly. Since this option is just a passthrough to gnuplot, finer control can
 be achieved by passing in C<--equation> and C<--set yrange ...> directly.
 
+=item
+
 C<--equation xxx>
 
 Gnuplot can plot both data and symbolic equations. C<feedgnuplot> generally
@@ -2070,6 +2140,18 @@ separately, as in this example. More complicated example:
 
 Here the data I generate is points along the unit circle. I plot these as
 points, and I I<also> plot a true circle as a parametric equation.
+
+=item
+
+C<--equation-below xxx>
+
+Synonym for C<--equation>. These are rendered I<below> all the other data.
+
+=item
+
+C<--equation-above xxx>
+
+Like C<--equation>, but is rendered I<on top> of all the other data.
 
 =item
 
@@ -2264,6 +2346,9 @@ Print the version and exit
 
 =head1 RECIPES
 
+For a tutorial and a gallery please see the guide at
+L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>
+
 =head2 Basic plotting of piped data
 
  $ seq 5 | awk '{print 2*$1, $1*$1}'
@@ -2357,7 +2442,7 @@ Dima Kogan, C<< <dima@secretsauce.net> >>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011-2012 Dima Kogan.
+Copyright 2011-2021 Dima Kogan.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published

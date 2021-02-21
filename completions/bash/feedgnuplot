@@ -25,6 +25,8 @@ complete -W               \
     --set                 \
     --unset               \
     --equation            \
+    --equation-below      \
+    --equation-above      \
     --image               \
     --geometry            \
     --hardcopy            \
@@ -64,4 +66,5 @@ complete -W               \
     --zlabel              \
     --zmax                \
     --zmin                \
+    --xticlabels          \
     --vnlog ' feedgnuplot

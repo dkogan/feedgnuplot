@@ -3,7 +3,7 @@
 # This tests various features of feedgnuplot. Note that the tests look at actual
 # plot output using the 'dumb' terminal, so any changes in gnuplot itself that
 # change the way the output looks will show up as test failures. Currently the
-# reference plots come from gnuplot 4.6.4, and I make sure this is the version
+# reference plots come from gnuplot 5.4, and I make sure this is the version
 # we're testing with
 #
 # Note that some tests are only executed when the RUN_ALL_TESTS environment
@@ -27,303 +27,56 @@ BEGIN {
   my $gnuplotVersion = `gnuplot --version`;
   if( !$gnuplotVersion || $@)
   {
-    print("1..0 # Skip: gnuplot not installed. Tests require ver. 4.6.4; feedgnuplot works with any.\n");
+    print("1..0 # Skip: gnuplot not installed. Tests require ver. 5.4; feedgnuplot works with any.\n");
     exit(0);
   }
 
   chomp $gnuplotVersion;
-  if ($gnuplotVersion ne "gnuplot 4.6 patchlevel 4")
+  if ($gnuplotVersion ne "gnuplot 5.4 patchlevel 1")
   {
-    print("1..0 # Skip: tests require gnuplot 4.6.4. Instead I detected '$gnuplotVersion'.\n");
+    print("1..0 # Skip: tests require gnuplot 5.4. Instead I detected '$gnuplotVersion'.\n");
     exit(0);
   }
 }
 
-use Test::More tests => 58;
+use Test::More tests => 84;
 use File::Temp 'tempfile';
 use IPC::Run 'run';
 use String::ShellQuote;
-use File::Basename;
+use FindBin qw($Bin);
 
 tryplot( testname => 'basic line plot',
          cmd      => 'seq 5',
          options  => [qw(--lines --points)],
-         refplot  => <<'EOF' );
-
-
-    5 ++---------+-----------+----------+----------+----------+-----------+----------+---------*A
-      +          +           +          +          +          +           +          +       ** +
-      |                                                                                   ***   |
-      |                                                                                 **      |
-  4.5 ++                                                                             ***       ++
-      |                                                                            **           |
-      |                                                                          **             |
-      |                                                                       ***               |
-      |                                                                     **                  |
-    4 ++                                                                 *A*                   ++
-      |                                                               ***                       |
-      |                                                            ***                          |
-      |                                                         ***                             |
-  3.5 ++                                                      **                               ++
-      |                                                    ***                                  |
-      |                                                 ***                                     |
-      |                                              ***                                        |
-    3 ++                                          *A*                                          ++
-      |                                         **                                              |
-      |                                      ***                                                |
-      |                                    **                                                   |
-      |                                 ***                                                     |
-  2.5 ++                              **                                                       ++
-      |                             **                                                          |
-      |                          ***                                                            |
-      |                        **                                                               |
-    2 ++                    *A*                                                                ++
-      |                   **                                                                    |
-      |                ***                                                                      |
-      |              **                                                                         |
-      |           ***                                                                           |
-  1.5 ++       ***                                                                             ++
-      |      **                                                                                 |
-      |   ***                                                                                   |
-      + **       +           +          +          +          +           +          +          +
-    1 A*---------+-----------+----------+----------+----------+-----------+----------+---------++
-      1         1.5          2         2.5         3         3.5          4         4.5         5
-
-EOF
+         refplot  => 'basic-line-plot.ref' );
 
 tryplot( testname => 'basic line plot to piped hardcopy',
          cmd      => 'seq 5',
          options  => [qw(--lines --points),
                       '--hardcopy', '|cat'],
-         refplot  => <<'EOF' );
-
-
-    5 ++---------+-----------+----------+----------+----------+-----------+----------+---------*A
-      +          +           +          +          +          +           +          +       ** +
-      |                                                                                   ***   |
-      |                                                                                 **      |
-  4.5 ++                                                                             ***       ++
-      |                                                                            **           |
-      |                                                                          **             |
-      |                                                                       ***               |
-      |                                                                     **                  |
-    4 ++                                                                 *A*                   ++
-      |                                                               ***                       |
-      |                                                            ***                          |
-      |                                                         ***                             |
-  3.5 ++                                                      **                               ++
-      |                                                    ***                                  |
-      |                                                 ***                                     |
-      |                                              ***                                        |
-    3 ++                                          *A*                                          ++
-      |                                         **                                              |
-      |                                      ***                                                |
-      |                                    **                                                   |
-      |                                 ***                                                     |
-  2.5 ++                              **                                                       ++
-      |                             **                                                          |
-      |                          ***                                                            |
-      |                        **                                                               |
-    2 ++                    *A*                                                                ++
-      |                   **                                                                    |
-      |                ***                                                                      |
-      |              **                                                                         |
-      |           ***                                                                           |
-  1.5 ++       ***                                                                             ++
-      |      **                                                                                 |
-      |   ***                                                                                   |
-      + **       +           +          +          +          +           +          +          +
-    1 A*---------+-----------+----------+----------+----------+-----------+----------+---------++
-      1         1.5          2         2.5         3         3.5          4         4.5         5
-
-Wrote output to |cat
-EOF
+         refplot  => 'basic-line-plot-to-piped-hardcopy.ref' );
 
 tryplot( testname => 'basic lines-only plot',
          cmd      => 'seq 5',
          options  => [qw(--lines)],
-         refplot  => <<'EOF' );
-
-
-    5 ++---------+-----------+----------+----------+----------+-----------+----------+---------**
-      +          +           +          +          +          +           +          +       ** +
-      |                                                                                   ***   |
-      |                                                                                 **      |
-  4.5 ++                                                                             ***       ++
-      |                                                                            **           |
-      |                                                                          **             |
-      |                                                                       ***               |
-      |                                                                     **                  |
-    4 ++                                                                 ***                   ++
-      |                                                               ***                       |
-      |                                                            ***                          |
-      |                                                         ***                             |
-  3.5 ++                                                      **                               ++
-      |                                                    ***                                  |
-      |                                                 ***                                     |
-      |                                              ***                                        |
-    3 ++                                          ***                                          ++
-      |                                         **                                              |
-      |                                      ***                                                |
-      |                                    **                                                   |
-      |                                 ***                                                     |
-  2.5 ++                              **                                                       ++
-      |                             **                                                          |
-      |                          ***                                                            |
-      |                        **                                                               |
-    2 ++                    ***                                                                ++
-      |                   **                                                                    |
-      |                ***                                                                      |
-      |              **                                                                         |
-      |           ***                                                                           |
-  1.5 ++       ***                                                                             ++
-      |      **                                                                                 |
-      |   ***                                                                                   |
-      + **       +           +          +          +          +           +          +          +
-    1 **---------+-----------+----------+----------+----------+-----------+----------+---------++
-      1         1.5          2         2.5         3         3.5          4         4.5         5
-
-EOF
+         refplot  => 'basic-lines-only-plot.ref' );
 
 tryplot( testname => 'basic points-only plot',
          cmd      => 'seq 5',
          options  => [qw(--points)],
-         refplot  => <<'EOF' );
-
-
-    5 ++---------+-----------+----------+----------+----------+-----------+----------+---------+A
-      +          +           +          +          +          +           +          +          +
-      |                                                                                         |
-      |                                                                                         |
-  4.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    4 ++                                                                  A                    ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  3.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    3 ++                                           A                                           ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  2.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    2 ++                     A                                                                 ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  1.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      +          +           +          +          +          +           +          +          +
-    1 A+---------+-----------+----------+----------+----------+-----------+----------+---------++
-      1         1.5          2         2.5         3         3.5          4         4.5         5
-
-EOF
+         refplot  => 'basic-points-only-plot.ref' );
 
 tryplot( testname => 'basic line plot with bounds',
          cmd      => 'seq 5',
          options  => [qw(--lines --points),
                       qw(--xmin -10.5 --xmax 4.5 --ymin -0.5 --ymax 5.5)],
-         refplot  => <<'EOF' );
-
-
-    +--+-----------+------------+-----------+-----------+-----------+------------+-----------+--+
-    |  +           +            +           +           +           +            +           +  |
-    |                                                                                           |
-  5 ++                                                                                         ++
-    |                                                                                           |
-    |                                                                                           |
-    |                                                                                           *
-    |                                                                                          *|
-    |                                                                                         * |
-  4 ++                                                                                       A ++
-    |                                                                                       *   |
-    |                                                                                      *    |
-    |                                                                                     *     |
-    |                                                                                    *      |
-    |                                                                                   *       |
-  3 ++                                                                                 A       ++
-    |                                                                                 *         |
-    |                                                                               **          |
-    |                                                                              *            |
-    |                                                                             *             |
-  2 ++                                                                           A             ++
-    |                                                                           *               |
-    |                                                                          *                |
-    |                                                                         *                 |
-    |                                                                        *                  |
-    |                                                                       *                   |
-  1 ++                                                                     A                   ++
-    |                                                                                           |
-    |                                                                                           |
-    |                                                                                           |
-    |                                                                                           |
-    |                                                                                           |
-  0 ++                                                                                         ++
-    |                                                                                           |
-    |  +           +            +           +           +           +            +           +  |
-    +--+-----------+------------+-----------+-----------+-----------+------------+-----------+--+
-      -10         -8           -6          -4          -2           0            2           4
-
-EOF
+         refplot  => 'basic-line-plot-with-bounds.ref' );
 
 tryplot( testname => 'basic line plot with bounds, square aspect ratio',
          cmd      => 'seq 5',
          options  => [qw(--lines --points),
                       qw(--xmin -10.5 --xmax 4.5 --ymin -0.5 --ymax 5.5 --square)],
-         refplot  => <<'EOF' );
-
-
-      +--+-----------+----------+-----------+-----------+-----------+----------+-----------+--+
-      |  +           +          +           +           +           +          +           +  |
-      |                                                                                       |
-    5 ++                                                                                     ++
-      |                                                                                       |
-      |                                                                                       |
-      |                                                                                       *
-      |                                                                                      *|
-      |                                                                                     * |
-    4 ++                                                                                   A ++
-      |                                                                                   *   |
-      |                                                                                  *    |
-      |                                                                                 *     |
-      |                                                                                *      |
-      |                                                                               *       |
-    3 ++                                                                             A       ++
-      |                                                                             *         |
-      |                                                                           **          |
-      |                                                                          *            |
-      |                                                                         *             |
-    2 ++                                                                       A             ++
-      |                                                                       *               |
-      |                                                                      *                |
-      |                                                                     *                 |
-      |                                                                    *                  |
-      |                                                                   *                   |
-    1 ++                                                                 A                   ++
-      |                                                                                       |
-      |                                                                                       |
-      |                                                                                       |
-      |                                                                                       |
-      |                                                                                       |
-    0 ++                                                                                     ++
-      |                                                                                       |
-      |  +           +          +           +           +           +          +           +  |
-      +--+-----------+----------+-----------+-----------+-----------+----------+-----------+--+
-        -10         -8         -6          -4          -2           0          2           4
-
-EOF
+         refplot  => 'basic-line-plot-with-bounds-square-aspect-ratio.ref' );
 
 tryplot( testname => 'lines on both axes with labels, legends, titles',
          cmd      => q{seq 5 | gawk '{print 2*$1, $1*$1}'},
@@ -331,48 +84,7 @@ tryplot( testname => 'lines on both axes with labels, legends, titles',
                       '--legend', '0', 'data 0',
                       '--title', "Test plot",
                       qw(--y2 1 --y2label y2 --xlabel x --ylabel y --y2max 30)],
-         refplot  => <<'EOF' );
-
-                                            Test plot
-                                                                                              y2
-  10 ++---------+----------+---------+----------+----------+----------+---------+---------*A 30
-     +          +          +         +          +          +          +      data 0 **A*** +
-     |                                                                               ***   |
-     |                                                                            ***      |
-   9 ++                                                                         **         |
-     |                                                                       ***          #B 25
-     |                                                                    ***           ## |
-     |                                                                  **            ##   |
-   8 ++                                                              *A*            ##     |
-     |                                                            ***             ##       |
-     |                                                          **              ##         |
-     |                                                       ***              ##          ++ 20
-   7 ++                                                   ***               ##             |
-     |                                                 ***                ##               |
-     |                                               **                 ##                 |
-     |                                            ***                #B#                   |
-   6 ++                                        *A*                ###                     ++ 15
-     |                                       **                 ##                         |
-     |                                     **                ###                           |
-     |                                  ***               ###                              |
-     |                                **               ###                                 |
-   5 ++                             **               ##                                    |
-     |                           ***              ###                                     ++ 10
-     |                         **              #B#                                         |
-     |                       **            ####                                            |
-   4 ++                   *A*           ###                                                |
-     |                 ***          ####                                                   |
-     |               **          ###                                                      ++ 5
-     |            ***        ####                                                          |
-   3 ++        ***      ###B#                                                              |
-     |      *** ########                                                                   |
-     |   #**####                                                                           |
-     B#***      +          +         +          +          +          +         +          +
-   2 A*---------+----------+---------+----------+----------+----------+---------+---------++ 0
-     1         1.5         2        2.5         3         3.5         4        4.5         5
-                                                x
-
-EOF
+         refplot  => 'lines-on-both-axes-with-labels-legends-titles.ref' );
 
 tryplot( testname => 'lines on both axes with labels, legends, titles; different styles',
          cmd      => q{seq 5 | gawk '{print 2*$1, $1*$1}'},
@@ -381,617 +93,200 @@ tryplot( testname => 'lines on both axes with labels, legends, titles; different
                       qw(--y2 1 --y2label y2 --xlabel x --ylabel y --y2max 30),
                       '--curvestyle', '0', 'with lines',
                       '--curvestyle', '1', 'with points ps 3 pt 7'],
-         refplot  => <<'EOF' );
-
-                                            Test plot
-                                                                                              y2
-  10 ++---------+----------+---------+----------+----------+----------+---------+---------** 30
-     +          +          +         +          +          +          +      data 0 ****** +
-     |                                                                               ***   |
-     |                                                                            ***      |
-   9 ++                                                                         **         |
-     |                                                                       ***          +G 25
-     |                                                                    ***              |
-     |                                                                  **                 |
-   8 ++                                                              ***                   |
-     |                                                            ***                      |
-     |                                                          **                         |
-     |                                                       ***                          ++ 20
-   7 ++                                                   ***                              |
-     |                                                 ***                                 |
-     |                                               **                                    |
-     |                                            ***                 G                    |
-   6 ++                                        ***                                        ++ 15
-     |                                       **                                            |
-     |                                     **                                              |
-     |                                  ***                                                |
-     |                                **                                                   |
-   5 ++                             **                                                     |
-     |                           ***                                                      ++ 10
-     |                         **               G                                          |
-     |                       **                                                            |
-   4 ++                   ***                                                              |
-     |                 ***                                                                 |
-     |               **                                                                   ++ 5
-     |            ***                                                                      |
-   3 ++        ***         G                                                               |
-     |      ***                                                                            |
-     |    **                                                                               |
-     G ***      +          +         +          +          +          +         +          +
-   2 **---------+----------+---------+----------+----------+----------+---------+---------++ 0
-     1         1.5         2        2.5         3         3.5         4        4.5         5
-                                                x
-
-EOF
+         refplot  => 'lines-on-both-axes-with-labels-legends-titles-different-styles.ref' );
 
 tryplot( testname => 'domain plot',
          cmd      => q{seq 5 | gawk '{print 2*$1, $1*$1}'},
          options  => [qw(--lines --points), '--domain'],
-         refplot  => <<'EOF' );
-
-
-  25 ++---------+-----------+----------+-----------+----------+----------+-----------+---------+A
-     +          +           +          +           +          +          +           +        **+
-     |                                                                                      **  |
-     |                                                                                    **    |
-     |                                                                                   *      |
-     |                                                                                 **       |
-     |                                                                               **         |
-  20 ++                                                                            **          ++
-     |                                                                           **             |
-     |                                                                          *               |
-     |                                                                        **                |
-     |                                                                      **                  |
-     |                                                                    **                    |
-     |                                                                  *A                      |
-  15 ++                                                               **                       ++
-     |                                                             ***                          |
-     |                                                           **                             |
-     |                                                        ***                               |
-     |                                                      **                                  |
-     |                                                    **                                    |
-     |                                                 ***                                      |
-  10 ++                                              **                                        ++
-     |                                            *A*                                           |
-     |                                         ***                                              |
-     |                                     ****                                                 |
-     |                                  ***                                                     |
-     |                               ***                                                        |
-     |                           ****                                                           |
-   5 ++                       ***                                                              ++
-     |                    **A*                                                                  |
-     |                ****                                                                      |
-     |           *****                                                                          |
-     |      *****                                                                               |
-     |  ****                                                                                    |
-     A**        +           +          +           +          +          +           +          +
-   0 ++---------+-----------+----------+-----------+----------+----------+-----------+---------++
-     2          3           4          5           6          7          8           9          10
-
-EOF
+         refplot  => 'domain-plot.ref' );
 
 tryplot( testname => 'dataid plot',
          cmd      => q{seq 5 | gawk '{print 2*$1, $1*$1}'},
          options  => [qw(--lines --points),
                       qw(--dataid --autolegend)],
-         refplot  => <<'EOF' );
-
-
-  25 ++---------+-----------+----------+-----------+----------+----------+-----------+---------+E
-     +          +           +          +           +          +          +           + 2 **A*** +
-     |                                                                                 4 ##B### |
-     |                                                                                 6 $$C$$$ |
-     |                                                                                 8 %%D%%% |
-     |                                                                                10 @@E@@@ |
-     |                                                                                          |
-  20 ++                                                                                        ++
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                   D                      |
-  15 ++                                                                                        ++
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-  10 ++                                                                                        ++
-     |                                             C                                            |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-   5 ++                                                                                        ++
-     |                      B                                                                   |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     |                                                                                          |
-     A          +           +          +           +          +          +           +          +
-   0 ++---------+-----------+----------+-----------+----------+----------+-----------+---------++
-     1         1.5          2         2.5          3         3.5         4          4.5         5
-
-EOF
+         refplot  => 'dataid-plot.ref' );
 
 tryplot( testname => '3d spiral with bounds, labels',
          cmd      => q{seq 50 | gawk '{print 2*cos($1/5), sin($1/5), $1}'},
          options  => [qw(--lines --points),
                       qw(--3d --domain --zmin -5 --zmax 45 --zlabel z),
                      '--extracmds', 'set view 60,30'],
-         refplot  => <<'EOF' );
-
-
-
-
-
-
-
-                                ***A****A****A****A***A**
-                               *                         **A**
-                                                              **A***A*
-                                                                      *A*
-                                                                         *A
-                                                                           *
-              +                                                             A
-          40  |+               **A****A****A****A***A**                     A
-              |             **A                        **A****A**          A
-          30  |+         A*A                                     *A**    *A
-              |         A                                            *AA*
-       z  20  |+        AA**                                      **A*  *A*
-              |             A**A***A***A****A*****A***A****A****A*         AA
-          10  |+                        -+----                              A
-              |                     ----     +---------                    A
-           0  |+                 ---+             +    ---------
-              |               ---++                          +-+---------
-              |           ----++                                   +     ---------
-              |        ---+                                                    + ----- 1
-              |     ---+                                                      ---  0.8
-              | ----+                                                      --++ 0.6
-              +-+++---------                                           --- 0.20.4
-           -2  -1.5 ++     +---------                               ---  0
-                      -1  +     ++   --+------                   --- -0.2
-                          -0.5     0 +     ++ ---------      ---+ -0.4
-                                       0.5    1  ++   -+--- --0.8.6
-                                                 1.5 +    +-1+
-                                                         2
-
-
-
-
-
-EOF
+         refplot  => '3d-spiral-with-bounds-labels.ref' );
 
 tryplot( testname => '3d spiral with bounds, labels, square xy aspect ratio',
          cmd      => q{seq 50 | gawk '{print 2*cos($1/5), sin($1/5), $1}'},
          options  => [qw(--lines --points),
                       qw(--3d --domain --zmin -5 --zmax 45 --zlabel z),
                      '--extracmds', 'set view 60,30', '--square_xy'],
-         refplot  => <<'EOF' );
-
-
-
-
-
-
-
-
-                                           *AA*
-                                               AA*A
-                                                   A
-                                        +           A*A
-                                    40  |+             A
-                                        |               A
-                                    30  |+               A
-                                        | AAAAA*          A
-                                 z  20  |+AA    AA        A
-                                        |  AA*    A*A    AA
-                                        |     AA*AAA*AA*A
-                                    10  |+             AAA
-                                     0  |+                A
-                                        |                 A
-                                        |    +-           A
-                                        |   -++---
-                                        | --+    +---
-                                        |-++        +---
-                                        +++--           ---
-                                       -21.5+---          +- 1
-                                           -10.5---      + 0.6
-                                                0 +---  +  024
-                                                 0.5  ++-0.4
-                                                    1.521.8
-
-
-
-
-
-
-
-
-EOF
+         refplot  => '3d-spiral-with-bounds-labels-square-xy-aspect-ratio.ref' );
 
 tryplot( testname => 'Monotonicity check',
          cmd      => q{seq 10 | gawk '{print (NR-1)%5,NR}'},
          options  => [qw(--lines --points --domain --monotonic)],
-         refplot  => <<'EOF' );
-
-
-   10 ++---------+-----------+----------+----------+----------+-----------+----------+---------*A
-      +          +           +          +          +          +           +          +       ** +
-      |                                                                                   ***   |
-      |                                                                                 **      |
-  9.5 ++                                                                             ***       ++
-      |                                                                            **           |
-      |                                                                          **             |
-      |                                                                       ***               |
-      |                                                                     **                  |
-    9 ++                                                                 *A*                   ++
-      |                                                               ***                       |
-      |                                                            ***                          |
-      |                                                         ***                             |
-  8.5 ++                                                      **                               ++
-      |                                                    ***                                  |
-      |                                                 ***                                     |
-      |                                              ***                                        |
-    8 ++                                          *A*                                          ++
-      |                                         **                                              |
-      |                                      ***                                                |
-      |                                    **                                                   |
-      |                                 ***                                                     |
-  7.5 ++                              **                                                       ++
-      |                             **                                                          |
-      |                          ***                                                            |
-      |                        **                                                               |
-    7 ++                    *A*                                                                ++
-      |                   **                                                                    |
-      |                ***                                                                      |
-      |              **                                                                         |
-      |           ***                                                                           |
-  6.5 ++       ***                                                                             ++
-      |      **                                                                                 |
-      |   ***                                                                                   |
-      + **       +           +          +          +          +           +          +          +
-    6 A*---------+-----------+----------+----------+----------+-----------+----------+---------++
-      0         0.5          1         1.5         2         2.5          3         3.5         4
-
-EOF
+         refplot  => 'monotonicity-check.ref' );
 
 
 tryplot( testname => 'basic --timefmt plot',
          cmd      => q{seq 5 | gawk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}'},
          options  => ['--domain', '--timefmt', '%d %b %Y %H:%M:%S'],
-         refplot  => <<'EOF' );
-
-
-    5 ++---------+-----------+----------+----------+----------+-----------+----------+---------+A
-      +          +           +          +          +          +           +          +          +
-      |                                                                                         |
-      |                                                                                         |
-  4.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    4 ++                                                                  A                    ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  3.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    3 ++                                           A                                           ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  2.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    2 ++                     A                                                                 ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  1.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      +          +           +          +          +          +           +          +          +
-    1 A+---------+-----------+----------+----------+----------+-----------+----------+---------++
-    05:08      05:08       05:09      05:09      05:10      05:10       05:11      05:11      05:12
-
-EOF
+         refplot  => 'basic-timefmt-plot.ref' );
 
 tryplot( testname => '--timefmt plot with bounds',
          cmd      => q{seq 5 | gawk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1}'},
          options  => ['--domain', '--timefmt', '%d %b %Y %H:%M:%S',
                       '--xmin', '20 Oct 2013 06:05:00',
                       '--xmax', '20 Oct 2013 06:05:20'],
-         refplot  => <<'EOF' );
-
-
-    5 ++---+---+----+---+----+---+----+---+----+---+----+---A----+---+----+---+----+---+----+--++
-      +                      +                     +                      +                     +
-      |                                                                                         |
-      |                                                                                         |
-  4.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    4 ++                                                A                                      ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  3.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    3 ++                                           A                                           ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  2.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    2 ++                                       A                                               ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  1.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      +                      +                     +                      +                     +
-    1 ++---+---+----+---+----+---+----+---A----+---+----+---+----+---+----+---+----+---+----+--++
-    05:00                  05:05                 05:10                  05:15                 05:20
-
-EOF
+         refplot  => 'timefmt-plot-with-bounds.ref' );
 
 tryplot( testname => '--timefmt plot with --monotonic',
          cmd      => q{seq 10 | gawk '{x=(NR-1)%5; print strftime("%d %b %Y %T",1382249107+x,1),$1}'},
          options  => ['--domain', '--timefmt', '%d %b %Y %H:%M:%S',
                       '--monotonic'],
-         refplot  => <<'EOF' );
-
-
-   10 ++---------+-----------+----------+----------+----------+-----------+----------+---------+A
-      +          +           +          +          +          +           +          +          +
-      |                                                                                         |
-      |                                                                                         |
-  9.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    9 ++                                                                  A                    ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  8.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    8 ++                                           A                                           ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  7.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-    7 ++                     A                                                                 ++
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-      |                                                                                         |
-  6.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-      +          +           +          +          +          +           +          +          +
-    6 A+---------+-----------+----------+----------+----------+-----------+----------+---------++
-    05:07      05:07       05:08      05:08      05:09      05:09       05:10      05:10      05:11
-
-EOF
+         refplot  => 'timefmt-plot-with-monotonic.ref' );
 
 tryplot( testname => '--timefmt with custom rangesize',
          cmd      => q{seq 5 | gawk '{print strftime("%d %b %Y %T",1382249107+$1,1),$1,$1/10}'},
          options  => ['--domain', '--timefmt', '%d %b %Y %H:%M:%S',
                       qw(--with errorbars --rangesizeall 2)],
-         refplot  => <<'EOF' );
-
-
-  5.5 ++---------+-----------+----------+----------+----------+-----------+----------+---------**
-      +          +           +          +          +          +           +          +          *
-      |                                                                                         *
-    5 ++                                                                                       +A
-      |                                                                                         *
-      |                                                                                         *
-      |                                                                                         *
-  4.5 ++                                                                                       **
-      |                                                                  ***                    |
-      |                                                                   *                     |
-    4 ++                                                                  A                    ++
-      |                                                                   *                     |
-      |                                                                   *                     |
-      |                                                                  ***                    |
-  3.5 ++                                                                                       ++
-      |                                           ***                                           |
-      |                                            *                                            |
-    3 ++                                           A                                           ++
-      |                                            *                                            |
-      |                                            *                                            |
-      |                                           ***                                           |
-  2.5 ++                                                                                       ++
-      |                                                                                         |
-      |                     ***                                                                 |
-    2 ++                     A                                                                 ++
-      |                      *                                                                  |
-      |                     ***                                                                 |
-      |                                                                                         |
-  1.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-    1 A*                                                                                       ++
-      **                                                                                        |
-      |                                                                                         |
-      +          +           +          +          +          +           +          +          +
-  0.5 ++---------+-----------+----------+----------+----------+-----------+----------+---------++
-    05:08      05:08       05:09      05:09      05:10      05:10       05:11      05:11      05:12
-
-EOF
+         refplot  => 'timefmt-with-custom-rangesize.ref' );
 
 tryplot( testname => 'Error bars (using extraValuesPerPoint)',
          cmd      => q{seq 5 | gawk '{print $1,$1,$1/10}'},
          options  => [qw(--domain),
                       qw(--extraValuesPerPoint 1 --with errorbars)],
-         refplot  => <<'EOF' );
-
-
-  5.5 ++---------+-----------+----------+----------+----------+-----------+----------+---------**
-      +          +           +          +          +          +           +          +          *
-      |                                                                                         *
-    5 ++                                                                                       +A
-      |                                                                                         *
-      |                                                                                         *
-      |                                                                                         *
-  4.5 ++                                                                                       **
-      |                                                                  ***                    |
-      |                                                                   *                     |
-    4 ++                                                                  A                    ++
-      |                                                                   *                     |
-      |                                                                   *                     |
-      |                                                                  ***                    |
-  3.5 ++                                                                                       ++
-      |                                           ***                                           |
-      |                                            *                                            |
-    3 ++                                           A                                           ++
-      |                                            *                                            |
-      |                                            *                                            |
-      |                                           ***                                           |
-  2.5 ++                                                                                       ++
-      |                                                                                         |
-      |                     ***                                                                 |
-    2 ++                     A                                                                 ++
-      |                      *                                                                  |
-      |                     ***                                                                 |
-      |                                                                                         |
-  1.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-    1 A*                                                                                       ++
-      **                                                                                        |
-      |                                                                                         |
-      +          +           +          +          +          +           +          +          +
-  0.5 ++---------+-----------+----------+----------+----------+-----------+----------+---------++
-      1         1.5          2         2.5         3         3.5          4         4.5         5
-
-EOF
+         refplot  => 'error-bars-using-extravaluesperpoint.ref' );
 
 
 tryplot( testname => 'Error bars (using rangesizeall)',
          cmd      => q{seq 5 | gawk '{print $1,$1,$1/10}'},
          options  => [qw(--domain),
                       qw(--rangesizeall 2 --with errorbars)],
-         refplot  => <<'EOF' );
-
+         refplot  => 'error-bars-using-rangesizeall.ref' );
 
-  5.5 ++---------+-----------+----------+----------+----------+-----------+----------+---------**
-      +          +           +          +          +          +           +          +          *
-      |                                                                                         *
-    5 ++                                                                                       +A
-      |                                                                                         *
-      |                                                                                         *
-      |                                                                                         *
-  4.5 ++                                                                                       **
-      |                                                                  ***                    |
-      |                                                                   *                     |
-    4 ++                                                                  A                    ++
-      |                                                                   *                     |
-      |                                                                   *                     |
-      |                                                                  ***                    |
-  3.5 ++                                                                                       ++
-      |                                           ***                                           |
-      |                                            *                                            |
-    3 ++                                           A                                           ++
-      |                                            *                                            |
-      |                                            *                                            |
-      |                                           ***                                           |
-  2.5 ++                                                                                       ++
-      |                                                                                         |
-      |                     ***                                                                 |
-    2 ++                     A                                                                 ++
-      |                      *                                                                  |
-      |                     ***                                                                 |
-      |                                                                                         |
-  1.5 ++                                                                                       ++
-      |                                                                                         |
-      |                                                                                         |
-    1 A*                                                                                       ++
-      **                                                                                        |
-      |                                                                                         |
-      +          +           +          +          +          +           +          +          +
-  0.5 ++---------+-----------+----------+----------+----------+-----------+----------+---------++
-      1         1.5          2         2.5         3         3.5          4         4.5         5
-
-EOF
-
+tryplot( testname => 'Error bars (using tuplesize)',
+         cmd      => q{seq 5 | gawk '{print $1,$1,$1/10}'},
+         options  => [qw(--domain),
+                      qw(--tuplesizeall 3 --with errorbars)],
+         refplot  => 'error-bars-using-tuplesize.ref' );
 
 tryplot( testname => 'Error bars (using rangesize, rangesizeall)',
          cmd      => q{seq 5 | gawk '{print $1,"vert",$1,$1/10,"horiz",5-$1,$1-$1/5,$1+$1/20}'},
          options  => [qw(--domain --dataid),
                       qw(--rangesize vert 2 --rangesizeall 3 --with xerrorbars --style vert), 'with errorbars',
                       qw(--xmin 1 --xmax 5 --ymin 0.5 --ymax 5.5)],
-         refplot  => <<'EOF' );
-
+         refplot  => 'error-bars-using-rangesize-rangesizeall.ref' );
 
-    +-----------+----------+-----------+----------+-----------+----------+-----------+---------**
-    +           +          +           +          +           +          +           +          *
-    |                                                                                           *
-  5 ++                                                                                         +A
-    |                                                                                           *
-    |                                                                                           *
-    |                                                                                           *
-    |                                                                                          **
-    |                                                                   ***                     |
-    ##                                                                   *                      |
-  4 B#                                                                   A                     ++
-    ##                                                                   *                      |
-    |                                                                    *                      |
-    |                                                                   ***                     |
-    |                                                                                           |
-    |                                            ***                                            |
-    |             #          #                    *                                             |
-  3 ++            #########B##                    A                                            ++
-    |             #          #                    *                                             |
-    |                                             *                                             |
-    |                                            ***                                            |
-    |                                                                                           |
-    |                                                                                           |
-    |                     ***       #                #                                          |
-  2 ++                     A        ##############B###                                         ++
-    |                      *        #                #                                          |
-    |                     ***                                                                   |
-    |                                                                                           |
-    |                                                                                           |
-    |                                                                                           |
-    |                                                  #                      #                 |
-  1 A*                                                 ##################B#####                ++
-    **                                                 #                      #                 |
-    |                                                                                           |
-    +           +          +           +          +           +          +           +          +
-    +-----------+----------+-----------+----------+-----------+----------+-----------+----------+
-    1          1.5         2          2.5         3          3.5         4          4.5         5
+tryplot( testname => 'Error bars (using tuplesize, tuplesizeall)',
+         cmd      => q{seq 5 | gawk '{print $1,"vert",$1,$1/10,"horiz",5-$1,$1-$1/5,$1+$1/20}'},
+         options  => [qw(--domain --dataid),
+                      qw(--tuplesize vert 3 --tuplesizeall 4 --with xerrorbars --style vert), 'with errorbars',
+                      qw(--xmin 1 --xmax 5 --ymin 0.5 --ymax 5.5)],
+         refplot  => 'error-bars-using-tuplesize-tuplesizeall.ref' );
 
+tryplot( testname => 'timefmt without vnl',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--lines --points --domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"'],
+         refplot  => 'timefmt-without-vnl.ref' );
+
+tryplot( testname => 'timefmt without vnl with style 0 default 1',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"',
+                      '--style', '0', 'with lines lt 7'],
+         refplot  => 'timefmt-without-vnl-with-style0-default1.ref' );
+
+tryplot( testname => 'timefmt without vnl with style',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"',
+                      '--style', '0', 'with lines lt 7',
+                      '--style', '1', 'with lines lt 5' ],
+         refplot  => 'timefmt-without-vnl-with-style.ref' );
+
+tryplot( testname => 'timefmt with vnl with style 0 default 1',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"',
+                      '--vnl',
+                      '--style', 'a', 'with lines lt 7'],
+         refplot  => 'timefmt-with-vnl-with-style0-default1.ref' );
+
+tryplot( testname => 'timefmt with vnl with style',
+         cmd      => q{echo -n '# t a b\n1:00 5 6\n1:30 10 6\n2:00 7 6\n2:30 10 9\n'},
+         options  => [qw(--domain --timefmt), '%H:%M',
+                      '--set', 'format x "%H:%M"',
+                      '--vnl',
+                      '--style', 'a', 'with lines lt 7',
+                      '--style', 'b', 'with lines lt 5' ],
+         refplot  => 'timefmt-with-vnl-with-style.ref' );
+
+my $data_xticlabels = <<EOF;
+# x label a b
+ 5  aaa   2 1
+ 6  bbb   3 2
+10  ccc   5 4
+11  ddd   2 1
 EOF
 
+tryplot( testname => 'basic xticlabels no domain',
+         cmd      => qq{echo "$data_xticlabels" | vnl-filter -p label,a,b},
+         options  => ['--vnl',
+                      '--xticlabels',
+                      '--with', 'boxes fill solid border lt -1',
+                      '--ymin', '0'],
+         refplot  => 'basic-xticlabels-no-domain.ref' );
+
+tryplot( testname => 'basic xticlabels domain',
+         cmd      => qq{echo "$data_xticlabels"},
+         options  => [qw(--vnl --domain),
+                      '--xticlabels',
+                      '--with', 'boxes fill solid border lt -1',
+                      '--ymin', '0'],
+         refplot  => 'basic-xticlabels-domain.ref' );
+
+tryplot( testname => 'xticlabels clustered',
+         cmd      => qq{echo "$data_xticlabels" | vnl-filter -p label,a,b},
+         options  => [qw(--vnl),
+                      '--xticlabels',
+                      '--set', 'style data histogram',
+                      '--set', 'style histogram cluster gap 2',
+                      '--set', 'style fill solid border lt -1',
+                      '--ymin', '0'],
+         refplot  => 'xticlabels-clustered.ref' );
+
+tryplot( testname => 'xticlabels styles',
+         cmd      => qq{echo "$data_xticlabels"},
+         options  => [qw(--vnl --domain),
+                      '--xticlabels',
+                      '--style', 'a', 'with points',
+                      '--style', 'b', 'with lines',
+                      '--xmin', '4.5',
+                      '--xmax', '11.5',
+                      '--ymin', '0',
+                      '--ymax', '6'],
+         refplot  => 'xticlabels-styles.ref' );
+
+tryplot( testname => 'xticlabels styles with tuplesize',
+         cmd      => qq{echo "$data_xticlabels"},
+         options  => [qw(--vnl --domain),
+                      '--xticlabels',
+                      '--tuplesizeall', '3',
+                      '--with', 'linespoints pt variable',
+                      '--xmin', '4.5',
+                      '--xmax', '11.5',
+                      '--ymin', '0',
+                      '--ymax', '6'],
+         refplot  => 'xticlabels-styles-with-tuplesize.ref' );
+
+tryplot( testname => 'equations',
+         cmd      => qq{seq 10 15},
+         options  => [qw(--equation x),
+                      qw(--equation-above x+1),
+                      qw(--equation-below x-1),
+                      '--with', 'boxes fill solid border lt -1',
+                      '--ymin', '0'],
+         refplot  => 'equations.ref' );
 
 SKIP:
 {
@@ -1013,141 +308,18 @@ tryplot( testname => 'Histogram plot',
          cmd      => q{seq 50 | gawk '{print $1*$1}'},
          options  => [qw(--lines --points),
                       qw(--histo 0 --binwidth 50 --ymin 0 --curvestyleall), 'with boxes'],
-         refplot  => <<'EOF' );
-
-
-    4 ++----------****----------+------------+-----------+------------+------------+-----------++
-      +           *+**          +            +           +            +            +            +
-      |           * **                                                                          |
-      |           * **                                                                          |
-  3.5 ++          * **                                                                         ++
-      |           * **                                                                          |
-      |           * **                                                                          |
-      |           * **                                                                          |
-      |           * **                                                                          |
-    3 ++          * ***                                                                        ++
-      |           * ***                                                                         |
-      |           * ***                                                                         |
-      |           * ***                                                                         |
-  2.5 ++          * ***                                                                        ++
-      |           * ***                                                                         |
-      |           * ***                                                                         |
-      |           * ***                                                                         |
-    2 ++          * **** ***                                                                   ++
-      |           * **** ***                                                                    |
-      |           * **** ***                                                                    |
-      |           * **** ***                                                                    |
-      |           * **** ***                                                                    |
-  1.5 ++          * **** ***                                                                   ++
-      |           * **** ***                                                                    |
-      |           * **** ***                                                                    |
-      |           * **** ***                                                                    |
-    1 ++          * ************************** ******** ************************** **          ++
-      |           * **** *** **** *** **** *** **** *** **** *** **** *** **** *** **           |
-      |           * **** *** **** *** **** *** **** *** **** *** **** *** **** *** **           |
-      |           * **** *** **** *** **** *** **** *** **** *** **** *** **** *** **           |
-      |           * **** *** **** *** **** *** **** *** **** *** **** *** **** *** **           |
-  0.5 ++          * **** *** **** *** **** *** **** *** **** *** **** *** **** *** **          ++
-      |           * **** *** **** *** **** *** **** *** **** *** **** *** **** *** **           |
-      |           * **** *** **** *** **** *** **** *** **** *** **** *** **** *** **           |
-      +           *+**** *** **** *** **** *** **** *** **** *** **** *** **** *** **           +
-    0 ++----------****************************-********-**************************-**----------++
-    -500           0           500          1000        1500         2000         2500         3000
-
-EOF
+         refplot  => 'histogram-plot.ref' );
 
 tryplot( testname => 'Cumulative histogram',
          cmd      => q{seq 50 | gawk '{print $1*$1}'},
          options  => [qw(--lines --points),
                       qw(--histo 0 --histstyle cum --binwidth 50 --ymin 0 --curvestyleall), 'with boxes'],
-         refplot  => <<'EOF' );
-
-
-  50 ++-----------+------------+------------+------------+------------+-----------***----------++
-     +            +            +            +            +            +      ** ***+*           +
-     |                                                                     **** *** *           |
-     |                                                                 *** **** *** *           |
-     |                                                              ** *** **** *** *           |
-     |                                                           ***** *** **** *** *           |
-     |                                                        **** *** *** **** *** *           |
-  40 ++                                                    ** **** *** *** **** *** *          ++
-     |                                                 ****** **** *** *** **** *** *           |
-     |                                              ***** *** **** *** *** **** *** *           |
-     |                                            *** *** *** **** *** *** **** *** *           |
-     |                                         ****** *** *** **** *** *** **** *** *           |
-     |                                        ** **** *** *** **** *** *** **** *** *           |
-     |                                    ****** **** *** *** **** *** *** **** *** *           |
-  30 ++                                  *** *** **** *** *** **** *** *** **** *** *          ++
-     |                                ****** *** **** *** *** **** *** *** **** *** *           |
-     |                               *** *** *** **** *** *** **** *** *** **** *** *           |
-     |                            ****** *** *** **** *** *** **** *** *** **** *** *           |
-     |                           ** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |                          *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |                       ****** **** *** *** **** *** *** **** *** *** **** *** *           |
-  20 ++                     *** *** **** *** *** **** *** *** **** *** *** **** *** *          ++
-     |                   ****** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |                   ** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |                  *** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |                 **** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |               ****** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |              ** **** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-  10 ++             ** **** *** *** **** *** *** **** *** *** **** *** *** **** *** *          ++
-     |             *** **** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |             *** **** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |             *** **** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |           ***** **** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     |           * *** **** *** *** **** *** *** **** *** *** **** *** *** **** *** *           |
-     +           *+*** **** ***+*** **** ***+*** **** ***+*** **** ***+*** **** ***+*           +
-   0 ++----------********************************************-********+***-****-*****----------++
-   -500           0           500          1000         1500         2000         2500         3000
-
-EOF
+         refplot  => 'cumulative-histogram.ref' );
 
 tryplot( testname => 'Circles',
          cmd      => q{seq 5 | gawk '{print $1,$1,$1/10}'},
          options  => [qw(--circles --domain)],
-         refplot  => <<'EOF' );
-
-
-    5 ++-------+--------+--------+--------+--------+--------+--------+--------*******************
-      +        +        +        +        +        +        +        +        *        +       *+
-      |                                                              *        *                *|
-      |                                                          ********     *                *|
-  4.5 ++                                                        **      **    *                *+
-      |                                                        **        **   **              **|
-      |                                                       **          **   **            ** |
-      |                                                       *            *    **          **  |
-      |                                                       *            *     **        **   |
-    4 ++                                                      *            **     **********   ++
-      |                                                       *            *                    |
-      |                                                       *            *                    |
-      |                                            *          *            *                    |
-  3.5 ++                                        ******        **          **                   ++
-      |                                        *      *        **        **                     |
-      |                                       *        *        **      **                      |
-      |                                       *        *         ********                       |
-    3 ++                                      *        **                                      ++
-      |                                       *        *                                        |
-      |                                       *        *                                        |
-      |                                       *        *                                        |
-      |                                        *      *                                         |
-  2.5 ++                         *              ******                                         ++
-      |                       ******                                                            |
-      |                      **    **                                                           |
-      |                      *      *                                                           |
-    2 ++                     *      **                                                         ++
-      |                      *      **                                                          |
-      |                      *      *                                                           |
-      |                      **    **                                                           |
-      |                       ******                                                            |
-  1.5 ++                                                                                       ++
-      |                                                                                         |
-      |        *                                                                                |
-      +      ****       +        +        +        +        +        +        +        +        +
-    1 ++-----*-+**------+--------+--------+--------+--------+--------+--------+--------+-------++
-     0.5       1       1.5       2       2.5       3       3.5       4       4.5       5       5.5
-
-EOF
+         refplot  => 'circles.ref' );
 
 
 
@@ -1160,1163 +332,37 @@ note( "Starting to run streaming tests. These will take several seconds each" );
 tryplot( testname => 'basic streaming test',
          cmd      => q{seq 500 | gawk 'BEGIN{ print 0; } {print (NR==3)? "exit" : $0; fflush(); system("sleep 1.2");}'},
          options  => [qw(--lines --points --stream)],
-         refplot  => <<'EOF' );
-
-
-    1 ++----------------+-----------------+-----------------+-----------------+----------------*A
-      +                 +                 +                 +                 +              ** +
-      |                                                                                   ***   |
-      |                                                                                ***      |
-      |                                                                              **         |
-      |                                                                           ***           |
-      |                                                                         **              |
-  0.8 ++                                                                     ***               ++
-      |                                                                    **                   |
-      |                                                                 ***                     |
-      |                                                              ***                        |
-      |                                                            **                           |
-      |                                                         ***                             |
-      |                                                       **                                |
-  0.6 ++                                                   ***                                 ++
-      |                                                  **                                     |
-      |                                               ***                                       |
-      |                                            ***                                          |
-      |                                          **                                             |
-      |                                       ***                                               |
-      |                                     **                                                  |
-  0.4 ++                                 ***                                                   ++
-      |                                **                                                       |
-      |                             ***                                                         |
-      |                          ***                                                            |
-      |                        **                                                               |
-      |                     ***                                                                 |
-      |                   **                                                                    |
-  0.2 ++               ***                                                                     ++
-      |              **                                                                         |
-      |           ***                                                                           |
-      |        ***                                                                              |
-      |      **                                                                                 |
-      |   ***                                                                                   |
-      + **              +                 +                 +                 +                 +
-    0 A*----------------+-----------------+-----------------+-----------------+----------------++
-      1                1.2               1.4               1.6               1.8                2
-
-
-
-    2 ++---------------------+---------------------+----------------------+--------------------*A
-      +                      +                     +                      +                  ** +
-      |                                                                                   ***   |
-      |                                                                                ***      |
-      |                                                                              **         |
-      |                                                                           ***           |
-      |                                                                        ***              |
-      |                                                                      **                 |
-      |                                                                   ***                   |
-  1.5 ++                                                               ***                     ++
-      |                                                              **                         |
-      |                                                           ***                           |
-      |                                                        ***                              |
-      |                                                      **                                 |
-      |                                                   ***                                   |
-      |                                                ***                                      |
-      |                                              **                                         |
-    1 ++                                          *A*                                          ++
-      |                                         **                                              |
-      |                                      ***                                                |
-      |                                    **                                                   |
-      |                                 ***                                                     |
-      |                               **                                                        |
-      |                            ***                                                          |
-      |                          **                                                             |
-      |                       ***                                                               |
-  0.5 ++                    **                                                                 ++
-      |                  ***                                                                    |
-      |                **                                                                       |
-      |             ***                                                                         |
-      |           **                                                                            |
-      |        ***                                                                              |
-      |      **                                                                                 |
-      |   ***                                                                                   |
-      + **                   +                     +                      +                     +
-    0 A*---------------------+---------------------+----------------------+--------------------++
-      1                     1.5                    2                     2.5                    3
-
-EOF
+         refplot  => 'basic-streaming-test.ref' );
 
 tryplot( testname => 'basic streaming test, twice as fast',
          cmd      => q{seq 500 | gawk 'BEGIN{ print 0; } {print (NR==3)? "exit" : $0; fflush(); system("sleep 0.6");}'},
          options  => [qw(--lines --points --stream 0.4)],
-         refplot  => <<'EOF' );
-
-
-    1 ++----------------+-----------------+-----------------+-----------------+----------------*A
-      +                 +                 +                 +                 +              ** +
-      |                                                                                   ***   |
-      |                                                                                ***      |
-      |                                                                              **         |
-      |                                                                           ***           |
-      |                                                                         **              |
-  0.8 ++                                                                     ***               ++
-      |                                                                    **                   |
-      |                                                                 ***                     |
-      |                                                              ***                        |
-      |                                                            **                           |
-      |                                                         ***                             |
-      |                                                       **                                |
-  0.6 ++                                                   ***                                 ++
-      |                                                  **                                     |
-      |                                               ***                                       |
-      |                                            ***                                          |
-      |                                          **                                             |
-      |                                       ***                                               |
-      |                                     **                                                  |
-  0.4 ++                                 ***                                                   ++
-      |                                **                                                       |
-      |                             ***                                                         |
-      |                          ***                                                            |
-      |                        **                                                               |
-      |                     ***                                                                 |
-      |                   **                                                                    |
-  0.2 ++               ***                                                                     ++
-      |              **                                                                         |
-      |           ***                                                                           |
-      |        ***                                                                              |
-      |      **                                                                                 |
-      |   ***                                                                                   |
-      + **              +                 +                 +                 +                 +
-    0 A*----------------+-----------------+-----------------+-----------------+----------------++
-      1                1.2               1.4               1.6               1.8                2
-
-
-
-    2 ++---------------------+---------------------+----------------------+--------------------*A
-      +                      +                     +                      +                  ** +
-      |                                                                                   ***   |
-      |                                                                                ***      |
-      |                                                                              **         |
-      |                                                                           ***           |
-      |                                                                        ***              |
-      |                                                                      **                 |
-      |                                                                   ***                   |
-  1.5 ++                                                               ***                     ++
-      |                                                              **                         |
-      |                                                           ***                           |
-      |                                                        ***                              |
-      |                                                      **                                 |
-      |                                                   ***                                   |
-      |                                                ***                                      |
-      |                                              **                                         |
-    1 ++                                          *A*                                          ++
-      |                                         **                                              |
-      |                                      ***                                                |
-      |                                    **                                                   |
-      |                                 ***                                                     |
-      |                               **                                                        |
-      |                            ***                                                          |
-      |                          **                                                             |
-      |                       ***                                                               |
-  0.5 ++                    **                                                                 ++
-      |                  ***                                                                    |
-      |                **                                                                       |
-      |             ***                                                                         |
-      |           **                                                                            |
-      |        ***                                                                              |
-      |      **                                                                                 |
-      |   ***                                                                                   |
-      + **                   +                     +                      +                     +
-    0 A*---------------------+---------------------+----------------------+--------------------++
-      1                     1.5                    2                     2.5                    3
-
-EOF
+         refplot  => 'basic-streaming-test-twice-as-fast.ref' );
 
 
 tryplot( testname => 'streaming with --xlen',
          cmd      => q{seq 500 | gawk 'BEGIN{ print 0; } {print (NR==3)? "exit" : $0; fflush(); system("sleep 0.6");}'},
          options  => [qw(--lines --points --stream 0.4 --xlen 1.1)],
-         refplot  => <<'EOF' );
-
-
-    1 ++------+----------------+---------------+---------------+----------------+--------------*A
-      |       +                +               +               +                +            ** +
-      |                                                                                    **   |
-      |                                                                                 ***     |
-      |                                                                               **        |
-      |                                                                             **          |
-      |                                                                          ***            |
-  0.8 ++                                                                       **              ++
-      |                                                                      **                 |
-      |                                                                   ***                   |
-      |                                                                 **                      |
-      |                                                               **                        |
-      |                                                            ***                          |
-      |                                                          **                             |
-  0.6 ++                                                       **                              ++
-      |                                                     ***                                 |
-      |                                                   **                                    |
-      |                                                ***                                      |
-      |                                              **                                         |
-      |                                            **                                           |
-      |                                         ***                                             |
-  0.4 ++                                      **                                               ++
-      |                                     **                                                  |
-      |                                  ***                                                    |
-      |                                **                                                       |
-      |                              **                                                         |
-      |                           ***                                                           |
-      |                         **                                                              |
-  0.2 ++                      **                                                               ++
-      |                    ***                                                                  |
-      |                  **                                                                     |
-      |                **                                                                       |
-      |             ***                                                                         |
-      |           **                                                                            |
-      |       + **             +               +               +                +               +
-    0 ++------A*---------------+---------------+---------------+----------------+--------------++
-              1               1.2             1.4             1.6              1.8              2
-
-
-
-    2 ++------+----------------+---------------+---------------+----------------+--------------*A
-      |       +                +               +               +                +            ** +
-      |                                                                                    **   |
-      |                                                                                 ***     |
-      |                                                                               **        |
-      |                                                                             **          |
-      |                                                                          ***            |
-  1.8 ++                                                                       **              ++
-      |                                                                      **                 |
-      |                                                                   ***                   |
-      |                                                                 **                      |
-      |                                                               **                        |
-      |                                                            ***                          |
-      |                                                          **                             |
-  1.6 ++                                                       **                              ++
-      |                                                     ***                                 |
-      |                                                   **                                    |
-      |                                                ***                                      |
-      |                                              **                                         |
-      |                                            **                                           |
-      |                                         ***                                             |
-  1.4 ++                                      **                                               ++
-      |                                     **                                                  |
-      |                                  ***                                                    |
-      |                                **                                                       |
-      |                              **                                                         |
-      |                           ***                                                           |
-      |                         **                                                              |
-  1.2 ++                      **                                                               ++
-      |                    ***                                                                  |
-      |                  **                                                                     |
-      |                **                                                                       |
-      |             ***                                                                         |
-      |           **                                                                            |
-      |       + **             +               +               +                +               +
-    1 ++------A*---------------+---------------+---------------+----------------+--------------++
-              2               2.2             2.4             2.6              2.8              3
-
-EOF
+         refplot  => 'streaming-with-xlen.ref' );
 
 tryplot( testname => 'streaming with --monotonic',
          cmd      => q{seq 500 | gawk '{if(NR==11) {print "exit";} else {x=(NR-1)%5; if(x==0) {print -1,-1;} print x,NR;}; fflush(); system("sleep 0.6");}'},
          options  => [qw(--lines --points --stream 0.4 --domain --monotonic)],
-         refplot  => <<'EOF' );
-
-
-    1 ++----------------+-----------------+-----------------+-----------------+----------------*A
-      +                 +                 +                 +                 +              ** +
-      |                                                                                   ***   |
-      |                                                                                ***      |
-      |                                                                              **         |
-      |                                                                           ***           |
-      |                                                                         **              |
-      |                                                                      ***                |
-      |                                                                    **                   |
-  0.5 ++                                                                ***                    ++
-      |                                                              ***                        |
-      |                                                            **                           |
-      |                                                         ***                             |
-      |                                                       **                                |
-      |                                                    ***                                  |
-      |                                                  **                                     |
-      |                                               ***                                       |
-    0 ++                                           ***                                         ++
-      |                                          **                                             |
-      |                                       ***                                               |
-      |                                     **                                                  |
-      |                                  ***                                                    |
-      |                                **                                                       |
-      |                             ***                                                         |
-      |                          ***                                                            |
-      |                        **                                                               |
- -0.5 ++                    ***                                                                ++
-      |                   **                                                                    |
-      |                ***                                                                      |
-      |              **                                                                         |
-      |           ***                                                                           |
-      |        ***                                                                              |
-      |      **                                                                                 |
-      |   ***                                                                                   |
-      + **              +                 +                 +                 +                 +
-   -1 A*----------------+-----------------+-----------------+-----------------+----------------++
-     -1               -0.8              -0.6              -0.4              -0.2                0
-
-
-
-    2 ++---------------------+---------------------+----------------------+--------------------*A
-      +                      +                     +                      +                **** +
-      |                                                                                ****     |
-      |                                                                            ****         |
-      |                                                                         ***             |
-      |                                                                     ****                |
-  1.5 ++                                                                ****                   ++
-      |                                                             ****                        |
-      |                                                          ***                            |
-      |                                                      ****                               |
-      |                                                  ****                                   |
-      |                                              ****                                       |
-    1 ++                                           A*                                          ++
-      |                                          **                                             |
-      |                                        **                                               |
-      |                                      **                                                 |
-      |                                    **                                                   |
-  0.5 ++                                 **                                                    ++
-      |                                **                                                       |
-      |                              **                                                         |
-      |                            **                                                           |
-      |                          **                                                             |
-      |                        **                                                               |
-    0 ++                     **                                                                ++
-      |                    **                                                                   |
-      |                  **                                                                     |
-      |                **                                                                       |
-      |              **                                                                         |
-      |            **                                                                           |
- -0.5 ++         **                                                                            ++
-      |        **                                                                               |
-      |      **                                                                                 |
-      |    **                                                                                   |
-      |  **                                                                                     |
-      +**                    +                     +                      +                     +
-   -1 A+---------------------+---------------------+----------------------+--------------------++
-     -1                    -0.5                    0                     0.5                    1
-
-
-
-    3 ++-------------+--------------+--------------+--------------+--------------+-------------*A
-      +              +              +              +              +              +         **** +
-      |                                                                                 ***     |
-      |                                                                              ***        |
-  2.5 ++                                                                         ****          ++
-      |                                                                       ***               |
-      |                                                                    ***                  |
-      |                                                                ****                     |
-      |                                                             ***                         |
-    2 ++                                                         *A*                           ++
-      |                                                      ****                               |
-      |                                                  ****                                   |
-      |                                              ****                                       |
-  1.5 ++                                          ***                                          ++
-      |                                       ****                                              |
-      |                                   ****                                                  |
-      |                               ****                                                      |
-    1 ++                            A*                                                         ++
-      |                           **                                                            |
-      |                         **                                                              |
-      |                        *                                                                |
-      |                      **                                                                 |
-  0.5 ++                   **                                                                  ++
-      |                   *                                                                     |
-      |                 **                                                                      |
-      |               **                                                                        |
-    0 ++             *                                                                         ++
-      |            **                                                                           |
-      |          **                                                                             |
-      |         *                                                                               |
-      |       **                                                                                |
- -0.5 ++    **                                                                                 ++
-      |    *                                                                                    |
-      |  **                                                                                     |
-      +**            +              +              +              +              +              +
-   -1 A+-------------+--------------+--------------+--------------+--------------+-------------++
-     -1            -0.5             0             0.5             1             1.5             2
-
-
-
-  4 ++----------+----------+-----------+----------+-----------+----------+-----------+---------*A
-    +           +          +           +          +           +          +           +      *** +
-    |                                                                                   ****    |
-    |                                                                                ***        |
-    |                                                                             ***           |
-    |                                                                         ****              |
-    |                                                                      ***                  |
-  3 ++                                                                  *A*                    ++
-    |                                                                ***                        |
-    |                                                            ****                           |
-    |                                                         ***                               |
-    |                                                      ***                                  |
-    |                                                  ****                                     |
-    |                                               ***                                         |
-  2 ++                                           *A*                                           ++
-    |                                         ***                                               |
-    |                                     ****                                                  |
-    |                                  ***                                                      |
-    |                               ***                                                         |
-    |                           ****                                                            |
-    |                        ***                                                                |
-  1 ++                     A*                                                                  ++
-    |                    **                                                                     |
-    |                  **                                                                       |
-    |                 *                                                                         |
-    |               **                                                                          |
-    |             **                                                                            |
-    |            *                                                                              |
-  0 ++         **                                                                              ++
-    |         *                                                                                 |
-    |       **                                                                                  |
-    |     **                                                                                    |
-    |    *                                                                                      |
-    |  **                                                                                       |
-    +**         +          +           +          +           +          +           +          +
- -1 A+----------+----------+-----------+----------+-----------+----------+-----------+---------++
-   -1         -0.5         0          0.5         1          1.5         2          2.5         3
-
-
-
-  5 ++----------------+------------------+-----------------+------------------+----------------*A
-    +                 +                  +                 +                  +             *** +
-    |                                                                                    ***    |
-    |                                                                                 ***       |
-    |                                                                              ***          |
-    |                                                                           ***             |
-  4 ++                                                                       *A*               ++
-    |                                                                     ***                   |
-    |                                                                  ***                      |
-    |                                                              ****                         |
-    |                                                           ***                             |
-    |                                                        ***                                |
-  3 ++                                                    *A*                                  ++
-    |                                                 ****                                      |
-    |                                             ****                                          |
-    |                                          ***                                              |
-    |                                      ****                                                 |
-  2 ++                                  *A*                                                    ++
-    |                                ***                                                        |
-    |                             ***                                                           |
-    |                         ****                                                              |
-    |                      ***                                                                  |
-    |                   ***                                                                     |
-  1 ++                A*                                                                       ++
-    |               **                                                                          |
-    |              *                                                                            |
-    |            **                                                                             |
-    |           *                                                                               |
-    |         **                                                                                |
-  0 ++       *                                                                                 ++
-    |      **                                                                                   |
-    |     *                                                                                     |
-    |   **                                                                                      |
-    |  *                                                                                        |
-    +**               +                  +                 +                  +                 +
- -1 A+----------------+------------------+-----------------+------------------+----------------++
-   -1                 0                  1                 2                  3                 4
-
-
-
-  6 ++----------------+------------------+-----------------+------------------+----------------*A
-    +                 +                  +                 +                  +              ** +
-    |                                                                                     ***   |
-    |                                                                                  ***      |
-    |                                                                                **         |
-  5 ++                                                                            ***          ++
-    |                                                                          ***              |
-    |                                                                        **                 |
-    |                                                                     ***                   |
-    |                                                                   **                      |
-  4 ++                                                               ***                       ++
-    |                                                             ***                           |
-    |                                                           **                              |
-    |                                                        ***                                |
-    |                                                     ***                                   |
-  3 ++                                                  **                                     ++
-    |                                                ***                                        |
-    |                                             ***                                           |
-    |                                           **                                              |
-    |                                        ***                                                |
-  2 ++                                     **                                                  ++
-    |                                   ***                                                     |
-    |                                ***                                                        |
-    |                              **                                                           |
-    |                           ***                                                             |
-  1 ++                       ***                                                               ++
-    |                      **                                                                   |
-    |                   ***                                                                     |
-    |                 **                                                                        |
-    |              ***                                                                          |
-  0 ++          ***                                                                            ++
-    |         **                                                                                |
-    |      ***                                                                                  |
-    |   ***                                                                                     |
-    + **              +                  +                 +                  +                 +
- -1 A*----------------+------------------+-----------------+------------------+----------------++
-   -1               -0.8               -0.6              -0.4               -0.2                0
-
-
-
-  7 ++---------------------+----------------------+----------------------+-----------------*****A
-    +                      +                      +                      +     ************     +
-    |                                                               ***********                 |
-    |                                                   ************                            |
-  6 ++                                            A*****                                       ++
-    |                                           **                                              |
-    |                                          *                                                |
-    |                                        **                                                 |
-    |                                       *                                                   |
-  5 ++                                    **                                                   ++
-    |                                    *                                                      |
-    |                                  **                                                       |
-    |                                 *                                                         |
-  4 ++                              **                                                         ++
-    |                              *                                                            |
-    |                            **                                                             |
-    |                           *                                                               |
-  3 ++                        **                                                               ++
-    |                        *                                                                  |
-    |                      **                                                                   |
-    |                     *                                                                     |
-    |                    *                                                                      |
-  2 ++                 **                                                                      ++
-    |                 *                                                                         |
-    |               **                                                                          |
-    |              *                                                                            |
-  1 ++           **                                                                            ++
-    |           *                                                                               |
-    |         **                                                                                |
-    |        *                                                                                  |
-    |      **                                                                                   |
-  0 ++    *                                                                                    ++
-    |   **                                                                                      |
-    |  *                                                                                        |
-    +**                    +                      +                      +                      +
- -1 A+---------------------+----------------------+----------------------+---------------------++
-   -1                    -0.5                     0                     0.5                     1
-
-
-
-  8 ++-------------+---------------+--------------+--------------+---------------+-----------***A
-    +              +               +              +              +               +   ********   +
-    |                                                                        ********           |
-    |                                                                ********                   |
-  7 ++                                                        ***A***                          ++
-    |                                                 ********                                  |
-    |                                          *******                                          |
-    |                                  ********                                                 |
-  6 ++                             A***                                                        ++
-    |                             *                                                             |
-    |                            *                                                              |
-    |                          **                                                               |
-  5 ++                        *                                                                ++
-    |                        *                                                                  |
-    |                       *                                                                   |
-    |                      *                                                                    |
-  4 ++                    *                                                                    ++
-    |                    *                                                                      |
-    |                  **                                                                       |
-  3 ++                *                                                                        ++
-    |                *                                                                          |
-    |               *                                                                           |
-    |              *                                                                            |
-  2 ++            *                                                                            ++
-    |            *                                                                              |
-    |          **                                                                               |
-    |         *                                                                                 |
-  1 ++       *                                                                                 ++
-    |       *                                                                                   |
-    |      *                                                                                    |
-    |     *                                                                                     |
-  0 ++   *                                                                                     ++
-    |  **                                                                                       |
-    | *                                                                                         |
-    +*             +               +              +              +               +              +
- -1 A+-------------+---------------+--------------+--------------+---------------+-------------++
-   -1            -0.5              0             0.5             1              1.5             2
-
-
-
-  10 ++---------+-----------+----------+-----------+----------+----------+-----------+---------++
-     +          +           +          +           +          +          +           +          +
-     |                                                                                          |
-     |                                                                                       ***A
-     |                                                                               ********   |
-     |                                                                       ********           |
-   8 ++                                                               ***A***                  ++
-     |                                                        ********                          |
-     |                                                 *******                                  |
-     |                                          ***A***                                         |
-     |                                  ********                                                |
-     |                          ********                                                        |
-   6 ++                     A***                                                               ++
-     |                     *                                                                    |
-     |                    *                                                                     |
-     |                  **                                                                      |
-     |                 *                                                                        |
-   4 ++               *                                                                        ++
-     |               *                                                                          |
-     |              *                                                                           |
-     |             *                                                                            |
-     |            *                                                                             |
-     |          **                                                                              |
-   2 ++        *                                                                               ++
-     |        *                                                                                 |
-     |       *                                                                                  |
-     |      *                                                                                   |
-     |     *                                                                                    |
-     |    *                                                                                     |
-   0 ++ **                                                                                     ++
-     | *                                                                                        |
-     |*                                                                                         |
-     A                                                                                          |
-     |                                                                                          |
-     +          +           +          +           +          +          +           +          +
-  -2 ++---------+-----------+----------+-----------+----------+----------+-----------+---------++
-    -1        -0.5          0         0.5          1         1.5         2          2.5         3
-
-
-
-  10 ++----------------+-----------------+------------------+-----------------+--------------***A
-     +                 +                 +                  +                 +        ******   +
-     |                                                                           ******         |
-     |                                                                     ***A**               |
-     |                                                               ******                     |
-     |                                                         ******                           |
-   8 ++                                                  ***A**                                ++
-     |                                             ******                                       |
-     |                                       ******                                             |
-     |                                ***A***                                                   |
-     |                          ******                                                          |
-     |                    ******                                                                |
-   6 ++                A**                                                                     ++
-     |                *                                                                         |
-     |               *                                                                          |
-     |              *                                                                           |
-     |             *                                                                            |
-   4 ++            *                                                                           ++
-     |            *                                                                             |
-     |           *                                                                              |
-     |          *                                                                               |
-     |         *                                                                                |
-     |        *                                                                                 |
-   2 ++      *                                                                                 ++
-     |      *                                                                                   |
-     |     *                                                                                    |
-     |    *                                                                                     |
-     |    *                                                                                     |
-     |   *                                                                                      |
-   0 ++ *                                                                                      ++
-     | *                                                                                        |
-     |*                                                                                         |
-     A                                                                                          |
-     |                                                                                          |
-     +                 +                 +                  +                 +                 +
-  -2 ++----------------+-----------------+------------------+-----------------+----------------++
-    -1                 0                 1                  2                 3                 4
-
-EOF
+         refplot  => 'streaming-with-monotonic.ref' );
 
 tryplot( testname => '--timefmt streaming plot with --xlen',
          cmd      => q{seq 5 | gawk 'BEGIN{ print strftime("%d %b %Y %T",1382249107-1,1),-4;} {if(NR==3) {print "exit";} else{ print strftime("%d %b %Y %T",1382249107+$1,1),$1;} fflush(); system("sleep 0.6")}'},
          options  => ['--points', '--lines',
                       '--domain', '--timefmt', '%d %b %Y %H:%M:%S',
                       qw(--stream 0.4 --xlen 3)],
-         refplot  => <<'EOF' );
-
-
-  1 ++-------------+---------------+--------------+--------------+---------------+-------------+A
-    +              +               +              +              +               +            **+
-    |                                                                                       **  |
-    |                                                                                     **    |
-    |                                                                                    *      |
-    |                                                                                  **       |
-    |                                                                                **         |
-  0 ++                                                                             **          ++
-    |                                                                             *             |
-    |                                                                           **              |
-    |                                                                         **                |
-    |                                                                       **                  |
-    |                                                                      *                    |
-    |                                                                    **                     |
- -1 ++                                                                 **                      ++
-    |                                                                **                         |
-    |                                                               *                           |
-    |                                                             **                            |
-    |                                                           **                              |
-    |                                                          *                                |
-    |                                                        **                                 |
- -2 ++                                                     **                                  ++
-    |                                                    **                                     |
-    |                                                   *                                       |
-    |                                                 **                                        |
-    |                                               **                                          |
-    |                                             **                                            |
-    |                                            *                                              |
- -3 ++                                         **                                              ++
-    |                                        **                                                 |
-    |                                      **                                                   |
-    |                                     *                                                     |
-    |                                   **                                                      |
-    |                                 **                                                        |
-    +              +               +**            +              +               +              +
- -4 ++-------------+---------------A--------------+--------------+---------------+-------------++
-  05:05          05:05           05:06          05:06          05:07           05:07          05:08
-
-
-
-  2 ++-------------+---------------+--------------+--------------+---------------+------------**A
-    +              +               +              +              +               +       *****  +
-    |                                                                               *****       |
-    |                                                                         ******            |
-    |                                                                    *****                  |
-    |                                                               *****                       |
-  1 ++                                                          *A**                           ++
-    |                                                         **                                |
-    |                                                       **                                  |
-    |                                                     **                                    |
-    |                                                   **                                      |
-    |                                                 **                                        |
-  0 ++                                              **                                         ++
-    |                                             **                                            |
-    |                                           **                                              |
-    |                                         **                                                |
-    |                                      ***                                                  |
- -1 ++                                   **                                                    ++
-    |                                  **                                                       |
-    |                                **                                                         |
-    |                              **                                                           |
-    |                            **                                                             |
-    |                          **                                                               |
- -2 ++                       **                                                                ++
-    |                      **                                                                   |
-    |                   ***                                                                     |
-    |                 **                                                                        |
-    |               **                                                                          |
-    |             **                                                                            |
- -3 ++          **                                                                             ++
-    |         **                                                                                |
-    |       **                                                                                  |
-    |     **                                                                                    |
-    |   **                                                                                      |
-    + **           +               +              +              +               +              +
- -4 A*-------------+---------------+--------------+--------------+---------------+-------------++
-  05:06          05:06           05:07          05:07          05:08           05:08          05:09
-
-EOF
+         refplot  => 'timefmt-streaming-plot-with-xlen.ref' );
 
 tryplot( testname => '--timefmt streaming plot with --monotonic',
          cmd      => q{seq 10 | gawk '{x=(NR-1)%5; if(x==0) {print strftime("%d %b %Y %T",1382249107-1,-4),-4;} print strftime("%d %b %Y %T",1382249107+x,1),NR; fflush(); system("sleep 0.6")}'},
          options  => ['--points', '--lines',
                       '--domain', '--timefmt', '%d %b %Y %H:%M:%S',
                       qw(--stream 0.4 --monotonic)],
-         refplot  => <<'EOF' );
-
-
-  1 ++----------------+------------------+-----------------+------------------+----------------*A
-    +                 +                  +                 +                  +              ** +
-    |                                                                                     ***   |
-    |                                                                                  ***      |
-    |                                                                                **         |
-    |                                                                             ***           |
-    |                                                                          ***              |
-  0 ++                                                                       **                ++
-    |                                                                     ***                   |
-    |                                                                   **                      |
-    |                                                                ***                        |
-    |                                                             ***                           |
-    |                                                           **                              |
-    |                                                        ***                                |
- -1 ++                                                    ***                                  ++
-    |                                                   **                                      |
-    |                                                ***                                        |
-    |                                             ***                                           |
-    |                                           **                                              |
-    |                                        ***                                                |
-    |                                      **                                                   |
- -2 ++                                  ***                                                    ++
-    |                                ***                                                        |
-    |                              **                                                           |
-    |                           ***                                                             |
-    |                        ***                                                                |
-    |                      **                                                                   |
-    |                   ***                                                                     |
- -3 ++                **                                                                       ++
-    |              ***                                                                          |
-    |           ***                                                                             |
-    |         **                                                                                |
-    |      ***                                                                                  |
-    |   ***                                                                                     |
-    + **              +                  +                 +                  +                 +
- -4 A*----------------+------------------+-----------------+------------------+----------------++
-  05:06             05:06              05:06             05:06              05:06             05:06
-
-
-
-  2 ++---------------------+----------------------+----------------------+-------------------***A
-    +                      +                      +                      +           ********   +
-    |                                                                        ********           |
-    |                                                                 *******                   |
-    |                                                         ********                          |
-    |                                                 ********                                  |
-  1 ++                                            A***                                         ++
-    |                                           **                                              |
-    |                                          *                                                |
-    |                                        **                                                 |
-    |                                      **                                                   |
-    |                                     *                                                     |
-  0 ++                                  **                                                     ++
-    |                                  *                                                        |
-    |                                **                                                         |
-    |                              **                                                           |
-    |                             *                                                             |
- -1 ++                          **                                                             ++
-    |                          *                                                                |
-    |                        **                                                                 |
-    |                      **                                                                   |
-    |                     *                                                                     |
-    |                   **                                                                      |
- -2 ++                 *                                                                       ++
-    |                **                                                                         |
-    |               *                                                                           |
-    |             **                                                                            |
-    |           **                                                                              |
-    |          *                                                                                |
- -3 ++       **                                                                                ++
-    |       *                                                                                   |
-    |     **                                                                                    |
-    |   **                                                                                      |
-    |  *                                                                                        |
-    +**                    +                      +                      +                      +
- -4 A+---------------------+----------------------+----------------------+---------------------++
-  05:06                  05:06                  05:07                  05:07                  05:08
-
-
-
-  3 ++-------------+---------------+--------------+--------------+---------------+-----------***A
-    +              +               +              +              +               +     ******   +
-    |                                                                            ******         |
-    |                                                                      ******               |
-    |                                                                ******                     |
-  2 ++                                                        ***A***                          ++
-    |                                                   ******                                  |
-    |                                             ******                                        |
-    |                                       ******                                              |
-    |                                 ******                                                    |
-  1 ++                             A**                                                         ++
-    |                             *                                                             |
-    |                           **                                                              |
-    |                          *                                                                |
-    |                         *                                                                 |
-  0 ++                       *                                                                 ++
-    |                      **                                                                   |
-    |                     *                                                                     |
-    |                    *                                                                      |
-    |                   *                                                                       |
- -1 ++                **                                                                       ++
-    |                *                                                                          |
-    |               *                                                                           |
-    |              *                                                                            |
-    |             *                                                                             |
- -2 ++          **                                                                             ++
-    |          *                                                                                |
-    |         *                                                                                 |
-    |        *                                                                                  |
-    |      **                                                                                   |
- -3 ++    *                                                                                    ++
-    |    *                                                                                      |
-    |   *                                                                                       |
-    | **                                                                                        |
-    +*             +               +              +              +               +              +
- -4 A+-------------+---------------+--------------+--------------+---------------+-------------++
-  05:06          05:06           05:07          05:07          05:08           05:08          05:09
-
-
-
-  4 ++----------+----------+-----------+----------+-----------+----------+-----------+--------**A
-    +           +          +           +          +           +          +           +  ******  +
-    |                                                                             ******        |
-    |                                                                       ******              |
-  3 ++                                                                 **A**                   ++
-    |                                                              ****                         |
-    |                                                         *****                             |
-    |                                                    *****                                  |
-    |                                                ****                                       |
-  2 ++                                          **A**                                          ++
-    |                                     ******                                                |
-    |                               ******                                                      |
-    |                         ******                                                            |
-  1 ++                     A**                                                                 ++
-    |                     *                                                                     |
-    |                    *                                                                      |
-    |                   *                                                                       |
-  0 ++                 *                                                                       ++
-    |                 *                                                                         |
-    |                *                                                                          |
-    |               *                                                                           |
-    |              *                                                                            |
- -1 ++            *                                                                            ++
-    |            *                                                                              |
-    |          **                                                                               |
-    |         *                                                                                 |
- -2 ++       *                                                                                 ++
-    |       *                                                                                   |
-    |      *                                                                                    |
-    |     *                                                                                     |
-    |    *                                                                                      |
- -3 ++  *                                                                                      ++
-    |  *                                                                                        |
-    | *                                                                                         |
-    +*          +          +           +          +           +          +           +          +
- -4 A+----------+----------+-----------+----------+-----------+----------+-----------+---------++
-  05:06       05:06      05:07       05:07      05:08       05:08      05:09       05:09      05:10
-
-
-
-  5 ++----------------+------------------+-----------------+------------------+---------------**A
-    +                 +                  +                 +                  +           ****  +
-    |                                                                                *****      |
-    |                                                                            ****           |
-  4 ++                                                                      **A**              ++
-    |                                                                  *****                    |
-    |                                                              ****                         |
-    |                                                         *****                             |
-  3 ++                                                   **A**                                 ++
-    |                                                ****                                       |
-    |                                           *****                                           |
-    |                                       ****                                                |
-  2 ++                                 **A**                                                   ++
-    |                             *****                                                         |
-    |                         ****                                                              |
-    |                    *****                                                                  |
-  1 ++                A**                                                                      ++
-    |                *                                                                          |
-    |               *                                                                           |
-  0 ++             *                                                                           ++
-    |             *                                                                             |
-    |            *                                                                              |
-    |           *                                                                               |
- -1 ++         *                                                                               ++
-    |         *                                                                                 |
-    |        *                                                                                  |
-    |        *                                                                                  |
- -2 ++      *                                                                                  ++
-    |      *                                                                                    |
-    |     *                                                                                     |
-    |    *                                                                                      |
- -3 ++  *                                                                                      ++
-    |  *                                                                                        |
-    | *                                                                                         |
-    +*                +                  +                 +                  +                 +
- -4 A+----------------+------------------+-----------------+------------------+----------------++
-  05:06             05:07              05:08             05:09              05:10             05:11
-
-
-
-  6 ++----------------+------------------+-----------------+------------------+----------------*A
-    +                 +                  +                 +                  +              ** +
-    |                                                                                     ***   |
-    |                                                                                  ***      |
-    |                                                                                **         |
-    |                                                                             ***           |
-    |                                                                          ***              |
-  4 ++                                                                       **                ++
-    |                                                                     ***                   |
-    |                                                                   **                      |
-    |                                                                ***                        |
-    |                                                             ***                           |
-    |                                                           **                              |
-    |                                                        ***                                |
-  2 ++                                                    ***                                  ++
-    |                                                   **                                      |
-    |                                                ***                                        |
-    |                                             ***                                           |
-    |                                           **                                              |
-    |                                        ***                                                |
-    |                                      **                                                   |
-  0 ++                                  ***                                                    ++
-    |                                ***                                                        |
-    |                              **                                                           |
-    |                           ***                                                             |
-    |                        ***                                                                |
-    |                      **                                                                   |
-    |                   ***                                                                     |
- -2 ++                **                                                                       ++
-    |              ***                                                                          |
-    |           ***                                                                             |
-    |         **                                                                                |
-    |      ***                                                                                  |
-    |   ***                                                                                     |
-    + **              +                  +                 +                  +                 +
- -4 A*----------------+------------------+-----------------+------------------+----------------++
-  05:06             05:06              05:06             05:06              05:06             05:06
-
-
-
-  8 ++---------------------+----------------------+----------------------+---------------------++
-    +                      +                      +                      +                      +
-    |                                                                                           |
-    |                                                                                    *******A
-    |                                                                    ****************       |
-    |                                                     ***************                       |
-  6 ++                                            A*******                                     ++
-    |                                           **                                              |
-    |                                          *                                                |
-    |                                        **                                                 |
-    |                                      **                                                   |
-    |                                     *                                                     |
-  4 ++                                  **                                                     ++
-    |                                  *                                                        |
-    |                                **                                                         |
-    |                              **                                                           |
-    |                             *                                                             |
-  2 ++                          **                                                             ++
-    |                          *                                                                |
-    |                        **                                                                 |
-    |                      **                                                                   |
-    |                     *                                                                     |
-    |                   **                                                                      |
-  0 ++                 *                                                                       ++
-    |                **                                                                         |
-    |               *                                                                           |
-    |             **                                                                            |
-    |           **                                                                              |
-    |          *                                                                                |
- -2 ++       **                                                                                ++
-    |       *                                                                                   |
-    |     **                                                                                    |
-    |   **                                                                                      |
-    |  *                                                                                        |
-    +**                    +                      +                      +                      +
- -4 A+---------------------+----------------------+----------------------+---------------------++
-  05:06                  05:06                  05:07                  05:07                  05:08
-
-
-
-  8 ++-------------+---------------+--------------+--------------+---------------+---------*****A
-    +              +               +              +              +               **********     +
-    |                                                                  **********               |
-    |                                                       *****A*****                         |
-    |                                             **********                                    |
-    |                                   **********                                              |
-  6 ++                             A****                                                       ++
-    |                             *                                                             |
-    |                            *                                                              |
-    |                           *                                                               |
-    |                          *                                                                |
-    |                         *                                                                 |
-  4 ++                       *                                                                 ++
-    |                      **                                                                   |
-    |                     *                                                                     |
-    |                    *                                                                      |
-    |                   *                                                                       |
-  2 ++                 *                                                                       ++
-    |                 *                                                                         |
-    |                *                                                                          |
-    |               *                                                                           |
-    |              *                                                                            |
-    |             *                                                                             |
-  0 ++           *                                                                             ++
-    |           *                                                                               |
-    |          *                                                                                |
-    |         *                                                                                 |
-    |        *                                                                                  |
-    |      **                                                                                   |
- -2 ++    *                                                                                    ++
-    |    *                                                                                      |
-    |   *                                                                                       |
-    |  *                                                                                        |
-    | *                                                                                         |
-    +*             +               +              +              +               +              +
- -4 A+-------------+---------------+--------------+--------------+---------------+-------------++
-  05:06          05:06           05:07          05:07          05:08           05:08          05:09
-
-
-
-  10 ++---------+-----------+----------+-----------+----------+----------+-----------+---------++
-     +          +           +          +           +          +          +           +          +
-     |                                                                                       ***A
-     |                                                                               ********   |
-     |                                                                       ********           |
-   8 ++                                                             *****A***                  ++
-     |                                                   ***********                            |
-     |                                          ***A*****                                       |
-     |                                  ********                                                |
-     |                          ********                                                        |
-   6 ++                     A***                                                               ++
-     |                     *                                                                    |
-     |                    *                                                                     |
-     |                   *                                                                      |
-     |                  *                                                                       |
-   4 ++                *                                                                       ++
-     |                *                                                                         |
-     |                *                                                                         |
-     |               *                                                                          |
-     |              *                                                                           |
-   2 ++            *                                                                           ++
-     |            *                                                                             |
-     |           *                                                                              |
-     |          *                                                                               |
-     |         *                                                                                |
-   0 ++       *                                                                                ++
-     |       *                                                                                  |
-     |      *                                                                                   |
-     |     *                                                                                    |
-     |     *                                                                                    |
-  -2 ++   *                                                                                    ++
-     |   *                                                                                      |
-     |  *                                                                                       |
-     | *                                                                                        |
-     +*         +           +          +           +          +          +           +          +
-  -4 A+---------+-----------+----------+-----------+----------+----------+-----------+---------++
-   05:06      05:06       05:07      05:07       05:08      05:08      05:09       05:09      05:10
-
-
-
-  10 ++----------------+-----------------+------------------+-----------------+-------------****A
-     +                 +                 +                  +                 +    *********    +
-     |                                                                     ***A****             |
-     |                                                               ******                     |
-     |                                                         ******                           |
-   8 ++                                                 ****A**                                ++
-     |                                        **********                                        |
-     |                                ***A****                                                  |
-     |                          ******                                                          |
-     |                    ******                                                                |
-   6 ++                A**                                                                     ++
-     |                *                                                                         |
-     |                *                                                                         |
-     |               *                                                                          |
-     |              *                                                                           |
-   4 ++            *                                                                           ++
-     |             *                                                                            |
-     |            *                                                                             |
-     |           *                                                                              |
-     |           *                                                                              |
-   2 ++         *                                                                              ++
-     |         *                                                                                |
-     |        *                                                                                 |
-     |        *                                                                                 |
-     |       *                                                                                  |
-   0 ++     *                                                                                  ++
-     |     *                                                                                    |
-     |     *                                                                                    |
-     |    *                                                                                     |
-     |   *                                                                                      |
-  -2 ++  *                                                                                     ++
-     |  *                                                                                       |
-     | *                                                                                        |
-     |*                                                                                         |
-     +*                +                 +                  +                 +                 +
-  -4 A+----------------+-----------------+------------------+-----------------+----------------++
-   05:06             05:07             05:08              05:09             05:10             05:11
-
-EOF
+         refplot  => 'timefmt-streaming-plot-with-monotonic.ref' );
 
 }
 
@@ -2331,15 +377,58 @@ sub tryplot
                  '--terminal', 'dumb 100,40');
   unshift @options, @{$args{options}};
 
-  my $feedgnuplot = dirname($0) . "/../bin/feedgnuplot";
+  my $feedgnuplot = "$Bin/../bin/feedgnuplot";
+
+  note( "Running test '$args{testname}'. Running: $args{cmd} | $feedgnuplot " .
+        shell_quote(@options));
+
   my $out = '';
   my $err = '';
   open IN, '-|', $args{cmd} or die "Couldn't open pipe to $args{cmd}";
   run [$feedgnuplot, @options],
     \*IN, \$out, \$err;
 
-  note( "Running test '$args{testname}'. Running: $args{cmd} | $feedgnuplot " .
-        shell_quote(@options));
-  is($err, '',             "$args{testname} stderr" );
-  is($out, $args{refplot}, "$args{testname} stdout");
+  # Ignore any screen refresh characters gnuplot may be outputting
+  $out =~ s/\s*\n//g;
+
+  # Don't complain about mismatched benign warnings
+  $err =~ s/^.*?warning: empty [xy] range.*?$\\n//gmi;
+
+  my $refplot_filename = "$Bin/$args{refplot}";
+  my $refplot_data     = readfile($refplot_filename);
+
+  is($err, '',                    "$args{testname} stderr" );
+  is("\n$out", "\n$refplot_data", "$args{testname} stdout");
+
+  # Enable, to replace the reference plots with what we observe
+  if(0)
+  {
+      if ($out ne $refplot_data)
+      {
+          print("Overwrite '$refplot_filename'? ");
+          my $x = <STDIN>;
+          chomp $x;
+          if ( !(!$x || $x =~ /^no?$/i) )
+          {
+              open my $fd, '>', $refplot_filename
+                or die "Couldn't open '$refplot_filename' for writing";
+              print $fd $out;
+              close $fd;
+
+              print("Overwrote '$refplot_filename'\n");
+          }
+      }
+      print("\n\n");
+  }
+}
+
+sub readfile
+{
+    my $path = $_[0];
+
+    open my $fd, '<', $path or return '';
+    local $/ = undef;
+    my $dat = <$fd>;
+    close $fd;
+    return $dat;
 }
