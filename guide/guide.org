@@ -438,7 +438,7 @@ PDF on top (as an equation, evaluated by =gnuplot=).
 N=1000;
 Nsum=200;
 var=$((Nsum/3));
-binwidth=0.2;
+binwidth=2;
 seq $N | \
 perl -nE '$Nsum = '$Nsum';
           $s = 0; for $i (1..$Nsum) { $s += rand()*2-1; }
