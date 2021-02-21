@@ -1990,6 +1990,17 @@ list
 
 =item
 
+C<--xticlabels>
+
+If given, the x-axis tic labels are not numerical, but are read from the data.
+This changes the interpretation of the input data: with C<--domain>, each line
+begins with C<x label ....>. Without C<--domain>, each line begins with C<label
+...>. This makes sense only without C<--3d>. Please see the guide
+(L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>) for usage
+examples.
+
+=item
+
 C<--binwidth width>
 
 The width of bins when making histograms. This setting applies to ALL histograms
