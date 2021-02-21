@@ -1,3 +1,12 @@
+feedgnuplot (1.57-1) unstable; urgency=medium
+
+  * New upstream release
+    - Added --xticlabels to label the x-axis tics from the data
+    - Added --equation-above and --equation-below to control the equation
+      drawing sequence
+
+ -- Dima Kogan <dkogan@debian.org>  Sun, 21 Feb 2021 14:00:59 -0800
+
 feedgnuplot (1.56-1) unstable; urgency=medium
 
   * New upstream release
