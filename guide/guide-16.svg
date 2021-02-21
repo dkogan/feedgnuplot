@@ -46,11 +46,11 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,558.00 L770.62,558.00  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,558.00 L770.62,558.00  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,558.00 L64.34,558.00 M770.62,558.00 L760.12,558.00  '/>	<g transform="translate(44.05,562.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+	<path stroke='black'  d='M63.63,558.00 L74.13,558.00 M770.62,558.00 L760.12,558.00  '/>	<g transform="translate(53.84,562.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
 		<text> 0</text>
 	</g>
 </g>
@@ -59,63 +59,11 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,498.33 L770.62,498.33  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,504.30 L770.62,504.30  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,498.33 L64.34,498.33 M770.62,498.33 L760.12,498.33  '/>	<g transform="translate(44.05,502.88)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
-		<text> 2</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,438.67 L770.62,438.67  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,438.67 L64.34,438.67 M770.62,438.67 L760.12,438.67  '/>	<g transform="translate(44.05,443.22)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
-		<text> 4</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,379.00 L770.62,379.00  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,379.00 L64.34,379.00 M770.62,379.00 L760.12,379.00  '/>	<g transform="translate(44.05,383.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
-		<text> 6</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,319.34 L770.62,319.34  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,319.34 L64.34,319.34 M770.62,319.34 L760.12,319.34  '/>	<g transform="translate(44.05,323.89)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
-		<text> 8</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,259.67 L770.62,259.67  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,259.67 L64.34,259.67 M770.62,259.67 L760.12,259.67  '/>	<g transform="translate(44.05,264.22)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+	<path stroke='black'  d='M63.63,504.30 L74.13,504.30 M770.62,504.30 L760.12,504.30  '/>	<g transform="translate(53.84,508.85)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
 		<text> 10</text>
 	</g>
 </g>
@@ -124,128 +72,11 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,200.01 L770.62,200.01  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,450.60 L770.62,450.60  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,200.01 L64.34,200.01 M770.62,200.01 L760.12,200.01  '/>	<g transform="translate(44.05,204.56)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
-		<text> 12</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,140.34 L770.62,140.34  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,140.34 L64.34,140.34 M770.62,140.34 L760.12,140.34  '/>	<g transform="translate(44.05,144.89)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
-		<text> 14</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,80.68 L770.62,80.68  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,80.68 L64.34,80.68 M770.62,80.68 L760.12,80.68  '/>	<g transform="translate(44.05,85.23)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
-		<text> 16</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,21.01 L770.62,21.01  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,21.01 L64.34,21.01 M770.62,21.01 L760.12,21.01  '/>	<g transform="translate(44.05,25.56)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
-		<text> 18</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M53.84,558.00 L53.84,21.01  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,558.00 L53.84,547.50 M53.84,21.01 L53.84,31.51  '/>	<g transform="translate(53.84,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
-		<text>-30</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M156.24,558.00 L156.24,21.01  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M156.24,558.00 L156.24,547.50 M156.24,21.01 L156.24,31.51  '/>	<g transform="translate(156.24,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
-		<text>-20</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M258.63,558.00 L258.63,21.01  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M258.63,558.00 L258.63,547.50 M258.63,21.01 L258.63,31.51  '/>	<g transform="translate(258.63,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
-		<text>-10</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M361.03,558.00 L361.03,21.01  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M361.03,558.00 L361.03,547.50 M361.03,21.01 L361.03,31.51  '/>	<g transform="translate(361.03,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
-		<text> 0</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M463.43,558.00 L463.43,21.01  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M463.43,558.00 L463.43,547.50 M463.43,21.01 L463.43,31.51  '/>	<g transform="translate(463.43,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
-		<text> 10</text>
-	</g>
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M565.83,558.00 L565.83,52.51 M565.83,31.51 L565.83,21.01  '/></g>
-<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-</g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M565.83,558.00 L565.83,547.50 M565.83,21.01 L565.83,31.51  '/>	<g transform="translate(565.83,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+	<path stroke='black'  d='M63.63,450.60 L74.13,450.60 M770.62,450.60 L760.12,450.60  '/>	<g transform="translate(53.84,455.15)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
 		<text> 20</text>
 	</g>
 </g>
@@ -254,12 +85,181 @@
 <g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M668.22,558.00 L668.22,52.51 M668.22,31.51 L668.22,21.01  '/></g>
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,396.90 L770.62,396.90  '/></g>
 <g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M668.22,558.00 L668.22,547.50 M668.22,21.01 L668.22,31.51  '/>	<g transform="translate(668.22,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+	<path stroke='black'  d='M63.63,396.90 L74.13,396.90 M770.62,396.90 L760.12,396.90  '/>	<g transform="translate(53.84,401.45)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
 		<text> 30</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,343.20 L770.62,343.20  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M63.63,343.20 L74.13,343.20 M770.62,343.20 L760.12,343.20  '/>	<g transform="translate(53.84,347.75)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 40</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,289.50 L770.62,289.50  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M63.63,289.50 L74.13,289.50 M770.62,289.50 L760.12,289.50  '/>	<g transform="translate(53.84,294.05)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 50</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,235.81 L770.62,235.81  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M63.63,235.81 L74.13,235.81 M770.62,235.81 L760.12,235.81  '/>	<g transform="translate(53.84,240.36)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 60</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,182.11 L770.62,182.11  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M63.63,182.11 L74.13,182.11 M770.62,182.11 L760.12,182.11  '/>	<g transform="translate(53.84,186.66)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 70</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,128.41 L770.62,128.41  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M63.63,128.41 L74.13,128.41 M770.62,128.41 L760.12,128.41  '/>	<g transform="translate(53.84,132.96)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 80</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,74.71 L770.62,74.71  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M63.63,74.71 L74.13,74.71 M770.62,74.71 L760.12,74.71  '/>	<g transform="translate(53.84,79.26)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 90</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,21.01 L770.62,21.01  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M63.63,21.01 L74.13,21.01 M770.62,21.01 L760.12,21.01  '/>	<g transform="translate(53.84,25.56)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="end">
+		<text> 100</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M63.63,558.00 L63.63,21.01  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M63.63,558.00 L63.63,547.50 M63.63,21.01 L63.63,31.51  '/>	<g transform="translate(63.63,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text>-30</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M181.46,558.00 L181.46,21.01  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M181.46,558.00 L181.46,547.50 M181.46,21.01 L181.46,31.51  '/>	<g transform="translate(181.46,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text>-20</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M299.29,558.00 L299.29,21.01  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M299.29,558.00 L299.29,547.50 M299.29,21.01 L299.29,31.51  '/>	<g transform="translate(299.29,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text>-10</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M417.13,558.00 L417.13,21.01  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M417.13,558.00 L417.13,547.50 M417.13,21.01 L417.13,31.51  '/>	<g transform="translate(417.13,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text> 0</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M534.96,558.00 L534.96,21.01  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M534.96,558.00 L534.96,547.50 M534.96,21.01 L534.96,31.51  '/>	<g transform="translate(534.96,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text> 10</text>
+	</g>
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="gray" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='gray' stroke-dasharray='2,4' class="gridline"  d='M652.79,558.00 L652.79,52.51 M652.79,31.51 L652.79,21.01  '/></g>
+<g fill="none" color="gray" stroke="gray" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+</g>
+<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+	<path stroke='black'  d='M652.79,558.00 L652.79,547.50 M652.79,21.01 L652.79,31.51  '/>	<g transform="translate(652.79,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
+		<text> 20</text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
@@ -272,1021 +272,146 @@
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M770.62,558.00 L770.62,547.50 M770.62,21.01 L770.62,31.51  '/>	<g transform="translate(770.62,583.55)" stroke="none" fill="black" font-family="Arial" font-size="14.00"  text-anchor="middle">
-		<text> 40</text>
+		<text> 30</text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,21.01 L53.84,558.00 L770.62,558.00 L770.62,21.01 L53.84,21.01 Z  '/></g>
+	<path stroke='black'  d='M63.63,21.01 L63.63,558.00 L770.62,558.00 L770.62,21.01 L63.63,21.01 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	<g id="gnuplot_plot_1" ><title>gnuplot_plot_1</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '91.73,558.00 93.78,558.00 93.78,528.16 91.73,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '98.98,558.00 122.56,558.00 122.56,552.62 98.98,552.62 '/>
 	</g>
-	<path stroke='black'  d='M91.73,558.00 L91.73,528.17 L93.77,528.17 L93.77,558.00 L91.73,558.00 Z  '/></g>
+	<path stroke='black'  d='M98.98,558.00 L98.98,552.63 L122.55,552.63 L122.55,558.00 L98.98,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '95.82,558.00 97.88,558.00 97.88,528.16 95.82,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '146.11,558.00 169.69,558.00 169.69,525.77 146.11,525.77 '/>
 	</g>
-	<path stroke='black'  d='M95.82,558.00 L95.82,528.17 L97.87,528.17 L97.87,558.00 L95.82,558.00 Z  '/></g>
+	<path stroke='black'  d='M146.11,558.00 L146.11,525.78 L169.68,525.78 L169.68,558.00 L146.11,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '106.06,558.00 108.12,558.00 108.12,528.16 106.06,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '169.68,558.00 193.25,558.00 193.25,552.62 169.68,552.62 '/>
 	</g>
-	<path stroke='black'  d='M106.06,558.00 L106.06,528.17 L108.11,528.17 L108.11,558.00 L106.06,558.00 Z  '/></g>
+	<path stroke='black'  d='M169.68,558.00 L169.68,552.63 L193.24,552.63 L193.24,558.00 L169.68,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '116.30,558.00 118.36,558.00 118.36,498.32 116.30,498.32 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '193.24,558.00 216.82,558.00 216.82,493.55 193.24,493.55 '/>
 	</g>
-	<path stroke='black'  d='M116.30,558.00 L116.30,498.33 L118.35,498.33 L118.35,558.00 L116.30,558.00 Z  '/></g>
+	<path stroke='black'  d='M193.24,558.00 L193.24,493.56 L216.81,493.56 L216.81,558.00 L193.24,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '140.88,558.00 142.94,558.00 142.94,528.16 140.88,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '216.81,558.00 240.39,558.00 240.39,498.92 216.81,498.92 '/>
 	</g>
-	<path stroke='black'  d='M140.88,558.00 L140.88,528.17 L142.93,528.17 L142.93,558.00 L140.88,558.00 Z  '/></g>
+	<path stroke='black'  d='M216.81,558.00 L216.81,498.93 L240.38,498.93 L240.38,558.00 L216.81,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '144.97,558.00 147.03,558.00 147.03,498.32 144.97,498.32 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '240.38,558.00 263.95,558.00 263.95,402.26 240.38,402.26 '/>
 	</g>
-	<path stroke='black'  d='M144.97,558.00 L144.97,498.33 L147.02,498.33 L147.02,558.00 L144.97,558.00 Z  '/></g>
+	<path stroke='black'  d='M240.38,558.00 L240.38,402.27 L263.94,402.27 L263.94,558.00 L240.38,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '149.07,558.00 151.13,558.00 151.13,528.16 149.07,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '263.94,558.00 287.52,558.00 287.52,407.63 263.94,407.63 '/>
 	</g>
-	<path stroke='black'  d='M149.07,558.00 L149.07,528.17 L151.12,528.17 L151.12,558.00 L149.07,558.00 Z  '/></g>
+	<path stroke='black'  d='M263.94,558.00 L263.94,407.64 L287.51,407.64 L287.51,558.00 L263.94,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '151.12,558.00 153.18,558.00 153.18,498.32 151.12,498.32 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '287.51,558.00 311.09,558.00 311.09,289.49 287.51,289.49 '/>
 	</g>
-	<path stroke='black'  d='M151.12,558.00 L151.12,498.33 L153.17,498.33 L153.17,558.00 L151.12,558.00 Z  '/></g>
+	<path stroke='black'  d='M287.51,558.00 L287.51,289.50 L311.08,289.50 L311.08,558.00 L287.51,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '163.40,558.00 165.46,558.00 165.46,498.32 163.40,498.32 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '311.08,558.00 334.65,558.00 334.65,208.95 311.08,208.95 '/>
 	</g>
-	<path stroke='black'  d='M163.40,558.00 L163.40,498.33 L165.45,498.33 L165.45,558.00 L163.40,558.00 Z  '/></g>
+	<path stroke='black'  d='M311.08,558.00 L311.08,208.96 L334.64,208.96 L334.64,558.00 L311.08,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '169.55,558.00 171.61,558.00 171.61,528.16 169.55,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '334.64,558.00 358.22,558.00 358.22,160.62 334.64,160.62 '/>
 	</g>
-	<path stroke='black'  d='M169.55,558.00 L169.55,528.17 L171.60,528.17 L171.60,558.00 L169.55,558.00 Z  '/></g>
+	<path stroke='black'  d='M334.64,558.00 L334.64,160.63 L358.21,160.63 L358.21,558.00 L334.64,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '173.64,558.00 175.70,558.00 175.70,528.16 173.64,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '358.21,558.00 381.79,558.00 381.79,106.92 358.21,106.92 '/>
 	</g>
-	<path stroke='black'  d='M173.64,558.00 L173.64,528.17 L175.69,528.17 L175.69,558.00 L173.64,558.00 Z  '/></g>
+	<path stroke='black'  d='M358.21,558.00 L358.21,106.93 L381.78,106.93 L381.78,558.00 L358.21,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '177.74,558.00 179.80,558.00 179.80,528.16 177.74,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '381.78,558.00 405.35,558.00 405.35,101.55 381.78,101.55 '/>
 	</g>
-	<path stroke='black'  d='M177.74,558.00 L177.74,528.17 L179.79,528.17 L179.79,558.00 L177.74,558.00 Z  '/></g>
+	<path stroke='black'  d='M381.78,558.00 L381.78,101.56 L405.34,101.56 L405.34,558.00 L381.78,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '179.79,558.00 181.85,558.00 181.85,528.16 179.79,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '405.34,558.00 428.92,558.00 428.92,139.14 405.34,139.14 '/>
 	</g>
-	<path stroke='black'  d='M179.79,558.00 L179.79,528.17 L181.84,528.17 L181.84,558.00 L179.79,558.00 Z  '/></g>
+	<path stroke='black'  d='M405.34,558.00 L405.34,139.15 L428.91,139.15 L428.91,558.00 L405.34,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '183.88,558.00 185.94,558.00 185.94,528.16 183.88,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '428.91,558.00 452.48,558.00 452.48,26.37 428.91,26.37 '/>
 	</g>
-	<path stroke='black'  d='M183.88,558.00 L183.88,528.17 L185.93,528.17 L185.93,558.00 L183.88,558.00 Z  '/></g>
+	<path stroke='black'  d='M428.91,558.00 L428.91,26.38 L452.47,26.38 L452.47,558.00 L428.91,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '185.93,558.00 187.99,558.00 187.99,498.32 185.93,498.32 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '452.47,558.00 476.05,558.00 476.05,47.85 452.47,47.85 '/>
 	</g>
-	<path stroke='black'  d='M185.93,558.00 L185.93,498.33 L187.98,498.33 L187.98,558.00 L185.93,558.00 Z  '/></g>
+	<path stroke='black'  d='M452.47,558.00 L452.47,47.86 L476.04,47.86 L476.04,558.00 L452.47,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '187.98,558.00 190.04,558.00 190.04,528.16 187.98,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '476.04,558.00 499.62,558.00 499.62,133.77 476.04,133.77 '/>
 	</g>
-	<path stroke='black'  d='M187.98,558.00 L187.98,528.17 L190.03,528.17 L190.03,558.00 L187.98,558.00 Z  '/></g>
+	<path stroke='black'  d='M476.04,558.00 L476.04,133.78 L499.61,133.78 L499.61,558.00 L476.04,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '192.08,558.00 194.13,558.00 194.13,498.32 192.08,498.32 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '499.61,558.00 523.18,558.00 523.18,246.54 499.61,246.54 '/>
 	</g>
-	<path stroke='black'  d='M192.08,558.00 L192.08,498.33 L194.12,498.33 L194.12,558.00 L192.08,558.00 Z  '/></g>
+	<path stroke='black'  d='M499.61,558.00 L499.61,246.55 L523.17,246.55 L523.17,558.00 L499.61,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '194.12,558.00 196.18,558.00 196.18,498.32 194.12,498.32 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '523.17,558.00 546.75,558.00 546.75,294.86 523.17,294.86 '/>
 	</g>
-	<path stroke='black'  d='M194.12,558.00 L194.12,498.33 L196.17,498.33 L196.17,558.00 L194.12,558.00 Z  '/></g>
+	<path stroke='black'  d='M523.17,558.00 L523.17,294.87 L546.74,294.87 L546.74,558.00 L523.17,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '196.17,558.00 198.23,558.00 198.23,528.16 196.17,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '546.74,558.00 570.32,558.00 570.32,343.19 546.74,343.19 '/>
 	</g>
-	<path stroke='black'  d='M196.17,558.00 L196.17,528.17 L198.22,528.17 L198.22,558.00 L196.17,558.00 Z  '/></g>
+	<path stroke='black'  d='M546.74,558.00 L546.74,343.20 L570.31,343.20 L570.31,558.00 L546.74,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '198.22,558.00 200.28,558.00 200.28,438.66 198.22,438.66 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '570.31,558.00 593.88,558.00 593.88,439.85 570.31,439.85 '/>
 	</g>
-	<path stroke='black'  d='M198.22,558.00 L198.22,438.67 L200.27,438.67 L200.27,558.00 L198.22,558.00 Z  '/></g>
+	<path stroke='black'  d='M570.31,558.00 L570.31,439.86 L593.87,439.86 L593.87,558.00 L570.31,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '202.32,558.00 204.37,558.00 204.37,528.16 202.32,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '593.87,558.00 617.45,558.00 617.45,482.81 593.87,482.81 '/>
 	</g>
-	<path stroke='black'  d='M202.32,558.00 L202.32,528.17 L204.36,528.17 L204.36,558.00 L202.32,558.00 Z  '/></g>
+	<path stroke='black'  d='M593.87,558.00 L593.87,482.82 L617.44,482.82 L617.44,558.00 L593.87,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '204.36,558.00 206.42,558.00 206.42,498.32 204.36,498.32 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '617.44,558.00 641.02,558.00 641.02,504.29 617.44,504.29 '/>
 	</g>
-	<path stroke='black'  d='M204.36,558.00 L204.36,498.33 L206.41,498.33 L206.41,558.00 L204.36,558.00 Z  '/></g>
+	<path stroke='black'  d='M617.44,558.00 L617.44,504.30 L641.01,504.30 L641.01,558.00 L617.44,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '208.46,558.00 210.52,558.00 210.52,498.32 208.46,498.32 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '641.01,558.00 664.58,558.00 664.58,525.77 641.01,525.77 '/>
 	</g>
-	<path stroke='black'  d='M208.46,558.00 L208.46,498.33 L210.51,498.33 L210.51,558.00 L208.46,558.00 Z  '/></g>
+	<path stroke='black'  d='M641.01,558.00 L641.01,525.78 L664.57,525.78 L664.57,558.00 L641.01,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '210.51,558.00 212.57,558.00 212.57,528.16 210.51,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '664.57,558.00 688.15,558.00 688.15,547.25 664.57,547.25 '/>
 	</g>
-	<path stroke='black'  d='M210.51,558.00 L210.51,528.17 L212.56,528.17 L212.56,558.00 L210.51,558.00 Z  '/></g>
+	<path stroke='black'  d='M664.57,558.00 L664.57,547.26 L688.14,547.26 L688.14,558.00 L664.57,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '212.56,558.00 214.61,558.00 214.61,408.83 212.56,408.83 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '711.70,558.00 735.28,558.00 735.28,552.62 711.70,552.62 '/>
 	</g>
-	<path stroke='black'  d='M212.56,558.00 L212.56,408.84 L214.60,408.84 L214.60,558.00 L212.56,558.00 Z  '/></g>
+	<path stroke='black'  d='M711.70,558.00 L711.70,552.63 L735.27,552.63 L735.27,558.00 L711.70,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '214.60,558.00 216.66,558.00 216.66,528.16 214.60,528.16 '/>
+		<polygon fill = 'rgb(148,   0, 211)' points = '758.84,558.00 770.63,558.00 770.63,552.62 758.84,552.62 '/>
 	</g>
-	<path stroke='black'  d='M214.60,558.00 L214.60,528.17 L216.65,528.17 L216.65,558.00 L214.60,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '216.65,558.00 218.71,558.00 218.71,528.16 216.65,528.16 '/>
-	</g>
-	<path stroke='black'  d='M216.65,558.00 L216.65,528.17 L218.70,528.17 L218.70,558.00 L216.65,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '218.70,558.00 220.76,558.00 220.76,528.16 218.70,528.16 '/>
-	</g>
-	<path stroke='black'  d='M218.70,558.00 L218.70,528.17 L220.75,528.17 L220.75,558.00 L218.70,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '220.75,558.00 222.81,558.00 222.81,528.16 220.75,528.16 '/>
-	</g>
-	<path stroke='black'  d='M220.75,558.00 L220.75,528.17 L222.80,528.17 L222.80,558.00 L220.75,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '222.80,558.00 224.85,558.00 224.85,438.66 222.80,438.66 '/>
-	</g>
-	<path stroke='black'  d='M222.80,558.00 L222.80,438.67 L224.84,438.67 L224.84,558.00 L222.80,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '224.84,558.00 226.90,558.00 226.90,498.32 224.84,498.32 '/>
-	</g>
-	<path stroke='black'  d='M224.84,558.00 L224.84,498.33 L226.89,498.33 L226.89,558.00 L224.84,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '228.94,558.00 231.00,558.00 231.00,349.16 228.94,349.16 '/>
-	</g>
-	<path stroke='black'  d='M228.94,558.00 L228.94,349.17 L230.99,349.17 L230.99,558.00 L228.94,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '230.99,558.00 233.05,558.00 233.05,438.66 230.99,438.66 '/>
-	</g>
-	<path stroke='black'  d='M230.99,558.00 L230.99,438.67 L233.04,438.67 L233.04,558.00 L230.99,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '233.04,558.00 235.09,558.00 235.09,349.16 233.04,349.16 '/>
-	</g>
-	<path stroke='black'  d='M233.04,558.00 L233.04,349.17 L235.08,349.17 L235.08,558.00 L233.04,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '235.08,558.00 237.14,558.00 237.14,378.99 235.08,378.99 '/>
-	</g>
-	<path stroke='black'  d='M235.08,558.00 L235.08,379.00 L237.13,379.00 L237.13,558.00 L235.08,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '237.13,558.00 239.19,558.00 239.19,468.49 237.13,468.49 '/>
-	</g>
-	<path stroke='black'  d='M237.13,558.00 L237.13,468.50 L239.18,468.50 L239.18,558.00 L237.13,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '239.18,558.00 241.24,558.00 241.24,528.16 239.18,528.16 '/>
-	</g>
-	<path stroke='black'  d='M239.18,558.00 L239.18,528.17 L241.23,528.17 L241.23,558.00 L239.18,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '241.23,558.00 243.28,558.00 243.28,468.49 241.23,468.49 '/>
-	</g>
-	<path stroke='black'  d='M241.23,558.00 L241.23,468.50 L243.27,468.50 L243.27,558.00 L241.23,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '243.27,558.00 245.33,558.00 245.33,498.32 243.27,498.32 '/>
-	</g>
-	<path stroke='black'  d='M243.27,558.00 L243.27,498.33 L245.32,498.33 L245.32,558.00 L243.27,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '245.32,558.00 247.38,558.00 247.38,438.66 245.32,438.66 '/>
-	</g>
-	<path stroke='black'  d='M245.32,558.00 L245.32,438.67 L247.37,438.67 L247.37,558.00 L245.32,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '247.37,558.00 249.43,558.00 249.43,438.66 247.37,438.66 '/>
-	</g>
-	<path stroke='black'  d='M247.37,558.00 L247.37,438.67 L249.42,438.67 L249.42,558.00 L247.37,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '249.42,558.00 251.48,558.00 251.48,468.49 249.42,468.49 '/>
-	</g>
-	<path stroke='black'  d='M249.42,558.00 L249.42,468.50 L251.47,468.50 L251.47,558.00 L249.42,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '251.47,558.00 253.52,558.00 253.52,528.16 251.47,528.16 '/>
-	</g>
-	<path stroke='black'  d='M251.47,558.00 L251.47,528.17 L253.51,528.17 L253.51,558.00 L251.47,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '253.51,558.00 255.57,558.00 255.57,468.49 253.51,468.49 '/>
-	</g>
-	<path stroke='black'  d='M253.51,558.00 L253.51,468.50 L255.56,468.50 L255.56,558.00 L253.51,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '255.56,558.00 257.62,558.00 257.62,408.83 255.56,408.83 '/>
-	</g>
-	<path stroke='black'  d='M255.56,558.00 L255.56,408.84 L257.61,408.84 L257.61,558.00 L255.56,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '257.61,558.00 259.67,558.00 259.67,349.16 257.61,349.16 '/>
-	</g>
-	<path stroke='black'  d='M257.61,558.00 L257.61,349.17 L259.66,349.17 L259.66,558.00 L257.61,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '259.66,558.00 261.72,558.00 261.72,378.99 259.66,378.99 '/>
-	</g>
-	<path stroke='black'  d='M259.66,558.00 L259.66,379.00 L261.71,379.00 L261.71,558.00 L259.66,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '261.71,558.00 263.76,558.00 263.76,349.16 261.71,349.16 '/>
-	</g>
-	<path stroke='black'  d='M261.71,558.00 L261.71,349.17 L263.75,349.17 L263.75,558.00 L261.71,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '263.75,558.00 265.81,558.00 265.81,438.66 263.75,438.66 '/>
-	</g>
-	<path stroke='black'  d='M263.75,558.00 L263.75,438.67 L265.80,438.67 L265.80,558.00 L263.75,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '265.80,558.00 267.86,558.00 267.86,438.66 265.80,438.66 '/>
-	</g>
-	<path stroke='black'  d='M265.80,558.00 L265.80,438.67 L267.85,438.67 L267.85,558.00 L265.80,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '267.85,558.00 269.91,558.00 269.91,289.49 267.85,289.49 '/>
-	</g>
-	<path stroke='black'  d='M267.85,558.00 L267.85,289.50 L269.90,289.50 L269.90,558.00 L267.85,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '269.90,558.00 271.96,558.00 271.96,408.83 269.90,408.83 '/>
-	</g>
-	<path stroke='black'  d='M269.90,558.00 L269.90,408.84 L271.95,408.84 L271.95,558.00 L269.90,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '271.95,558.00 274.00,558.00 274.00,378.99 271.95,378.99 '/>
-	</g>
-	<path stroke='black'  d='M271.95,558.00 L271.95,379.00 L273.99,379.00 L273.99,558.00 L271.95,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '273.99,558.00 276.05,558.00 276.05,349.16 273.99,349.16 '/>
-	</g>
-	<path stroke='black'  d='M273.99,558.00 L273.99,349.17 L276.04,349.17 L276.04,558.00 L273.99,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '276.04,558.00 278.10,558.00 278.10,349.16 276.04,349.16 '/>
-	</g>
-	<path stroke='black'  d='M276.04,558.00 L276.04,349.17 L278.09,349.17 L278.09,558.00 L276.04,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '278.09,558.00 280.15,558.00 280.15,468.49 278.09,468.49 '/>
-	</g>
-	<path stroke='black'  d='M278.09,558.00 L278.09,468.50 L280.14,468.50 L280.14,558.00 L278.09,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '280.14,558.00 282.20,558.00 282.20,408.83 280.14,408.83 '/>
-	</g>
-	<path stroke='black'  d='M280.14,558.00 L280.14,408.84 L282.19,408.84 L282.19,558.00 L280.14,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '282.19,558.00 284.24,558.00 284.24,438.66 282.19,438.66 '/>
-	</g>
-	<path stroke='black'  d='M282.19,558.00 L282.19,438.67 L284.23,438.67 L284.23,558.00 L282.19,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '284.23,558.00 286.29,558.00 286.29,229.83 284.23,229.83 '/>
-	</g>
-	<path stroke='black'  d='M284.23,558.00 L284.23,229.84 L286.28,229.84 L286.28,558.00 L284.23,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '286.28,558.00 288.34,558.00 288.34,378.99 286.28,378.99 '/>
-	</g>
-	<path stroke='black'  d='M286.28,558.00 L286.28,379.00 L288.33,379.00 L288.33,558.00 L286.28,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '288.33,558.00 290.39,558.00 290.39,319.33 288.33,319.33 '/>
-	</g>
-	<path stroke='black'  d='M288.33,558.00 L288.33,319.34 L290.38,319.34 L290.38,558.00 L288.33,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '290.38,558.00 292.44,558.00 292.44,259.66 290.38,259.66 '/>
-	</g>
-	<path stroke='black'  d='M290.38,558.00 L290.38,259.67 L292.43,259.67 L292.43,558.00 L290.38,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '292.43,558.00 294.48,558.00 294.48,289.49 292.43,289.49 '/>
-	</g>
-	<path stroke='black'  d='M292.43,558.00 L292.43,289.50 L294.47,289.50 L294.47,558.00 L292.43,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '294.47,558.00 296.53,558.00 296.53,319.33 294.47,319.33 '/>
-	</g>
-	<path stroke='black'  d='M294.47,558.00 L294.47,319.34 L296.52,319.34 L296.52,558.00 L294.47,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '296.52,558.00 298.58,558.00 298.58,289.49 296.52,289.49 '/>
-	</g>
-	<path stroke='black'  d='M296.52,558.00 L296.52,289.50 L298.57,289.50 L298.57,558.00 L296.52,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '298.57,558.00 300.63,558.00 300.63,468.49 298.57,468.49 '/>
-	</g>
-	<path stroke='black'  d='M298.57,558.00 L298.57,468.50 L300.62,468.50 L300.62,558.00 L298.57,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '300.62,558.00 302.68,558.00 302.68,140.33 300.62,140.33 '/>
-	</g>
-	<path stroke='black'  d='M300.62,558.00 L300.62,140.34 L302.67,140.34 L302.67,558.00 L300.62,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '302.67,558.00 304.72,558.00 304.72,319.33 302.67,319.33 '/>
-	</g>
-	<path stroke='black'  d='M302.67,558.00 L302.67,319.34 L304.71,319.34 L304.71,558.00 L302.67,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '304.71,558.00 306.77,558.00 306.77,229.83 304.71,229.83 '/>
-	</g>
-	<path stroke='black'  d='M304.71,558.00 L304.71,229.84 L306.76,229.84 L306.76,558.00 L304.71,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '306.76,558.00 308.82,558.00 308.82,229.83 306.76,229.83 '/>
-	</g>
-	<path stroke='black'  d='M306.76,558.00 L306.76,229.84 L308.81,229.84 L308.81,558.00 L306.76,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '308.81,558.00 310.87,558.00 310.87,438.66 308.81,438.66 '/>
-	</g>
-	<path stroke='black'  d='M308.81,558.00 L308.81,438.67 L310.86,438.67 L310.86,558.00 L308.81,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '310.86,558.00 312.91,558.00 312.91,319.33 310.86,319.33 '/>
-	</g>
-	<path stroke='black'  d='M310.86,558.00 L310.86,319.34 L312.90,319.34 L312.90,558.00 L310.86,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '312.90,558.00 314.96,558.00 314.96,319.33 312.90,319.33 '/>
-	</g>
-	<path stroke='black'  d='M312.90,558.00 L312.90,319.34 L314.95,319.34 L314.95,558.00 L312.90,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '314.95,558.00 317.01,558.00 317.01,319.33 314.95,319.33 '/>
-	</g>
-	<path stroke='black'  d='M314.95,558.00 L314.95,319.34 L317.00,319.34 L317.00,558.00 L314.95,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '317.00,558.00 319.06,558.00 319.06,438.66 317.00,438.66 '/>
-	</g>
-	<path stroke='black'  d='M317.00,558.00 L317.00,438.67 L319.05,438.67 L319.05,558.00 L317.00,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '319.05,558.00 321.11,558.00 321.11,349.16 319.05,349.16 '/>
-	</g>
-	<path stroke='black'  d='M319.05,558.00 L319.05,349.17 L321.10,349.17 L321.10,558.00 L319.05,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '321.10,558.00 323.15,558.00 323.15,438.66 321.10,438.66 '/>
-	</g>
-	<path stroke='black'  d='M321.10,558.00 L321.10,438.67 L323.14,438.67 L323.14,558.00 L321.10,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '323.14,558.00 325.20,558.00 325.20,408.83 323.14,408.83 '/>
-	</g>
-	<path stroke='black'  d='M323.14,558.00 L323.14,408.84 L325.19,408.84 L325.19,558.00 L323.14,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '325.19,558.00 327.25,558.00 327.25,259.66 325.19,259.66 '/>
-	</g>
-	<path stroke='black'  d='M325.19,558.00 L325.19,259.67 L327.24,259.67 L327.24,558.00 L325.19,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '327.24,558.00 329.30,558.00 329.30,200.00 327.24,200.00 '/>
-	</g>
-	<path stroke='black'  d='M327.24,558.00 L327.24,200.01 L329.29,200.01 L329.29,558.00 L327.24,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '329.29,558.00 331.35,558.00 331.35,200.00 329.29,200.00 '/>
-	</g>
-	<path stroke='black'  d='M329.29,558.00 L329.29,200.01 L331.34,200.01 L331.34,558.00 L329.29,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '331.34,558.00 333.39,558.00 333.39,80.67 331.34,80.67 '/>
-	</g>
-	<path stroke='black'  d='M331.34,558.00 L331.34,80.68 L333.38,80.68 L333.38,558.00 L331.34,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '333.38,558.00 335.44,558.00 335.44,259.66 333.38,259.66 '/>
-	</g>
-	<path stroke='black'  d='M333.38,558.00 L333.38,259.67 L335.43,259.67 L335.43,558.00 L333.38,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '335.43,558.00 337.49,558.00 337.49,349.16 335.43,349.16 '/>
-	</g>
-	<path stroke='black'  d='M335.43,558.00 L335.43,349.17 L337.48,349.17 L337.48,558.00 L335.43,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '337.48,558.00 339.54,558.00 339.54,378.99 337.48,378.99 '/>
-	</g>
-	<path stroke='black'  d='M337.48,558.00 L337.48,379.00 L339.53,379.00 L339.53,558.00 L337.48,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '339.53,558.00 341.59,558.00 341.59,229.83 339.53,229.83 '/>
-	</g>
-	<path stroke='black'  d='M339.53,558.00 L339.53,229.84 L341.58,229.84 L341.58,558.00 L339.53,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '341.58,558.00 343.63,558.00 343.63,289.49 341.58,289.49 '/>
-	</g>
-	<path stroke='black'  d='M341.58,558.00 L341.58,289.50 L343.62,289.50 L343.62,558.00 L341.58,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '343.62,558.00 345.68,558.00 345.68,170.16 343.62,170.16 '/>
-	</g>
-	<path stroke='black'  d='M343.62,558.00 L343.62,170.17 L345.67,170.17 L345.67,558.00 L343.62,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '345.67,558.00 347.73,558.00 347.73,349.16 345.67,349.16 '/>
-	</g>
-	<path stroke='black'  d='M345.67,558.00 L345.67,349.17 L347.72,349.17 L347.72,558.00 L345.67,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '347.72,558.00 349.78,558.00 349.78,229.83 347.72,229.83 '/>
-	</g>
-	<path stroke='black'  d='M347.72,558.00 L347.72,229.84 L349.77,229.84 L349.77,558.00 L347.72,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '349.77,558.00 351.83,558.00 351.83,50.83 349.77,50.83 '/>
-	</g>
-	<path stroke='black'  d='M349.77,558.00 L349.77,50.84 L351.82,50.84 L351.82,558.00 L349.77,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '351.82,558.00 353.87,558.00 353.87,378.99 351.82,378.99 '/>
-	</g>
-	<path stroke='black'  d='M351.82,558.00 L351.82,379.00 L353.86,379.00 L353.86,558.00 L351.82,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '353.86,558.00 355.92,558.00 355.92,349.16 353.86,349.16 '/>
-	</g>
-	<path stroke='black'  d='M353.86,558.00 L353.86,349.17 L355.91,349.17 L355.91,558.00 L353.86,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '355.91,558.00 357.97,558.00 357.97,229.83 355.91,229.83 '/>
-	</g>
-	<path stroke='black'  d='M355.91,558.00 L355.91,229.84 L357.96,229.84 L357.96,558.00 L355.91,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '357.96,558.00 360.02,558.00 360.02,408.83 357.96,408.83 '/>
-	</g>
-	<path stroke='black'  d='M357.96,558.00 L357.96,408.84 L360.01,408.84 L360.01,558.00 L357.96,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '360.01,558.00 362.07,558.00 362.07,319.33 360.01,319.33 '/>
-	</g>
-	<path stroke='black'  d='M360.01,558.00 L360.01,319.34 L362.06,319.34 L362.06,558.00 L360.01,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '362.06,558.00 364.11,558.00 364.11,50.83 362.06,50.83 '/>
-	</g>
-	<path stroke='black'  d='M362.06,558.00 L362.06,50.84 L364.10,50.84 L364.10,558.00 L362.06,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '364.10,558.00 366.16,558.00 366.16,349.16 364.10,349.16 '/>
-	</g>
-	<path stroke='black'  d='M364.10,558.00 L364.10,349.17 L366.15,349.17 L366.15,558.00 L364.10,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '366.15,558.00 368.21,558.00 368.21,229.83 366.15,229.83 '/>
-	</g>
-	<path stroke='black'  d='M366.15,558.00 L366.15,229.84 L368.20,229.84 L368.20,558.00 L366.15,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '368.20,558.00 370.26,558.00 370.26,289.49 368.20,289.49 '/>
-	</g>
-	<path stroke='black'  d='M368.20,558.00 L368.20,289.50 L370.25,289.50 L370.25,558.00 L368.20,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '370.25,558.00 372.31,558.00 372.31,110.50 370.25,110.50 '/>
-	</g>
-	<path stroke='black'  d='M370.25,558.00 L370.25,110.51 L372.30,110.51 L372.30,558.00 L370.25,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '372.30,558.00 374.35,558.00 374.35,378.99 372.30,378.99 '/>
-	</g>
-	<path stroke='black'  d='M372.30,558.00 L372.30,379.00 L374.34,379.00 L374.34,558.00 L372.30,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '374.34,558.00 376.40,558.00 376.40,408.83 374.34,408.83 '/>
-	</g>
-	<path stroke='black'  d='M374.34,558.00 L374.34,408.84 L376.39,408.84 L376.39,558.00 L374.34,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '376.39,558.00 378.45,558.00 378.45,259.66 376.39,259.66 '/>
-	</g>
-	<path stroke='black'  d='M376.39,558.00 L376.39,259.67 L378.44,259.67 L378.44,558.00 L376.39,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '378.44,558.00 380.50,558.00 380.50,378.99 378.44,378.99 '/>
-	</g>
-	<path stroke='black'  d='M378.44,558.00 L378.44,379.00 L380.49,379.00 L380.49,558.00 L378.44,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '380.49,558.00 382.54,558.00 382.54,349.16 380.49,349.16 '/>
-	</g>
-	<path stroke='black'  d='M380.49,558.00 L380.49,349.17 L382.53,349.17 L382.53,558.00 L380.49,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '382.53,558.00 384.59,558.00 384.59,229.83 382.53,229.83 '/>
-	</g>
-	<path stroke='black'  d='M382.53,558.00 L382.53,229.84 L384.58,229.84 L384.58,558.00 L382.53,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '384.58,558.00 386.64,558.00 386.64,80.67 384.58,80.67 '/>
-	</g>
-	<path stroke='black'  d='M384.58,558.00 L384.58,80.68 L386.63,80.68 L386.63,558.00 L384.58,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '386.63,558.00 388.69,558.00 388.69,349.16 386.63,349.16 '/>
-	</g>
-	<path stroke='black'  d='M386.63,558.00 L386.63,349.17 L388.68,349.17 L388.68,558.00 L386.63,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '388.68,558.00 390.74,558.00 390.74,259.66 388.68,259.66 '/>
-	</g>
-	<path stroke='black'  d='M388.68,558.00 L388.68,259.67 L390.73,259.67 L390.73,558.00 L388.68,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '390.73,558.00 392.78,558.00 392.78,319.33 390.73,319.33 '/>
-	</g>
-	<path stroke='black'  d='M390.73,558.00 L390.73,319.34 L392.77,319.34 L392.77,558.00 L390.73,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '392.77,558.00 394.83,558.00 394.83,289.49 392.77,289.49 '/>
-	</g>
-	<path stroke='black'  d='M392.77,558.00 L392.77,289.50 L394.82,289.50 L394.82,558.00 L392.77,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '394.82,558.00 396.88,558.00 396.88,110.50 394.82,110.50 '/>
-	</g>
-	<path stroke='black'  d='M394.82,558.00 L394.82,110.51 L396.87,110.51 L396.87,558.00 L394.82,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '396.87,558.00 398.93,558.00 398.93,349.16 396.87,349.16 '/>
-	</g>
-	<path stroke='black'  d='M396.87,558.00 L396.87,349.17 L398.92,349.17 L398.92,558.00 L396.87,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '398.92,558.00 400.98,558.00 400.98,349.16 398.92,349.16 '/>
-	</g>
-	<path stroke='black'  d='M398.92,558.00 L398.92,349.17 L400.97,349.17 L400.97,558.00 L398.92,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '400.97,558.00 403.02,558.00 403.02,438.66 400.97,438.66 '/>
-	</g>
-	<path stroke='black'  d='M400.97,558.00 L400.97,438.67 L403.01,438.67 L403.01,558.00 L400.97,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '403.01,558.00 405.07,558.00 405.07,200.00 403.01,200.00 '/>
-	</g>
-	<path stroke='black'  d='M403.01,558.00 L403.01,200.01 L405.06,200.01 L405.06,558.00 L403.01,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '405.06,558.00 407.12,558.00 407.12,229.83 405.06,229.83 '/>
-	</g>
-	<path stroke='black'  d='M405.06,558.00 L405.06,229.84 L407.11,229.84 L407.11,558.00 L405.06,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '407.11,558.00 409.17,558.00 409.17,438.66 407.11,438.66 '/>
-	</g>
-	<path stroke='black'  d='M407.11,558.00 L407.11,438.67 L409.16,438.67 L409.16,558.00 L407.11,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '409.16,558.00 411.22,558.00 411.22,289.49 409.16,289.49 '/>
-	</g>
-	<path stroke='black'  d='M409.16,558.00 L409.16,289.50 L411.21,289.50 L411.21,558.00 L409.16,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '411.21,558.00 413.26,558.00 413.26,319.33 411.21,319.33 '/>
-	</g>
-	<path stroke='black'  d='M411.21,558.00 L411.21,319.34 L413.25,319.34 L413.25,558.00 L411.21,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '413.25,558.00 415.31,558.00 415.31,528.16 413.25,528.16 '/>
-	</g>
-	<path stroke='black'  d='M413.25,558.00 L413.25,528.17 L415.30,528.17 L415.30,558.00 L413.25,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '415.30,558.00 417.36,558.00 417.36,468.49 415.30,468.49 '/>
-	</g>
-	<path stroke='black'  d='M415.30,558.00 L415.30,468.50 L417.35,468.50 L417.35,558.00 L415.30,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '417.35,558.00 419.41,558.00 419.41,438.66 417.35,438.66 '/>
-	</g>
-	<path stroke='black'  d='M417.35,558.00 L417.35,438.67 L419.40,438.67 L419.40,558.00 L417.35,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '419.40,558.00 421.46,558.00 421.46,349.16 419.40,349.16 '/>
-	</g>
-	<path stroke='black'  d='M419.40,558.00 L419.40,349.17 L421.45,349.17 L421.45,558.00 L419.40,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '421.45,558.00 423.50,558.00 423.50,319.33 421.45,319.33 '/>
-	</g>
-	<path stroke='black'  d='M421.45,558.00 L421.45,319.34 L423.49,319.34 L423.49,558.00 L421.45,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '423.49,558.00 425.55,558.00 425.55,259.66 423.49,259.66 '/>
-	</g>
-	<path stroke='black'  d='M423.49,558.00 L423.49,259.67 L425.54,259.67 L425.54,558.00 L423.49,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '425.54,558.00 427.60,558.00 427.60,259.66 425.54,259.66 '/>
-	</g>
-	<path stroke='black'  d='M425.54,558.00 L425.54,259.67 L427.59,259.67 L427.59,558.00 L425.54,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '427.59,558.00 429.65,558.00 429.65,349.16 427.59,349.16 '/>
-	</g>
-	<path stroke='black'  d='M427.59,558.00 L427.59,349.17 L429.64,349.17 L429.64,558.00 L427.59,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '429.64,558.00 431.70,558.00 431.70,349.16 429.64,349.16 '/>
-	</g>
-	<path stroke='black'  d='M429.64,558.00 L429.64,349.17 L431.69,349.17 L431.69,558.00 L429.64,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '431.69,558.00 433.74,558.00 433.74,319.33 431.69,319.33 '/>
-	</g>
-	<path stroke='black'  d='M431.69,558.00 L431.69,319.34 L433.73,319.34 L433.73,558.00 L431.69,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '433.73,558.00 435.79,558.00 435.79,468.49 433.73,468.49 '/>
-	</g>
-	<path stroke='black'  d='M433.73,558.00 L433.73,468.50 L435.78,468.50 L435.78,558.00 L433.73,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '435.78,558.00 437.84,558.00 437.84,438.66 435.78,438.66 '/>
-	</g>
-	<path stroke='black'  d='M435.78,558.00 L435.78,438.67 L437.83,438.67 L437.83,558.00 L435.78,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '437.83,558.00 439.89,558.00 439.89,289.49 437.83,289.49 '/>
-	</g>
-	<path stroke='black'  d='M437.83,558.00 L437.83,289.50 L439.88,289.50 L439.88,558.00 L437.83,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '439.88,558.00 441.94,558.00 441.94,259.66 439.88,259.66 '/>
-	</g>
-	<path stroke='black'  d='M439.88,558.00 L439.88,259.67 L441.93,259.67 L441.93,558.00 L439.88,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '441.93,558.00 443.98,558.00 443.98,408.83 441.93,408.83 '/>
-	</g>
-	<path stroke='black'  d='M441.93,558.00 L441.93,408.84 L443.97,408.84 L443.97,558.00 L441.93,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '443.97,558.00 446.03,558.00 446.03,319.33 443.97,319.33 '/>
-	</g>
-	<path stroke='black'  d='M443.97,558.00 L443.97,319.34 L446.02,319.34 L446.02,558.00 L443.97,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '446.02,558.00 448.08,558.00 448.08,378.99 446.02,378.99 '/>
-	</g>
-	<path stroke='black'  d='M446.02,558.00 L446.02,379.00 L448.07,379.00 L448.07,558.00 L446.02,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '448.07,558.00 450.13,558.00 450.13,498.32 448.07,498.32 '/>
-	</g>
-	<path stroke='black'  d='M448.07,558.00 L448.07,498.33 L450.12,498.33 L450.12,558.00 L448.07,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '450.12,558.00 452.17,558.00 452.17,438.66 450.12,438.66 '/>
-	</g>
-	<path stroke='black'  d='M450.12,558.00 L450.12,438.67 L452.16,438.67 L452.16,558.00 L450.12,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '452.16,558.00 454.22,558.00 454.22,498.32 452.16,498.32 '/>
-	</g>
-	<path stroke='black'  d='M452.16,558.00 L452.16,498.33 L454.21,498.33 L454.21,558.00 L452.16,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '454.21,558.00 456.27,558.00 456.27,289.49 454.21,289.49 '/>
-	</g>
-	<path stroke='black'  d='M454.21,558.00 L454.21,289.50 L456.26,289.50 L456.26,558.00 L454.21,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '456.26,558.00 458.32,558.00 458.32,468.49 456.26,468.49 '/>
-	</g>
-	<path stroke='black'  d='M456.26,558.00 L456.26,468.50 L458.31,468.50 L458.31,558.00 L456.26,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '458.31,558.00 460.37,558.00 460.37,438.66 458.31,438.66 '/>
-	</g>
-	<path stroke='black'  d='M458.31,558.00 L458.31,438.67 L460.36,438.67 L460.36,558.00 L458.31,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '460.36,558.00 462.41,558.00 462.41,378.99 460.36,378.99 '/>
-	</g>
-	<path stroke='black'  d='M460.36,558.00 L460.36,379.00 L462.40,379.00 L462.40,558.00 L460.36,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '462.40,558.00 464.46,558.00 464.46,498.32 462.40,498.32 '/>
-	</g>
-	<path stroke='black'  d='M462.40,558.00 L462.40,498.33 L464.45,498.33 L464.45,558.00 L462.40,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '464.45,558.00 466.51,558.00 466.51,468.49 464.45,468.49 '/>
-	</g>
-	<path stroke='black'  d='M464.45,558.00 L464.45,468.50 L466.50,468.50 L466.50,558.00 L464.45,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '466.50,558.00 468.56,558.00 468.56,438.66 466.50,438.66 '/>
-	</g>
-	<path stroke='black'  d='M466.50,558.00 L466.50,438.67 L468.55,438.67 L468.55,558.00 L466.50,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '468.55,558.00 470.61,558.00 470.61,468.49 468.55,468.49 '/>
-	</g>
-	<path stroke='black'  d='M468.55,558.00 L468.55,468.50 L470.60,468.50 L470.60,558.00 L468.55,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '470.60,558.00 472.65,558.00 472.65,438.66 470.60,438.66 '/>
-	</g>
-	<path stroke='black'  d='M470.60,558.00 L470.60,438.67 L472.64,438.67 L472.64,558.00 L470.60,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '472.64,558.00 474.70,558.00 474.70,498.32 472.64,498.32 '/>
-	</g>
-	<path stroke='black'  d='M472.64,558.00 L472.64,498.33 L474.69,498.33 L474.69,558.00 L472.64,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '474.69,558.00 476.75,558.00 476.75,438.66 474.69,438.66 '/>
-	</g>
-	<path stroke='black'  d='M474.69,558.00 L474.69,438.67 L476.74,438.67 L476.74,558.00 L474.69,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '476.74,558.00 478.80,558.00 478.80,438.66 476.74,438.66 '/>
-	</g>
-	<path stroke='black'  d='M476.74,558.00 L476.74,438.67 L478.79,438.67 L478.79,558.00 L476.74,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '478.79,558.00 480.85,558.00 480.85,378.99 478.79,378.99 '/>
-	</g>
-	<path stroke='black'  d='M478.79,558.00 L478.79,379.00 L480.84,379.00 L480.84,558.00 L478.79,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '480.84,558.00 482.89,558.00 482.89,498.32 480.84,498.32 '/>
-	</g>
-	<path stroke='black'  d='M480.84,558.00 L480.84,498.33 L482.88,498.33 L482.88,558.00 L480.84,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '482.88,558.00 484.94,558.00 484.94,408.83 482.88,408.83 '/>
-	</g>
-	<path stroke='black'  d='M482.88,558.00 L482.88,408.84 L484.93,408.84 L484.93,558.00 L482.88,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '484.93,558.00 486.99,558.00 486.99,378.99 484.93,378.99 '/>
-	</g>
-	<path stroke='black'  d='M484.93,558.00 L484.93,379.00 L486.98,379.00 L486.98,558.00 L484.93,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '486.98,558.00 489.04,558.00 489.04,528.16 486.98,528.16 '/>
-	</g>
-	<path stroke='black'  d='M486.98,558.00 L486.98,528.17 L489.03,528.17 L489.03,558.00 L486.98,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '489.03,558.00 491.09,558.00 491.09,498.32 489.03,498.32 '/>
-	</g>
-	<path stroke='black'  d='M489.03,558.00 L489.03,498.33 L491.08,498.33 L491.08,558.00 L489.03,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '491.08,558.00 493.13,558.00 493.13,498.32 491.08,498.32 '/>
-	</g>
-	<path stroke='black'  d='M491.08,558.00 L491.08,498.33 L493.12,498.33 L493.12,558.00 L491.08,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '493.12,558.00 495.18,558.00 495.18,378.99 493.12,378.99 '/>
-	</g>
-	<path stroke='black'  d='M493.12,558.00 L493.12,379.00 L495.17,379.00 L495.17,558.00 L493.12,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '495.17,558.00 497.23,558.00 497.23,528.16 495.17,528.16 '/>
-	</g>
-	<path stroke='black'  d='M495.17,558.00 L495.17,528.17 L497.22,528.17 L497.22,558.00 L495.17,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '497.22,558.00 499.28,558.00 499.28,528.16 497.22,528.16 '/>
-	</g>
-	<path stroke='black'  d='M497.22,558.00 L497.22,528.17 L499.27,528.17 L499.27,558.00 L497.22,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '499.27,558.00 501.33,558.00 501.33,498.32 499.27,498.32 '/>
-	</g>
-	<path stroke='black'  d='M499.27,558.00 L499.27,498.33 L501.32,498.33 L501.32,558.00 L499.27,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '501.32,558.00 503.37,558.00 503.37,468.49 501.32,468.49 '/>
-	</g>
-	<path stroke='black'  d='M501.32,558.00 L501.32,468.50 L503.36,468.50 L503.36,558.00 L501.32,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '503.36,558.00 505.42,558.00 505.42,498.32 503.36,498.32 '/>
-	</g>
-	<path stroke='black'  d='M503.36,558.00 L503.36,498.33 L505.41,498.33 L505.41,558.00 L503.36,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '505.41,558.00 507.47,558.00 507.47,498.32 505.41,498.32 '/>
-	</g>
-	<path stroke='black'  d='M505.41,558.00 L505.41,498.33 L507.46,498.33 L507.46,558.00 L505.41,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '507.46,558.00 509.52,558.00 509.52,438.66 507.46,438.66 '/>
-	</g>
-	<path stroke='black'  d='M507.46,558.00 L507.46,438.67 L509.51,438.67 L509.51,558.00 L507.46,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '509.51,558.00 511.57,558.00 511.57,468.49 509.51,468.49 '/>
-	</g>
-	<path stroke='black'  d='M509.51,558.00 L509.51,468.50 L511.56,468.50 L511.56,558.00 L509.51,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '511.56,558.00 513.61,558.00 513.61,498.32 511.56,498.32 '/>
-	</g>
-	<path stroke='black'  d='M511.56,558.00 L511.56,498.33 L513.60,498.33 L513.60,558.00 L511.56,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '513.60,558.00 515.66,558.00 515.66,498.32 513.60,498.32 '/>
-	</g>
-	<path stroke='black'  d='M513.60,558.00 L513.60,498.33 L515.65,498.33 L515.65,558.00 L513.60,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '515.65,558.00 517.71,558.00 517.71,528.16 515.65,528.16 '/>
-	</g>
-	<path stroke='black'  d='M515.65,558.00 L515.65,528.17 L517.70,528.17 L517.70,558.00 L515.65,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '517.70,558.00 519.76,558.00 519.76,498.32 517.70,498.32 '/>
-	</g>
-	<path stroke='black'  d='M517.70,558.00 L517.70,498.33 L519.75,498.33 L519.75,558.00 L517.70,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '519.75,558.00 521.80,558.00 521.80,498.32 519.75,498.32 '/>
-	</g>
-	<path stroke='black'  d='M519.75,558.00 L519.75,498.33 L521.79,498.33 L521.79,558.00 L519.75,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '521.79,558.00 523.85,558.00 523.85,468.49 521.79,468.49 '/>
-	</g>
-	<path stroke='black'  d='M521.79,558.00 L521.79,468.50 L523.84,468.50 L523.84,558.00 L521.79,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '523.84,558.00 525.90,558.00 525.90,468.49 523.84,468.49 '/>
-	</g>
-	<path stroke='black'  d='M523.84,558.00 L523.84,468.50 L525.89,468.50 L525.89,558.00 L523.84,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '525.89,558.00 527.95,558.00 527.95,498.32 525.89,498.32 '/>
-	</g>
-	<path stroke='black'  d='M525.89,558.00 L525.89,498.33 L527.94,498.33 L527.94,558.00 L525.89,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '529.99,558.00 532.04,558.00 532.04,528.16 529.99,528.16 '/>
-	</g>
-	<path stroke='black'  d='M529.99,558.00 L529.99,528.17 L532.03,528.17 L532.03,558.00 L529.99,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '532.03,558.00 534.09,558.00 534.09,528.16 532.03,528.16 '/>
-	</g>
-	<path stroke='black'  d='M532.03,558.00 L532.03,528.17 L534.08,528.17 L534.08,558.00 L532.03,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '534.08,558.00 536.14,558.00 536.14,528.16 534.08,528.16 '/>
-	</g>
-	<path stroke='black'  d='M534.08,558.00 L534.08,528.17 L536.13,528.17 L536.13,558.00 L534.08,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '536.13,558.00 538.19,558.00 538.19,528.16 536.13,528.16 '/>
-	</g>
-	<path stroke='black'  d='M536.13,558.00 L536.13,528.17 L538.18,528.17 L538.18,558.00 L536.13,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '538.18,558.00 540.24,558.00 540.24,528.16 538.18,528.16 '/>
-	</g>
-	<path stroke='black'  d='M538.18,558.00 L538.18,528.17 L540.23,528.17 L540.23,558.00 L538.18,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '540.23,558.00 542.28,558.00 542.28,528.16 540.23,528.16 '/>
-	</g>
-	<path stroke='black'  d='M540.23,558.00 L540.23,528.17 L542.27,528.17 L542.27,558.00 L540.23,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '542.27,558.00 544.33,558.00 544.33,528.16 542.27,528.16 '/>
-	</g>
-	<path stroke='black'  d='M542.27,558.00 L542.27,528.17 L544.32,528.17 L544.32,558.00 L542.27,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '544.32,558.00 546.38,558.00 546.38,528.16 544.32,528.16 '/>
-	</g>
-	<path stroke='black'  d='M544.32,558.00 L544.32,528.17 L546.37,528.17 L546.37,558.00 L544.32,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '546.37,558.00 548.43,558.00 548.43,528.16 546.37,528.16 '/>
-	</g>
-	<path stroke='black'  d='M546.37,558.00 L546.37,528.17 L548.42,528.17 L548.42,558.00 L546.37,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '548.42,558.00 550.48,558.00 550.48,498.32 548.42,498.32 '/>
-	</g>
-	<path stroke='black'  d='M548.42,558.00 L548.42,498.33 L550.47,498.33 L550.47,558.00 L548.42,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '554.56,558.00 556.62,558.00 556.62,528.16 554.56,528.16 '/>
-	</g>
-	<path stroke='black'  d='M554.56,558.00 L554.56,528.17 L556.61,528.17 L556.61,558.00 L554.56,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '558.66,558.00 560.72,558.00 560.72,528.16 558.66,528.16 '/>
-	</g>
-	<path stroke='black'  d='M558.66,558.00 L558.66,528.17 L560.71,528.17 L560.71,558.00 L558.66,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '560.71,558.00 562.76,558.00 562.76,528.16 560.71,528.16 '/>
-	</g>
-	<path stroke='black'  d='M560.71,558.00 L560.71,528.17 L562.75,528.17 L562.75,558.00 L560.71,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '564.80,558.00 566.86,558.00 566.86,528.16 564.80,528.16 '/>
-	</g>
-	<path stroke='black'  d='M564.80,558.00 L564.80,528.17 L566.85,528.17 L566.85,558.00 L564.80,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '570.95,558.00 573.00,558.00 573.00,528.16 570.95,528.16 '/>
-	</g>
-	<path stroke='black'  d='M570.95,558.00 L570.95,528.17 L572.99,528.17 L572.99,558.00 L570.95,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '572.99,558.00 575.05,558.00 575.05,498.32 572.99,498.32 '/>
-	</g>
-	<path stroke='black'  d='M572.99,558.00 L572.99,498.33 L575.04,498.33 L575.04,558.00 L572.99,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '577.09,558.00 579.15,558.00 579.15,528.16 577.09,528.16 '/>
-	</g>
-	<path stroke='black'  d='M577.09,558.00 L577.09,528.17 L579.14,528.17 L579.14,558.00 L577.09,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '579.14,558.00 581.20,558.00 581.20,528.16 579.14,528.16 '/>
-	</g>
-	<path stroke='black'  d='M579.14,558.00 L579.14,528.17 L581.19,528.17 L581.19,558.00 L579.14,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '581.19,558.00 583.24,558.00 583.24,528.16 581.19,528.16 '/>
-	</g>
-	<path stroke='black'  d='M581.19,558.00 L581.19,528.17 L583.23,528.17 L583.23,558.00 L581.19,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '597.57,558.00 599.63,558.00 599.63,528.16 597.57,528.16 '/>
-	</g>
-	<path stroke='black'  d='M597.57,558.00 L597.57,528.17 L599.62,528.17 L599.62,558.00 L597.57,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '601.66,558.00 603.72,558.00 603.72,528.16 601.66,528.16 '/>
-	</g>
-	<path stroke='black'  d='M601.66,558.00 L601.66,528.17 L603.71,528.17 L603.71,558.00 L601.66,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '607.81,558.00 609.87,558.00 609.87,528.16 607.81,528.16 '/>
-	</g>
-	<path stroke='black'  d='M607.81,558.00 L607.81,528.17 L609.86,528.17 L609.86,558.00 L607.81,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '609.86,558.00 611.91,558.00 611.91,528.16 609.86,528.16 '/>
-	</g>
-	<path stroke='black'  d='M609.86,558.00 L609.86,528.17 L611.90,528.17 L611.90,558.00 L609.86,558.00 Z  '/></g>
-<g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<g stroke='none' shape-rendering='crispEdges'>
-		<polygon fill = 'rgb(148,   0, 211)' points = '697.92,558.00 699.98,558.00 699.98,528.16 697.92,528.16 '/>
-	</g>
-	<path stroke='black'  d='M697.92,558.00 L697.92,528.17 L699.97,528.17 L699.97,558.00 L697.92,558.00 Z  '/></g>
+	<path stroke='black'  d='M758.84,558.00 L758.84,552.63 L770.62,552.63 L770.62,558.00 L758.84,558.00 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	</g>
@@ -1299,26 +424,26 @@
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='rgb(  0, 158, 115)'  d='M701.38,42.01 L751.04,42.01 M92.75,556.38 L98.87,555.96 L105.00,555.43 L111.12,554.79 L117.24,554.00 L123.37,553.05
-		L129.49,551.91 L135.61,550.55 L141.74,548.93 L147.86,547.01 L153.98,544.77 L160.11,542.15 L166.23,539.12 L172.35,535.62
-		L178.47,531.63 L184.60,527.09 L190.72,521.97 L196.84,516.22 L202.97,509.82 L209.09,502.74 L215.21,494.95 L221.34,486.47
-		L227.46,477.27 L233.58,467.39 L239.71,456.85 L245.83,445.69 L251.95,433.98 L258.08,421.78 L264.20,409.19 L270.32,396.32
-		L276.45,383.28 L282.57,370.21 L288.69,357.26 L294.81,344.56 L300.94,332.30 L307.06,320.62 L313.18,309.68 L319.31,299.64
-		L325.43,290.65 L331.55,282.84 L337.68,276.33 L343.80,271.23 L349.92,267.61 L356.05,265.54 L362.17,265.04 L368.29,266.13
-		L374.42,268.78 L380.54,272.96 L386.66,278.59 L392.78,285.60 L398.91,293.86 L405.03,303.26 L411.15,313.65 L417.28,324.88
-		L423.40,336.80 L429.52,349.24 L435.65,362.05 L441.77,375.06 L447.89,388.14 L454.02,401.13 L460.14,413.91 L466.26,426.36
-		L472.39,438.39 L478.51,449.91 L484.63,460.84 L490.76,471.14 L496.88,480.77 L503.00,489.70 L509.12,497.93 L515.25,505.45
-		L521.37,512.28 L527.49,518.43 L533.62,523.94 L539.74,528.84 L545.86,533.18 L551.99,536.98 L558.11,540.29 L564.23,543.17
-		L570.36,545.64 L576.48,547.76 L582.60,549.56 L588.73,551.08 L594.85,552.36 L600.97,553.43 L607.09,554.31 L613.22,555.04
-		L619.34,555.64 L625.46,556.13 L631.59,556.52 L637.71,556.84 L643.83,557.09 L649.96,557.30 L656.08,557.46 L662.20,557.58
-		L668.33,557.68 L674.45,557.76 L680.57,557.82 L686.70,557.86 L692.82,557.90 L698.94,557.92  '/></g>
+	<path stroke='rgb(  0, 158, 115)'  d='M701.38,42.01 L751.04,42.01 M110.76,554.86 L117.43,554.09 L124.09,553.14 L130.76,552.01 L137.42,550.63 L144.09,548.99
+		L150.75,547.04 L157.42,544.73 L164.08,542.01 L170.75,538.83 L177.41,535.12 L184.08,530.83 L190.75,525.89 L197.41,520.23
+		L204.08,513.80 L210.74,506.51 L217.41,498.32 L224.07,489.15 L230.74,478.97 L237.40,467.71 L244.07,455.35 L250.73,441.87
+		L257.40,427.24 L264.06,411.49 L270.73,394.63 L277.39,376.71 L284.06,357.81 L290.72,338.00 L297.39,317.39 L304.05,296.14
+		L310.72,274.38 L317.38,252.30 L324.05,230.09 L330.72,207.97 L337.38,186.17 L344.05,164.92 L350.71,144.46 L357.38,125.04
+		L364.04,106.91 L370.71,90.29 L377.37,75.40 L384.04,62.44 L390.70,51.60 L397.37,43.02 L404.03,36.83 L410.70,33.12
+		L417.36,31.94 L424.03,33.30 L430.69,37.19 L437.36,43.56 L444.02,52.30 L450.69,63.30 L457.35,76.40 L464.02,91.42
+		L470.68,108.16 L477.35,126.39 L484.02,145.89 L490.68,166.41 L497.35,187.71 L504.01,209.54 L510.68,231.68 L517.34,253.88
+		L524.01,275.94 L530.67,297.67 L537.34,318.89 L544.00,339.44 L550.67,359.19 L557.33,378.03 L564.00,395.87 L570.66,412.65
+		L577.33,428.32 L583.99,442.87 L590.66,456.27 L597.32,468.55 L603.99,479.73 L610.65,489.84 L617.32,498.94 L623.99,507.06
+		L630.65,514.28 L637.32,520.66 L643.98,526.27 L650.65,531.16 L657.31,535.41 L663.98,539.07 L670.64,542.22 L677.31,544.91
+		L683.97,547.19 L690.64,549.12 L697.30,550.74 L703.97,552.09 L710.63,553.22 L717.30,554.15 L723.96,554.91 L730.63,555.53
+		L737.29,556.04 L743.96,556.45 L750.62,556.78 L757.29,557.05 L763.95,557.26 L770.62,557.42  '/></g>
 	</g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="black" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
-	<path stroke='black'  d='M53.84,21.01 L53.84,558.00 L770.62,558.00 L770.62,21.01 L53.84,21.01 Z  '/></g>
+	<path stroke='black'  d='M63.63,21.01 L63.63,558.00 L770.62,558.00 L770.62,21.01 L63.63,21.01 Z  '/></g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 </g>
