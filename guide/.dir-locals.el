@@ -80,6 +80,12 @@
     (when (dima-org-babel-is-feedgnuplot params)
       (with-temp-buffer
         (insert body)
+        ;; use the local feedgnuplot
+        (beginning-of-buffer)
+        (re-search-forward "\\_<feedgnuplot\\_>")
+        (backward-word-strictly)
+        (insert "../bin/")
+        ;; write to svg
         (end-of-buffer)
         (insert (format " --terminal 'svg noenhanced solid size 800,600 font \",14\"' --hardcopy %s" (cdr (assq :file params))))
         (setq body (buffer-substring-no-properties (point-min) (point-max)))))
