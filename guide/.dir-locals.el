@@ -19,7 +19,8 @@
             (setq org-confirm-babel-evaluate nil)
             (org-babel-do-load-languages
              'org-babel-load-languages
-              '((shell   . t)))
+             '((shell   . t)
+               (gnuplot . t)))
   ;; This sets a default :file tag, set to a unique filename. I want each demo to
   ;; produce an image, but I don't care what it is called. I omit the :file tag
   ;; completely, and this advice takes care of it
