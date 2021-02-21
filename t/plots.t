@@ -39,7 +39,7 @@ BEGIN {
   }
 }
 
-use Test::More tests => 82;
+use Test::More tests => 84;
 use File::Temp 'tempfile';
 use IPC::Run 'run';
 use String::ShellQuote;
@@ -278,6 +278,15 @@ tryplot( testname => 'xticlabels styles with tuplesize',
                       '--ymin', '0',
                       '--ymax', '6'],
          refplot  => 'xticlabels-styles-with-tuplesize.ref' );
+
+tryplot( testname => 'equations',
+         cmd      => qq{seq 10 15},
+         options  => [qw(--equation x),
+                      qw(--equation-above x+1),
+                      qw(--equation-below x-1),
+                      '--with', 'boxes fill solid border lt -1',
+                      '--ymin', '0'],
+         refplot  => 'equations.ref' );
 
 SKIP:
 {
