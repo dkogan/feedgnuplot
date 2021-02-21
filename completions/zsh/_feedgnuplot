@@ -67,4 +67,5 @@ _arguments -S                                                                   
     '--version'                                                                   \
     '--help'                                                                      \
     '--timefmt[Format for time/date data]:time format'                            \
+    '--xticlabels[x-axis tic labels are read from the data]'                      \
     '--vnlog[column IDs come from a vnlog header]'

@@ -66,4 +66,5 @@ complete -W               \
     --zlabel              \
     --zmax                \
     --zmin                \
+    --xticlabels          \
     --vnlog ' feedgnuplot

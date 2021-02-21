@@ -399,6 +399,12 @@ sub interpretCommandline
       print STDERR "--3d does not make sense with circles (gnuplot doesn't support this)\n";
       exit -1;
     }
+
+    if ( $options{xticlabels} )
+    {
+      print STDERR "--3d makes no sense with --xticlabels\n";
+      exit -1;
+    }
   }
   else
   {
@@ -420,6 +426,12 @@ sub interpretCommandline
     if ( defined $options{square_xy} )
     {
       print STDERR "--square_xy only makes sense with --3d\n";
+      exit -1;
+    }
+
+    if ( $options{xticlabels} && @{$options{histogram}})
+    {
+      print STDERR "--histogram makes no sense with --xticlabels\n";
       exit -1;
     }
 
@@ -1470,10 +1482,13 @@ network interface in bytes/second (uses bash, awk and Linux):
 
 =head1 DESCRIPTION
 
-This is a flexible, command-line-oriented frontend to Gnuplot. It creates
-plots from data coming in on STDIN or given in a filename passed on the
-commandline. Various data representations are supported, as is hardcopy
-output and streaming display of live data. A simple example:
+This is a flexible, command-line-oriented frontend to Gnuplot. It creates plots
+from data coming in on STDIN or given in a filename passed on the commandline.
+Various data representations are supported, as is hardcopy output and streaming
+display of live data. For a tutorial and a gallery please see the guide at
+L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>
+
+A simple example:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' | feedgnuplot
 
@@ -2318,6 +2333,9 @@ Print the version and exit
 =back
 
 =head1 RECIPES
+
+For a tutorial and a gallery please see the guide at
+L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>
 
 =head2 Basic plotting of piped data
 
