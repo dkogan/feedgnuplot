@@ -435,19 +435,48 @@ samples in [-1,1]: it should be normal-ish. And let's draw the expected perfect
 PDF on top (as an equation, evaluated by =gnuplot=).
 
 #+BEGIN_SRC sh :results file link :exports both
-N=1000;
-Nsum=200;
-var=$((Nsum/3));
-binwidth=2;
+N=20000;
+Nsum=10;
+binwidth=.1;
 seq $N | \
 perl -nE '$Nsum = '$Nsum';
+          $var  = '$Nsum' / 3.;
           $s = 0; for $i (1..$Nsum) { $s += rand()*2-1; }
-          say $s;' | \
+          say $s/sqrt($var);' | \
 feedgnuplot --histo 0 --binwidth $binwidth \
-            --equation-above "($N * sqrt(2.*pi*$var) * erf($binwidth/(2.*sqrt(2.*$var)))) * \
-                              exp(-(x*x)/(2.*$var)) / \
-                              sqrt(2.*pi*$var) title \"Limit gaussian\" with lines lw 2"
+            --equation-above "($N * sqrt(2.*pi) * erf($binwidth/(2.*sqrt(2.)))) * \
+                              exp(-(x*x)/(2.)) / \
+                              sqrt(2.*pi) title \"Limit gaussian\" with lines lw 2"
 #+END_SRC
 
 #+RESULTS:
 [[file:guide-16.svg]]
+
+If we want multiple histograms drawn on top of one another, the styling should
+be adjusted so that they both remain visible. Let's vary the size of the sum,
+and look at the effects: bigger sums should be more gaussian-like:
+
+#+BEGIN_SRC sh :results file link :exports both
+N=20000;
+binwidth=.1;
+for Nsum in 1 2 3; do
+  seq $N | \
+  perl -nE '$, = " ";
+            $Nsum = '$Nsum';
+            $var  = '$Nsum' / 3.;
+            $s = 0; for $i (1..$Nsum) { $s += rand()*2-1; }
+            say $Nsum,$s/sqrt($var);';
+done | \
+feedgnuplot --dataid --histo 1,2,3 --binwidth $binwidth \
+            --autolegend \
+            --style 1  'with boxes fill transparent solid 0.3 border lt -1' \
+            --style 2  'with boxes fill transparent pattern 4 border lt -1' \
+            --style 3  'with boxes fill transparent pattern 5 border lt -1' \
+            --equation-above "($N * sqrt(2.*pi) * erf($binwidth/(2.*sqrt(2.)))) * \
+                              exp(-(x*x)/(2.)) / \
+                              sqrt(2.*pi) title \"Limit gaussian\" with lines lw 2"
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-17.svg]]
+
