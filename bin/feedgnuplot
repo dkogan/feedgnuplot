@@ -808,46 +808,23 @@ sub mainThread
       print(PIPE "set view equal xy\n");
     }
 
-    # For the specified values, set the legend entries to 'title "blah blah"'
-    if(@{$options{legend}})
+    for my $what_options_prefix_suffix ( ['curvestyle', 'extraoptions', '',       ' ' ],
+                                         ['every',      'everyoptions', 'every ', ' ' ],
+                                         ['legend',     'title',        '',       ''  ])
     {
-      # @{$options{legend}} is a list where consecutive pairs are (curveID,
-      # legend). I use $options{legend} here instead of $options{legend_hash}
-      # because I create a new curve when I see a new one, and the hash is
-      # unordered, thus messing up the ordering
-      my $n = scalar @{$options{legend}}/2;
-      foreach my $idx (0..$n-1)
-      {
-          addOption($options{legend}[$idx*2    ],
-                    'title',
-                    $options{legend}[$idx*2 + 1]);
-      }
-    }
+        my ($what, $options, $prefix, $suffix) = @$what_options_prefix_suffix;
 
-    # add the extra curve options
-    if(@{$options{curvestyle}})
-    {
-      # @{$options{curvestyle}} is a list where consecutive pairs are (curveID,
-      # style).
-      my $n = scalar @{$options{curvestyle}}/2;
-      foreach my $idx (0..$n-1)
-      {
-        addOption($options{curvestyle}[$idx*2    ],
-                  'extraoptions',
-                  $options{curvestyle}[$idx*2 + 1] . " ");
-      }
-    }
-    if(@{$options{every}})
-    {
-      # @{$options{every}} is a list where consecutive pairs are (curveID,
-      # every).
-      my $n = scalar @{$options{every}}/2;
-      foreach my $idx (0..$n-1)
-      {
-        addOption($options{every}[$idx*2    ],
-                  'everyoptions',
-                  "every " . $options{every}[$idx*2 + 1] . " ");
-      }
+        # @{$options{$what}} is a list where consecutive pairs are (curveID, style).
+        if (@{$options{$what}})
+        {
+            my $n = scalar @{$options{$what}}/2;
+            foreach my $idx (0..$n-1)
+            {
+                addOption($options{$what}[$idx*2    ],
+                          $options,
+                          $prefix . $options{$what}[$idx*2 + 1] . $suffix);
+            }
+        }
     }
 
     addOption($_, 'extraoptions', 'axes x1y2 ') foreach (@{$options{x1y2}});
