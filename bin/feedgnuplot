@@ -818,8 +818,9 @@ sub mainThread
       my $n = scalar @{$options{legend}}/2;
       foreach my $idx (0..$n-1)
       {
-        setCurveLabel($options{legend}[$idx*2    ],
-                      $options{legend}[$idx*2 + 1]);
+          addOption($options{legend}[$idx*2    ],
+                    'title',
+                    $options{legend}[$idx*2 + 1]);
       }
     }
 
@@ -831,8 +832,9 @@ sub mainThread
       my $n = scalar @{$options{curvestyle}}/2;
       foreach my $idx (0..$n-1)
       {
-        addCurveOption($options{curvestyle}[$idx*2    ],
-                       $options{curvestyle}[$idx*2 + 1]);
+        addOption($options{curvestyle}[$idx*2    ],
+                  'extraoptions',
+                  $options{curvestyle}[$idx*2 + 1] . " ");
       }
     }
     if(@{$options{every}})
@@ -842,14 +844,15 @@ sub mainThread
       my $n = scalar @{$options{every}}/2;
       foreach my $idx (0..$n-1)
       {
-        addEveryOption($options{every}[$idx*2    ],
-                       $options{every}[$idx*2 + 1]);
+        addOption($options{every}[$idx*2    ],
+                  'everyoptions',
+                  "every " . $options{every}[$idx*2 + 1] . " ");
       }
     }
 
-    addCurveOption($_, 'axes x1y2') foreach (@{$options{x1y2}});
-    addCurveOption($_, 'axes x2y1') foreach (@{$options{x2y1}});
-    addCurveOption($_, 'axes x2y2') foreach (@{$options{x2y2}});
+    addOption($_, 'extraoptions', 'axes x1y2 ') foreach (@{$options{x1y2}});
+    addOption($_, 'extraoptions', 'axes x2y1 ') foreach (@{$options{x2y1}});
+    addOption($_, 'extraoptions', 'axes x2y2 ') foreach (@{$options{x2y2}});
 
     # timefmt
     if( $options{timefmt} )
@@ -1199,7 +1202,7 @@ sub updateCurveOptions
   # use the given title, unless we're generating a legend automatically. Given titles
   # override autolegend
   my $title;
-  if(defined $curve->{title})
+  if(defined $curve->{title} && length($curve->{title}))
   { $title = $curve->{title}; }
   elsif( $options{autolegend} )
   { $title = $id; }
@@ -1261,6 +1264,7 @@ sub getCurve
                  everyoptions      => (!exists $options{every_hash}{$id} &&
                                         exists $options{everyall}) ?
                                       "every $options{everyall} " : ' ',
+                 title             => '',
                  datastring        => '',
                  datastring_meta   => [],
                  datastring_offset => 0}; # push a curve with no data and no options
@@ -1291,29 +1295,12 @@ sub getCurve
   return $curveFromID{$id};
 }
 
-sub addCurveOption
+sub addOption
 {
-  my ($id, $str) = @_;
+  my ($id, $which, $str) = @_;
 
   my $curve = getCurve($id);
-  $curve->{extraoptions} .= "$str ";
-  updateCurveOptions($curve, $id);
-}
-sub addEveryOption
-{
-  my ($id, $str) = @_;
-
-  my $curve = getCurve($id);
-  $curve->{everyoptions} .= "every $str ";
-  updateCurveOptions($curve, $id);
-}
-
-sub setCurveLabel
-{
-  my ($id, $str) = @_;
-
-  my $curve = getCurve($id);
-  $curve->{title} = $str;
+  $curve->{$which} .= $str;
   updateCurveOptions($curve, $id);
 }
 
