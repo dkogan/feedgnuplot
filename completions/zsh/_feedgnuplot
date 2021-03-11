@@ -58,6 +58,8 @@ _arguments -S                                                                   
     '*--style[Additional styles for a curve]:curve id: :style:'                   \
     '*--every[Decimation factor for a curve]:curve id: :decimation factor:'       \
     '--everyall[Decimation factor for ALL curves]:decimation factor'              \
+    '*--using[Column specification for a curve]:curve id: :column specification:' \
+    '--usingall[Column specification ALL curves]:column specification'            \
     '(--3d)*--histogram:plot to treat as a histogram:'                            \
     '--binwidth:Histogram bin width:'                                             \
     '--histstyle:Style of histogram:(frequency fnormal unique cumulative cnormal)' \
