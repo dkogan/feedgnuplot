@@ -39,7 +39,7 @@ BEGIN {
   }
 }
 
-use Test::More tests => 84;
+use Test::More tests => 88;
 use File::Temp 'tempfile';
 use IPC::Run 'run';
 use String::ShellQuote;
@@ -287,6 +287,16 @@ tryplot( testname => 'equations',
                       '--with', 'boxes fill solid border lt -1',
                       '--ymin', '0'],
          refplot  => 'equations.ref' );
+
+tryplot( testname => 'everyall',
+         cmd      => q{seq 12 | gawk '{print $1,$1+1}'},
+         options  => [qw(--points --everyall 2)],
+         refplot  => 'everyall.ref' );
+
+tryplot( testname => 'every-individual',
+         cmd      => q{seq 12 | gawk '{print $1,$1+1}'},
+         options  => [qw(--points --every 0 2 --every 1 3)],
+         refplot  => 'every-individual.ref' );
 
 SKIP:
 {
