@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.57';
+my $VERSION = '1.58';
 
 my %options;
 interpretCommandline();
@@ -91,11 +91,13 @@ sub interpretCommandline
   $options{curvestyle} = [];
   $options{style}      = [];
   $options{every}      = [];
+  $options{using}      = [];
   $options{histogram}  = [];
   $options{x1y2}       = [];
   $options{x2y1}       = [];
   $options{x2y2}       = [];
   $options{extracmds}  = [];
+  $options{cmds}       = [];
   $options{set}        = [];
   $options{unset}      = [];
   $options{equation}   = [];
@@ -119,8 +121,11 @@ sub interpretCommandline
              'ymin=f', 'ymax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f',
              'x2=s@', 'y2=s@', 'x1y2=s@', 'x2y1=s@', 'x2y2=s@',
-             'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
+             'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s',
+             'extracmds=s@', 'cmds=s@',
+             'set=s@', 'unset=s@',
              'every=s{2}', 'everyall=s',
+             'using=s{2}', 'usingall=s',
              'square!', 'square_xy!', 'square-xy!', 'squarexy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
              'equation=s@', 'equation-below=s@', 'equation-above=s@',
              'image=s',
@@ -158,6 +163,9 @@ sub interpretCommandline
   # various square-xy synonyms
   $options{'square_xy'} = 1 if $options{'square-xy'} || $options{'squarexy'};
 
+  # --extracmds is a synonym for --cmds
+  push @{$options{extracmds}}, @{$options{cmds}};
+  $options{cmds} = [];
 
   push @{$options{curvestyle}}, @{$options{style}};
   delete $options{style};
@@ -185,7 +193,7 @@ sub interpretCommandline
     @{$options{$listkey}} = map split('\s*,\s*', $_), @{$options{$listkey}}
       if defined $options{$listkey};
   }
-  for my $listkey (qw(curvestyle rangesize tuplesize every))
+  for my $listkey (qw(curvestyle rangesize tuplesize every using))
   {
       next unless defined $options{$listkey};
       my @in = @{$options{$listkey}};
@@ -260,7 +268,7 @@ sub interpretCommandline
   # arrays in order to preserve the ordering. I parse both of these into hashes
   # because those are useful to have later. After this I can access individual
   # legends with $options{legend_hash}{curveid}
-  for my $listkey (qw(legend curvestyle rangesize every))
+  for my $listkey (qw(legend curvestyle rangesize every using))
   {
     $options{"${listkey}_hash"} = {};
 
@@ -808,48 +816,29 @@ sub mainThread
       print(PIPE "set view equal xy\n");
     }
 
-    # For the specified values, set the legend entries to 'title "blah blah"'
-    if(@{$options{legend}})
+    for my $what_options_prefix_suffix ( ['curvestyle', 'extraoptions', '',       ' ' ],
+                                         ['every',      'everyoptions', 'every ', ' ' ],
+                                         ['using',      'usingoptions', 'using ', ' ' ],
+                                         ['legend',     'title',        '',       ''  ])
     {
-      # @{$options{legend}} is a list where consecutive pairs are (curveID,
-      # legend). I use $options{legend} here instead of $options{legend_hash}
-      # because I create a new curve when I see a new one, and the hash is
-      # unordered, thus messing up the ordering
-      my $n = scalar @{$options{legend}}/2;
-      foreach my $idx (0..$n-1)
-      {
-        setCurveLabel($options{legend}[$idx*2    ],
-                      $options{legend}[$idx*2 + 1]);
-      }
+        my ($what, $options, $prefix, $suffix) = @$what_options_prefix_suffix;
+
+        # @{$options{$what}} is a list where consecutive pairs are (curveID, style).
+        if (@{$options{$what}})
+        {
+            my $n = scalar @{$options{$what}}/2;
+            foreach my $idx (0..$n-1)
+            {
+                addOption($options{$what}[$idx*2    ],
+                          $options,
+                          $prefix . $options{$what}[$idx*2 + 1] . $suffix);
+            }
+        }
     }
 
-    # add the extra curve options
-    if(@{$options{curvestyle}})
-    {
-      # @{$options{curvestyle}} is a list where consecutive pairs are (curveID,
-      # style).
-      my $n = scalar @{$options{curvestyle}}/2;
-      foreach my $idx (0..$n-1)
-      {
-        addCurveOption($options{curvestyle}[$idx*2    ],
-                       $options{curvestyle}[$idx*2 + 1]);
-      }
-    }
-    if(@{$options{every}})
-    {
-      # @{$options{every}} is a list where consecutive pairs are (curveID,
-      # every).
-      my $n = scalar @{$options{every}}/2;
-      foreach my $idx (0..$n-1)
-      {
-        addEveryOption($options{every}[$idx*2    ],
-                       $options{every}[$idx*2 + 1]);
-      }
-    }
-
-    addCurveOption($_, 'axes x1y2') foreach (@{$options{x1y2}});
-    addCurveOption($_, 'axes x2y1') foreach (@{$options{x2y1}});
-    addCurveOption($_, 'axes x2y2') foreach (@{$options{x2y2}});
+    addOption($_, 'extraoptions', 'axes x1y2 ') foreach (@{$options{x1y2}});
+    addOption($_, 'extraoptions', 'axes x2y1 ') foreach (@{$options{x2y1}});
+    addOption($_, 'extraoptions', 'axes x2y2 ') foreach (@{$options{x2y2}});
 
     # timefmt
     if( $options{timefmt} )
@@ -863,8 +852,16 @@ sub mainThread
     print PIPE
       "set boxwidth $options{binwidth}\n" .
       "histbin(x) = $options{binwidth} * floor(0.5 + x/$options{binwidth})\n";
-
-    setCurveAsHistogram( $_ ) foreach (@{$options{histogram}});
+    foreach my $id (@{$options{histogram}})
+    {
+        # With histograms I have 2d plots with rangesize=1. I thus give gnuplot two
+        # values for each point: a domain and a range. For histograms I ignore the
+        # domain, so I get the statistics of the 2nd column: $2
+        addOption($id,
+                  'usingoptions',
+                  'using (histbin($2)):(1.0) smooth ' . $options{histstyle},
+                  'do-not-override');
+    }
 
     if(@{$options{x2y1}} || @{$options{x2y2}})
     {
@@ -1199,16 +1196,20 @@ sub updateCurveOptions
   # use the given title, unless we're generating a legend automatically. Given titles
   # override autolegend
   my $title;
-  if(defined $curve->{title})
+  if(defined $curve->{title} && length($curve->{title}))
   { $title = $curve->{title}; }
   elsif( $options{autolegend} )
   { $title = $id; }
 
   my $titleoption = defined $title ? "title \"$title\"" : "notitle";
-  my $histoptions = $curve->{histoptions} || '';
 
-  my $usingoptions = '';
-  if( $options{timefmt} && !$histoptions )
+  my $usingoptions = $curve->{usingoptions};
+  if( length($usingoptions) )
+  {
+      # user specified a 'using' option. I just do that, and don't look at
+      # anything else
+  }
+  elsif( $options{timefmt}  )
   {
       # with --timefmt I need an explicit 'using' specification. I specify the
       # columns as 1:2:3..... I need the right number of columns (this is given
@@ -1234,7 +1235,7 @@ sub updateCurveOptions
       }
   }
 
-  $curve->{options} = "$curve->{everyoptions} $histoptions $usingoptions $titleoption $curve->{extraoptions}";
+  $curve->{options} = "$curve->{everyoptions} $usingoptions $titleoption $curve->{extraoptions}";
 }
 
 sub getCurve
@@ -1261,6 +1262,10 @@ sub getCurve
                  everyoptions      => (!exists $options{every_hash}{$id} &&
                                         exists $options{everyall}) ?
                                       "every $options{everyall} " : ' ',
+                 usingoptions      => (!exists $options{using_hash}{$id} &&
+                                        exists $options{usingall}) ?
+                                      "using $options{usingall} " : '',
+                 title             => '',
                  datastring        => '',
                  datastring_meta   => [],
                  datastring_offset => 0}; # push a curve with no data and no options
@@ -1291,44 +1296,16 @@ sub getCurve
   return $curveFromID{$id};
 }
 
-sub addCurveOption
+sub addOption
 {
-  my ($id, $str) = @_;
+  my ($id, $which, $str, $do_not_override) = @_;
 
   my $curve = getCurve($id);
-  $curve->{extraoptions} .= "$str ";
-  updateCurveOptions($curve, $id);
-}
-sub addEveryOption
-{
-  my ($id, $str) = @_;
-
-  my $curve = getCurve($id);
-  $curve->{everyoptions} .= "every $str ";
-  updateCurveOptions($curve, $id);
-}
-
-sub setCurveLabel
-{
-  my ($id, $str) = @_;
-
-  my $curve = getCurve($id);
-  $curve->{title} = $str;
-  updateCurveOptions($curve, $id);
-}
-
-sub setCurveAsHistogram
-{
-  my ($id, $str) = @_;
-
-  my $curve = getCurve($id);
-
-  # With histograms I have 2d plots with rangesize=1. I thus give gnuplot two
-  # values for each point: a domain and a range. For histograms I ignore the
-  # domain, so I get the statistics of the 2nd column: $2
-  $curve->{histoptions} = 'using (histbin($2)):(1.0) smooth ' . $options{histstyle};
-
-  updateCurveOptions($curve, $id);
+  if(!$do_not_override || length($curve->{$which})==0)
+  {
+      $curve->{$which} .= $str;
+      updateCurveOptions($curve, $id);
+  }
 }
 
 # remove all the curve data
@@ -1501,13 +1478,12 @@ points. New curves will be created as needed.
 
 The most commonly used functionality of gnuplot is supported directly by the
 script. Anything not directly supported can still be done with options such as
-C<--set>, C<--extracmds> C<--style>, etc. Arbitrary gnuplot commands can be
-passed in with C<--extracmds>. For example, to turn off the grid, you can pass
-in C<--extracmds 'unset grid'>. Commands C<--set> and C<--unset> exists to
-provide nicer syntax, so this is equivalent to passing C<--unset grid>. As many
-of these options as needed can be passed in. To add arbitrary curve styles, use
-C<--style curveID extrastyle>. Pass these more than once to affect more than one
-curve.
+C<--set>, C<--cmds> C<--style>, etc. Arbitrary gnuplot commands can be passed in
+with C<--cmds>. For example, to turn off the grid, you can pass in C<--cmds
+'unset grid'>. Commands C<--set> and C<--unset> exists to provide nicer syntax,
+so this is equivalent to passing C<--unset grid>. As many of these options as
+needed can be passed in. To add arbitrary curve styles, use C<--style curveID
+extrastyle>. Pass these more than once to affect more than one curve.
 
 To apply an extra style to I<all> the curves that lack an explicit C<--style>,
 pass in C<--styleall extrastyle>. In the most common case, the extra style is
@@ -1647,6 +1623,79 @@ This plots the 'idle' CPU consumption against time.
 Note that while gnuplot supports the time/date on any axis, I<feedgnuplot>
 currently supports it I<only> as the x-axis domain. This may change in the
 future.
+
+=head3 'using' expressions
+
+We just described how feedgnuplot parses its input data. When passing this data
+to gnuplot, each curve is sent independently. The domain appears in the leading
+columns followed by C<--rangesize> columns to complete each row. Without
+C<--domain>, feedgnuplot explicitly writes out sequential integers. gnuplot then
+knows how many values it has for each point, and it knows which style we're
+using, so it's able to interpret the data appropriately, and to make the correct
+plot.
+
+As an example, if gnuplot is passed 2 columns of data, and it is plotting C<with
+points>, it will use column 1 for the x coordinate and column 2 for the y
+coordinate. This is the default behavior, but the meaning of each column can be
+controlled via a C<using> expression in gnuplot (not feedgnuplot; keep reading).
+The default is sequential integers, so this example uses C<using 1:2> by
+default. We can flip the meaning of the columns by passing C<using 2:1>.
+Arbitrary expressions may be specified by enclosing each field in C<()>, and
+using C<$> to denote each data column. So to use the 2nd column as the x
+coordinate and the sum of the two columns as the y coordinate, C<using
+2:($1+$2)> is passed. Furthermore, the number of columns can vary. For instance
+gnuplot can read the same two columns of data, but produce a plot with the extra
+column encoding the sum as the color: C<using 1:2:($1+$2) with points palette>.
+Please see the gnuplot documentation for lots of detail.
+
+That's how I<gnuplot> works. Most of the time, I<feedgnuplot> doesn't pass any
+C<using> expressions at all, and gnuplot does the default thing. But if we want
+to do something fancy, feedgnuplot supports C<--using curveID expression> and
+C<--usingall expression>. So we can plot a parabola:
+
+  seq 100 | feedgnuplot --lines --usingall '1:($2*$2)'
+
+This is powerful, but there are some things to keep in mind:
+
+=over
+
+=item
+
+C<--using> overrides whatever C<using> expression feedgnuplot was going to pass.
+feedgnuplot passes a C<using> expression only if C<--histogram> or C<--timefmt>
+or C<--xticlabels> are given. So if C<--using> is given together with any of
+these, the user must take care to do the right thing (whatever that means at
+that time).
+
+=item
+
+The C<--tuplesize> controls the data passed to feedgnuplot and the data then
+passed to gnuplot. It does I<not> directly control how gnuplot eventually
+interprets the data: C<--using> does that. So for instance we can plot
+color-coded points:
+
+  seq 10 | feedgnuplot --with 'points pt 7 palette' --usingall '1:2:2'
+
+Here feedgnuplot read 1 column of data. It defauled to C<--tuplesize 2>, so it
+passed 2 columns of data to gnuplot. gnuplot then produced 3 values for each
+point, and plotted them as indicated with the C<points palette> style.
+
+=item
+
+You I<always> need a column of data to generate a curve. You might want to use a
+C<using> expression to plot a time series I<and> its cumulative integral. The
+C<using> expression can compute the integral, but you I<must> pass in the data
+twice; once for each curve to plot:
+
+  seq 100 |                           \
+    awk '{print $1,$1}' |             \
+    feedgnuplot                       \
+      --cmds 'sum=0'                  \
+      --cmds 'accum(x) = (sum=sum+x)' \
+      --using 1 '1:(accum($2))'       \
+      --lines --y2 1
+
+=back
 
 =head2 Real-time streaming data
 
@@ -1995,8 +2044,8 @@ C<--xticlabels>
 If given, the x-axis tic labels are not numerical, but are read from the data.
 This changes the interpretation of the input data: with C<--domain>, each line
 begins with C<x label ....>. Without C<--domain>, each line begins with C<label
-...>. This does I<not> affect the tuple size. This makes sense only without
-C<--3d>. Please see the guide
+...>. Clearly, the labels may not contain whitespace. This does I<not> affect
+the tuple size. This makes sense only without C<--3d>. Please see the guide
 (L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>) for usage
 examples.
 
@@ -2080,10 +2129,32 @@ I<all> the curves.
 
 =item
 
-C<--extracmds xxx>
+C<--using curveID expression>
+
+Specifies a C<using> expression to micromanage the plot. This is a powerful
+option that allows gnuplot to interpret the input data in arbitrary ways. A
+C<using> expression tells gnuplot how to map the input columns of data to tuples
+expected by the plotting style. Please see the L</"'using' expressions"> section above for more detail.
+
+=item
+
+C<--usingall expression>
+
+Global "using" expressions. This works exactly like C<--using>, except it
+applies to I<all> the curves.
+
+=item
+
+C<--cmds xxx>
 
 Additional commands to pass on to gnuplot verbatim. These could contain extra
 global styles for instance. Can be passed multiple times.
+
+=item
+
+C<--extracmds xxx>
+
+Synonym for C<--cmds xxx>
 
 =item
 

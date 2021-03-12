@@ -35,7 +35,7 @@ _arguments -S                                                                   
     '(--with)--curvestyleall[Additional styles for ALL curves]:style'             \
     '(--with)--styleall[Additional styles for ALL curves]:style'                  \
     '(--curvestyleall)--with[Additional styles for ALL curves]:style'             \
-    '*--extracmds[Additional gnuplot commands]:command'                           \
+    '*--cmds[Additional gnuplot commands]:command'                                \
     '*--set[Additional 'set' gnuplot commands]:set-option'                        \
     '*--unset[Additional 'unset' gnuplot commands]:unset-option'                  \
     '*--equation[Raw symbolic equation]:equation'                                 \
@@ -58,6 +58,8 @@ _arguments -S                                                                   
     '*--style[Additional styles for a curve]:curve id: :style:'                   \
     '*--every[Decimation factor for a curve]:curve id: :decimation factor:'       \
     '--everyall[Decimation factor for ALL curves]:decimation factor'              \
+    '*--using[Column specification for a curve]:curve id: :column specification:' \
+    '--usingall[Column specification ALL curves]:column specification'            \
     '(--3d)*--histogram:plot to treat as a histogram:'                            \
     '--binwidth:Histogram bin width:'                                             \
     '--histstyle:Style of histogram:(frequency fnormal unique cumulative cnormal)' \

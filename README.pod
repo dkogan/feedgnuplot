@@ -92,13 +92,12 @@ points. New curves will be created as needed.
 
 The most commonly used functionality of gnuplot is supported directly by the
 script. Anything not directly supported can still be done with options such as
-C<--set>, C<--extracmds> C<--style>, etc. Arbitrary gnuplot commands can be
-passed in with C<--extracmds>. For example, to turn off the grid, you can pass
-in C<--extracmds 'unset grid'>. Commands C<--set> and C<--unset> exists to
-provide nicer syntax, so this is equivalent to passing C<--unset grid>. As many
-of these options as needed can be passed in. To add arbitrary curve styles, use
-C<--style curveID extrastyle>. Pass these more than once to affect more than one
-curve.
+C<--set>, C<--cmds> C<--style>, etc. Arbitrary gnuplot commands can be passed in
+with C<--cmds>. For example, to turn off the grid, you can pass in C<--cmds
+'unset grid'>. Commands C<--set> and C<--unset> exists to provide nicer syntax,
+so this is equivalent to passing C<--unset grid>. As many of these options as
+needed can be passed in. To add arbitrary curve styles, use C<--style curveID
+extrastyle>. Pass these more than once to affect more than one curve.
 
 To apply an extra style to I<all> the curves that lack an explicit C<--style>,
 pass in C<--styleall extrastyle>. In the most common case, the extra style is
@@ -238,6 +237,79 @@ This plots the 'idle' CPU consumption against time.
 Note that while gnuplot supports the time/date on any axis, I<feedgnuplot>
 currently supports it I<only> as the x-axis domain. This may change in the
 future.
+
+=head3 'using' expressions
+
+We just described how feedgnuplot parses its input data. When passing this data
+to gnuplot, each curve is sent independently. The domain appears in the leading
+columns followed by C<--rangesize> columns to complete each row. Without
+C<--domain>, feedgnuplot explicitly writes out sequential integers. gnuplot then
+knows how many values it has for each point, and it knows which style we're
+using, so it's able to interpret the data appropriately, and to make the correct
+plot.
+
+As an example, if gnuplot is passed 2 columns of data, and it is plotting C<with
+points>, it will use column 1 for the x coordinate and column 2 for the y
+coordinate. This is the default behavior, but the meaning of each column can be
+controlled via a C<using> expression in gnuplot (not feedgnuplot; keep reading).
+The default is sequential integers, so this example uses C<using 1:2> by
+default. We can flip the meaning of the columns by passing C<using 2:1>.
+Arbitrary expressions may be specified by enclosing each field in C<()>, and
+using C<$> to denote each data column. So to use the 2nd column as the x
+coordinate and the sum of the two columns as the y coordinate, C<using
+2:($1+$2)> is passed. Furthermore, the number of columns can vary. For instance
+gnuplot can read the same two columns of data, but produce a plot with the extra
+column encoding the sum as the color: C<using 1:2:($1+$2) with points palette>.
+Please see the gnuplot documentation for lots of detail.
+
+That's how I<gnuplot> works. Most of the time, I<feedgnuplot> doesn't pass any
+C<using> expressions at all, and gnuplot does the default thing. But if we want
+to do something fancy, feedgnuplot supports C<--using curveID expression> and
+C<--usingall expression>. So we can plot a parabola:
+
+  seq 100 | feedgnuplot --lines --usingall '1:($2*$2)'
+
+This is powerful, but there are some things to keep in mind:
+
+=over
+
+=item
+
+C<--using> overrides whatever C<using> expression feedgnuplot was going to pass.
+feedgnuplot passes a C<using> expression only if C<--histogram> or C<--timefmt>
+or C<--xticlabels> are given. So if C<--using> is given together with any of
+these, the user must take care to do the right thing (whatever that means at
+that time).
+
+=item
+
+The C<--tuplesize> controls the data passed to feedgnuplot and the data then
+passed to gnuplot. It does I<not> directly control how gnuplot eventually
+interprets the data: C<--using> does that. So for instance we can plot
+color-coded points:
+
+  seq 10 | feedgnuplot --with 'points pt 7 palette' --usingall '1:2:2'
+
+Here feedgnuplot read 1 column of data. It defauled to C<--tuplesize 2>, so it
+passed 2 columns of data to gnuplot. gnuplot then produced 3 values for each
+point, and plotted them as indicated with the C<points palette> style.
+
+=item
+
+You I<always> need a column of data to generate a curve. You might want to use a
+C<using> expression to plot a time series I<and> its cumulative integral. The
+C<using> expression can compute the integral, but you I<must> pass in the data
+twice; once for each curve to plot:
+
+  seq 100 |                           \
+    awk '{print $1,$1}' |             \
+    feedgnuplot                       \
+      --cmds 'sum=0'                  \
+      --cmds 'accum(x) = (sum=sum+x)' \
+      --using 1 '1:(accum($2))'       \
+      --lines --y2 1
+
+=back
 
 =head2 Real-time streaming data
 
@@ -586,8 +658,8 @@ C<--xticlabels>
 If given, the x-axis tic labels are not numerical, but are read from the data.
 This changes the interpretation of the input data: with C<--domain>, each line
 begins with C<x label ....>. Without C<--domain>, each line begins with C<label
-...>. This does I<not> affect the tuple size. This makes sense only without
-C<--3d>. Please see the guide
+...>. Clearly, the labels may not contain whitespace. This does I<not> affect
+the tuple size. This makes sense only without C<--3d>. Please see the guide
 (L<https://github.com/dkogan/feedgnuplot/blob/master/guide/guide.org>) for usage
 examples.
 
@@ -671,10 +743,32 @@ I<all> the curves.
 
 =item
 
-C<--extracmds xxx>
+C<--using curveID expression>
+
+Specifies a C<using> expression to micromanage the plot. This is a powerful
+option that allows gnuplot to interpret the input data in arbitrary ways. A
+C<using> expression tells gnuplot how to map the input columns of data to tuples
+expected by the plotting style. Please see the L</"'using' expressions"> section above for more detail.
+
+=item
+
+C<--usingall expression>
+
+Global "using" expressions. This works exactly like C<--using>, except it
+applies to I<all> the curves.
+
+=item
+
+C<--cmds xxx>
 
 Additional commands to pass on to gnuplot verbatim. These could contain extra
 global styles for instance. Can be passed multiple times.
+
+=item
+
+C<--extracmds xxx>
+
+Synonym for C<--cmds xxx>
 
 =item
 
