@@ -1,4 +1,11 @@
-feedgnuplot (1.57) unstable; urgency=medium
+feedgnuplot (1.58)
+
+  * Added --using, --usingall
+  * Added --cmds as a synonym for --extracmds
+
+ -- Dima Kogan <dkogan@debian.org>  Thu, 11 Mar 2021 16:24:46 -0800
+
+feedgnuplot (1.57)
 
   * Added --xticlabels to label the x-axis tics from the data
   * Added --equation-above and --equation-below to control the equation
@@ -6,7 +13,7 @@ feedgnuplot (1.57) unstable; urgency=medium
 
  -- Dima Kogan <dkogan@debian.org>  Sun, 21 Feb 2021 13:56:23 -0800
 
-feedgnuplot (1.56) unstable; urgency=medium
+feedgnuplot (1.56)
 
   * Updated default hardcopy settings
 
