@@ -35,7 +35,7 @@ _arguments -S                                                                   
     '(--with)--curvestyleall[Additional styles for ALL curves]:style'             \
     '(--with)--styleall[Additional styles for ALL curves]:style'                  \
     '(--curvestyleall)--with[Additional styles for ALL curves]:style'             \
-    '*--extracmds[Additional gnuplot commands]:command'                           \
+    '*--cmds[Additional gnuplot commands]:command'                                \
     '*--set[Additional 'set' gnuplot commands]:set-option'                        \
     '*--unset[Additional 'unset' gnuplot commands]:unset-option'                  \
     '*--equation[Raw symbolic equation]:equation'                                 \

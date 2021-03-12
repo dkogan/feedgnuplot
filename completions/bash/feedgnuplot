@@ -21,7 +21,7 @@ complete -W               \
     --rangesize           \
     --tuplesizeall        \
     --tuplesize           \
-    --extracmds           \
+    --cmds                \
     --set                 \
     --unset               \
     --equation            \

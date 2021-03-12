@@ -97,6 +97,7 @@ sub interpretCommandline
   $options{x2y1}       = [];
   $options{x2y2}       = [];
   $options{extracmds}  = [];
+  $options{cmds}       = [];
   $options{set}        = [];
   $options{unset}      = [];
   $options{equation}   = [];
@@ -120,7 +121,9 @@ sub interpretCommandline
              'ymin=f', 'ymax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f',
              'x2=s@', 'y2=s@', 'x1y2=s@', 'x2y1=s@', 'x2y2=s@',
-             'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s', 'extracmds=s@', 'set=s@', 'unset=s@',
+             'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s',
+             'extracmds=s@', 'cmds=s@',
+             'set=s@', 'unset=s@',
              'every=s{2}', 'everyall=s',
              'using=s{2}', 'usingall=s',
              'square!', 'square_xy!', 'square-xy!', 'squarexy!', 'hardcopy=s', 'maxcurves=i', 'monotonic!', 'timefmt=s',
@@ -160,6 +163,9 @@ sub interpretCommandline
   # various square-xy synonyms
   $options{'square_xy'} = 1 if $options{'square-xy'} || $options{'squarexy'};
 
+  # --extracmds is a synonym for --cmds
+  push @{$options{extracmds}}, @{$options{cmds}};
+  $options{cmds} = [];
 
   push @{$options{curvestyle}}, @{$options{style}};
   delete $options{style};
@@ -1472,13 +1478,12 @@ points. New curves will be created as needed.
 
 The most commonly used functionality of gnuplot is supported directly by the
 script. Anything not directly supported can still be done with options such as
-C<--set>, C<--extracmds> C<--style>, etc. Arbitrary gnuplot commands can be
-passed in with C<--extracmds>. For example, to turn off the grid, you can pass
-in C<--extracmds 'unset grid'>. Commands C<--set> and C<--unset> exists to
-provide nicer syntax, so this is equivalent to passing C<--unset grid>. As many
-of these options as needed can be passed in. To add arbitrary curve styles, use
-C<--style curveID extrastyle>. Pass these more than once to affect more than one
-curve.
+C<--set>, C<--cmds> C<--style>, etc. Arbitrary gnuplot commands can be passed in
+with C<--cmds>. For example, to turn off the grid, you can pass in C<--cmds
+'unset grid'>. Commands C<--set> and C<--unset> exists to provide nicer syntax,
+so this is equivalent to passing C<--unset grid>. As many of these options as
+needed can be passed in. To add arbitrary curve styles, use C<--style curveID
+extrastyle>. Pass these more than once to affect more than one curve.
 
 To apply an extra style to I<all> the curves that lack an explicit C<--style>,
 pass in C<--styleall extrastyle>. In the most common case, the extra style is
@@ -1682,12 +1687,12 @@ C<using> expression to plot a time series I<and> its cumulative integral. The
 C<using> expression can compute the integral, but you I<must> pass in the data
 twice; once for each curve to plot:
 
-  seq 100 |                                \
-    awk '{print $1,$1}' |                  \
-    feedgnuplot                            \
-      --extracmds 'sum=0'                  \
-      --extracmds 'accum(x) = (sum=sum+x)' \
-      --using 1 '1:(accum($2))'            \
+  seq 100 |                           \
+    awk '{print $1,$1}' |             \
+    feedgnuplot                       \
+      --cmds 'sum=0'                  \
+      --cmds 'accum(x) = (sum=sum+x)' \
+      --using 1 '1:(accum($2))'       \
       --lines --y2 1
 
 =back
@@ -2140,10 +2145,16 @@ applies to I<all> the curves.
 
 =item
 
-C<--extracmds xxx>
+C<--cmds xxx>
 
 Additional commands to pass on to gnuplot verbatim. These could contain extra
 global styles for instance. Can be passed multiple times.
+
+=item
+
+C<--extracmds xxx>
+
+Synonym for C<--cmds xxx>
 
 =item
 
