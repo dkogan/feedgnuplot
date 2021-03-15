@@ -1,3 +1,11 @@
+feedgnuplot (1.58-1) unstable; urgency=medium
+
+  * New upstream release
+    - Added --using, --usingall
+    - Added --cmds as a synonym for --extracmds
+
+ -- Dima Kogan <dkogan@debian.org>  Thu, 11 Mar 2021 16:33:01 -0800
+
 feedgnuplot (1.57-1) unstable; urgency=medium
 
   * New upstream release
