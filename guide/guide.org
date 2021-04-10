@@ -17,7 +17,7 @@ feedgnuplot
 This was a trivial plot, and was trivially-easy to make: we gave the tool one
 column of data with no specific instructions, and we got a plot.
 
-The interpretation of the input data is controlled by two arguments: ==--domain=
+The interpretation of the input data is controlled by two arguments: =--domain=
 and =--dataid=. Here we passed neither, so each line of input is interpreted as
 =y0 y1 y2...= with sequential integers (0, 1, 2, ...) used for the =x=
 coordinate. Let's pass in more than one =y= per line to plot a sine and a cosine
