@@ -1604,7 +1604,7 @@ given, some other options act a little bit differently:
 
 =item
 
-C<--xlen> is an I<integer> in seconds
+C<--xlen> and C<--binwidth> are I<integers> in seconds
 
 =item
 

@@ -39,7 +39,7 @@ BEGIN {
   }
 }
 
-use Test::More tests => 92;
+use Test::More tests => 94;
 use File::Temp 'tempfile';
 use IPC::Run 'run';
 use String::ShellQuote;
@@ -345,6 +345,13 @@ tryplot( testname => 'Circles',
          cmd      => q{seq 5 | gawk '{print $1,$1,$1/10}'},
          options  => [qw(--circles --domain)],
          refplot  => 'circles.ref' );
+
+tryplot( testname => '--timefmt --histo',
+         cmd      => q{seq 10 | gawk '{x=(NR-1)%5; print strftime("%Y-%m-%d--%H:%M:%S",1382249107+x,1)}' | grep -v ':09'},
+         options  => ['--timefmt', '%Y-%m-%d--%H:%M:%S', '--histogram', '0','--binwidth', '1',
+                      '--set', q{format x "...-%M:%S"},
+                      '--ymax', '2.5'],
+         refplot  => 'timefmt-histo.ref' );
 
 
 
