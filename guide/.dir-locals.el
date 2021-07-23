@@ -86,7 +86,7 @@
         (backward-word-strictly)
         (insert "../bin/")
         ;; write to svg
-        (end-of-buffer)
+        (forward-word-strictly)
         (insert (format " --terminal 'svg noenhanced solid size 800,600 font \",14\"' --hardcopy %s" (cdr (assq :file params))))
         (setq body (buffer-substring-no-properties (point-min) (point-max)))))
     (funcall f body params))
