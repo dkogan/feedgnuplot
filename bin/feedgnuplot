@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.58';
+my $VERSION = '1.59';
 
 my %options;
 interpretCommandline();
@@ -841,10 +841,16 @@ sub mainThread
     addOption($_, 'extraoptions', 'axes x2y2 ') foreach (@{$options{x2y2}});
 
     # timefmt
+    my $histcol;
     if( $options{timefmt} )
     {
       print(PIPE "set timefmt '$options{timefmt}'\n");
       print(PIPE "set xdata time\n");
+      $histcol = qq{timecolumn(2,"$options{timefmt}")};
+    }
+    else
+    {
+      $histcol = '$2';
     }
 
     # set up histograms
@@ -859,7 +865,7 @@ sub mainThread
         # domain, so I get the statistics of the 2nd column: $2
         addOption($id,
                   'usingoptions',
-                  'using (histbin($2)):(1.0) smooth ' . $options{histstyle},
+                  'using (histbin(' . $histcol . ')):(1.0) smooth ' . $options{histstyle},
                   'do-not-override');
     }
 
@@ -1598,7 +1604,7 @@ given, some other options act a little bit differently:
 
 =item
 
-C<--xlen> is an I<integer> in seconds
+C<--xlen> and C<--binwidth> are I<integers> in seconds
 
 =item
 

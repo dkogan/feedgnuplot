@@ -1,8 +1,9 @@
 =head1 TALK
 
 I just gave a talk about this at L<SCaLE
-17x|https://www.socallinuxexpo.org/scale/17x>. Presentation lives
-L<here|https://github.com/dkogan/talk-feedgnuplot-vnlog/blob/master/feedgnuplot-vnlog.org>.
+17x|https://www.socallinuxexpo.org/scale/17x>. Here are the L<video of the
+talk|https://www.youtube.com/watch?v=Qvb_uNkFGNQ&t=12830s> and the
+L<"slides"|https://github.com/dkogan/talk-feedgnuplot-vnlog/blob/master/feedgnuplot-vnlog.org>.
 
 =head1 NAME
 
@@ -212,7 +213,7 @@ given, some other options act a little bit differently:
 
 =item
 
-C<--xlen> is an I<integer> in seconds
+C<--xlen> and C<--binwidth> are I<integers> in seconds
 
 =item
 

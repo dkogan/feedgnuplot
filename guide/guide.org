@@ -17,7 +17,7 @@ feedgnuplot
 This was a trivial plot, and was trivially-easy to make: we gave the tool one
 column of data with no specific instructions, and we got a plot.
 
-The interpretation of the input data is controlled by two arguments: ==--domain=
+The interpretation of the input data is controlled by two arguments: =--domain=
 and =--dataid=. Here we passed neither, so each line of input is interpreted as
 =y0 y1 y2...= with sequential integers (0, 1, 2, ...) used for the =x=
 coordinate. Let's pass in more than one =y= per line to plot a sine and a cosine
@@ -532,6 +532,34 @@ feedgnuplot --dataid --histo 1,2,3 --binwidth $binwidth \
 #+RESULTS:
 [[file:guide-20.svg]]
 
+** Time-based histograms
+It is possible to combine time data with histograms. For instance, let's say we
+monitored something, and came up with a dataset that contains timestamps when
+some event occurred. Let's make a histogram of this data to get a larger sense
+of when the issue happened:
+
+#+BEGIN_SRC sh :results file link :exports both
+cat <<EOF | \
+feedgnuplot --timefmt '%Y-%m-%d--%H:%M:%S' --histogram 0 --binwidth 120 \
+            --set 'format x "%H:%M:%S"'
+2021-07-21--17:33:22
+2021-07-21--17:33:23
+2021-07-21--17:33:28
+2021-07-21--17:37:13
+2021-07-21--17:39:01
+2021-07-21--17:44:17
+2021-07-21--17:44:22
+2021-07-21--17:44:37
+2021-07-21--17:44:44
+2021-07-21--17:44:49
+2021-07-21--17:53:12
+2021-07-21--17:53:57
+EOF
+#+END_SRC
+
+#+RESULTS:
+[[file:guide-21.svg]]
+
 ** Labeled bar charts
 =feedgnuplot= supports bar charts to be drawn with labels appearing in the data.
 These aren't "histograms", where gnuplot bins the data for us, but rather the
@@ -558,7 +586,7 @@ feedgnuplot --vnl \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-21.svg]]
+[[file:guide-22.svg]]
 
 We can also pass =--domain= to read the =x= positions from the data also:
 
@@ -576,7 +604,7 @@ feedgnuplot --vnl --domain \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-22.svg]]
+[[file:guide-23.svg]]
 
 And we can use gnuplot's clustering capabilities:
 
@@ -597,7 +625,7 @@ feedgnuplot --vnl \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-23.svg]]
+[[file:guide-24.svg]]
 
 Or we can vertically stack the bars in each cluster:
 
@@ -619,7 +647,7 @@ feedgnuplot --vnl \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-24.svg]]
+[[file:guide-25.svg]]
 
 Using =--xticlabels= to plot bars is probably the most common usage, but
 =--xticlabels= means /only/ that we read the x-axis tic labels from the data, so
@@ -641,7 +669,7 @@ feedgnuplot --vnl --domain \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-25.svg]]
+[[file:guide-26.svg]]
 
 ** Vector fields
 Documentation in gnuplot available like this:
@@ -667,4 +695,4 @@ feedgnuplot --domain \
 #+END_SRC
 
 #+RESULTS:
-[[file:guide-26.svg]]
+[[file:guide-27.svg]]
