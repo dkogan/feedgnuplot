@@ -1,4 +1,4 @@
-feedgnuplot (1.59-1) unstable; urgency=medium
+feedgnuplot (1.60-1) unstable; urgency=medium
 
   * New upstream release
     - --timefmt --histogram work together
