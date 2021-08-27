@@ -326,7 +326,7 @@ SKIP:
 #   the host machine can cause a test failure. It's fine pretty much all the
 #   time on my not-too-new laptop, but this is bad for automated testing
 
-skip "Skipping unreliable tests. Set RUN_ALL_TESTS environment variable to run them all", 18 unless $ENV{RUN_ALL_TESTS};
+skip "Skipping unreliable tests. Set RUN_ALL_TESTS environment variable to run them all", 20 unless $ENV{RUN_ALL_TESTS};
 
 
 tryplot( testname => 'Histogram plot',
