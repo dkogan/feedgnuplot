@@ -1,3 +1,10 @@
+feedgnuplot (1.59-1) unstable; urgency=medium
+
+  * New upstream release
+    - --timefmt --histogram work together
+
+ -- Dima Kogan <dkogan@debian.org>  Fri, 27 Aug 2021 10:27:56 -0700
+
 feedgnuplot (1.58-1) unstable; urgency=medium
 
   * New upstream release
