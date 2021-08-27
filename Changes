@@ -1,3 +1,9 @@
+feedgnuplot (1.60)
+
+  * Test suite fix: we have the right number of tests
+
+ -- Dima Kogan <dkogan@debian.org>  Fri, 27 Aug 2021 10:46:18 -0700
+
 feedgnuplot (1.59)
 
   * --timefmt --histogram work together
