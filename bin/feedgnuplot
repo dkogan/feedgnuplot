@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 package feedgnuplot; # for the metacpan indexer
 
