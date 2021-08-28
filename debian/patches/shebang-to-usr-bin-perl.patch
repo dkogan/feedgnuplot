@@ -1,0 +1,15 @@
+Author: Dima Kogan <dima@secretsauce.net>
+Date:   Sat Aug 28 13:33:00 2021 -0700
+
+    #! line uses /usr/bin/env to work with nonstandard installations
+
+diff --git a/bin/feedgnuplot b/bin/feedgnuplot
+index 3123c5b..e5e7ccf 100755
+--- a/bin/feedgnuplot
++++ b/bin/feedgnuplot
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env perl
++#!/usr/bin/perl
+ 
+ package feedgnuplot; # for the metacpan indexer
+ 
