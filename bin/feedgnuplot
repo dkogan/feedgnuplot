@@ -423,15 +423,6 @@ sub interpretCommandline
       exit -1;
     }
 
-    if(!$options{colormap})
-    {
-      if ( defined $options{zmin} || defined $options{zmax} || defined $options{zlabel} )
-      {
-        print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
-        exit -1;
-      }
-    }
-
     if ( defined $options{square_xy} )
     {
       print STDERR "--square_xy only makes sense with --3d\n";
