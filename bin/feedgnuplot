@@ -881,7 +881,15 @@ sub mainThread
     sendRangeCommand( "xrange",  $options{xmin}, $options{xmax} );
     sendRangeCommand( "yrange",  $options{ymin}, $options{ymax} );
     sendRangeCommand( "zrange",  $options{zmin}, $options{zmax} );
-    sendRangeCommand( "cbrange", $options{zmin}, $options{zmax} ) if($options{colormap});
+    if($options{colormap})
+    {
+        # legacy behavior. Nobody should really be using --colormap
+        sendRangeCommand( "cbrange", $options{zmin}, $options{zmax} );
+    }
+    else
+    {
+        sendRangeCommand( "cbrange", $options{cbmin},$options{cbmax});
+    }
 
     # add the extra global options
     print(PIPE "$_\n")       foreach (@{$options{extracmds}});
@@ -1917,9 +1925,16 @@ Interpret the X data as a time/date, parsed with the given format
 
 C<--colormap>
 
-Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
-used to set the extents of the colors. Automatically sets the
-C<--rangesize>/C<--tuplesize>.
+This is a legacy option used to who a colormapped xy plot. It does:
+
+- Adds C<palette> to C<--curvestyleall>
+
+- Adds 1 to the default C<--tuplesize> (if C<--tuplesizeall> is not given
+
+- Uses C<--zmin>, C<--zmax> to set the colorbar range
+
+It's clearer to set the relevant options explicitly, but C<--colormap> still
+exists for compatibility
 
 =item
 
