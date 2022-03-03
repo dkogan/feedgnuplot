@@ -115,11 +115,12 @@ sub interpretCommandline
 
              '3d!', 'colormap!', 'lines!', 'points!', 'circles',
              'legend=s{2}', 'autolegend!',
-             'xlabel=s', 'x2label=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
+             'xlabel=s', 'x2label=s', 'ylabel=s', 'y2label=s', 'zlabel=s', 'cblabel=s',
              'title=s', 'xlen=f',
              'xmin=s', 'xmax=s', 'x2min=s', 'x2max=s',
              'ymin=f', 'ymax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f',
+             'cbmin=f', 'cbmax=f',
              'x2=s@', 'y2=s@', 'x1y2=s@', 'x2y1=s@', 'x2y2=s@',
              'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s',
              'extracmds=s@', 'cmds=s@',
@@ -796,6 +797,7 @@ sub mainThread
     print(PIPE "set ylabel  \"$options{ylabel }\"\n") if defined $options{ylabel};
     print(PIPE "set y2label \"$options{y2label}\"\n") if defined $options{y2label};
     print(PIPE "set zlabel  \"$options{zlabel }\"\n") if defined $options{zlabel};
+    print(PIPE "set cblabel \"$options{cblabel}\"\n") if defined $options{cblabel};
     print(PIPE "set title   \"$options{title  }\"\n") if defined $options{title};
 
     if($options{square})
@@ -2003,10 +2005,11 @@ instance C<--set 'xrange [20:10]'> to set the given inverted bounds.
 
 =item
 
-C<--xlabel/x2label/ylabel/y2label/zlabel xxx>
+C<--xlabel/x2label/ylabel/y2label/zlabel/cblabel xxx>
 
 Label the given axis. The x2/y2-axis labels do not apply to 3d plots while the
-z-axis label applies I<only> to 3d plots.
+z-axis label applies I<only> to 3d plots. The "cblabel" applies to the colorbar,
+if there is one.
 
 =item
 

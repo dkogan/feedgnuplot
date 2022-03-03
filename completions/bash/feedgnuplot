@@ -66,6 +66,7 @@ complete -W               \
     --zlabel              \
     --zmax                \
     --zmin                \
+    --cblabel             \
     --xticlabels          \
     --using               \
     --usingall            \
