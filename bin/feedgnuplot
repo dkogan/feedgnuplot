@@ -1177,9 +1177,10 @@ sub plotStoredData
   my @nonemptyCurves = grep { $_->{datastring} } @curves;
   my @extraopts = map {$_->{options}} @nonemptyCurves;
 
-  my $body = join('', map { "$_," } @{$options{equation}});
-  $body   .= join(', ' , map({ "'-' $_" } @extraopts) );
-  $body   .= join('', map { ",$_" } @{$options{'equation-above'}});
+  my @components = (@{$options{equation}},
+                    map({ "'-' $_" } @extraopts),
+                    @{$options{'equation-above'}});
+  my $body = join(',', @components);
 
   if($options{'3d'}) { print PIPE "splot $body\n"; }
   else               { print PIPE  "plot $body\n"; }
