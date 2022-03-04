@@ -1,3 +1,13 @@
+feedgnuplot (1.61-1) unstable; urgency=medium
+
+  * New upstream release
+    - Added --cblabel to label the color bar
+    - Added --cbmin, --cbmax
+    - --zmin,--zmax,--zlabel are always sent, if requested
+    - Plotting with no STDIN data works
+
+ -- Dima Kogan <dkogan@debian.org>  Fri, 04 Mar 2022 14:47:42 -0800
+
 feedgnuplot (1.60-1) unstable; urgency=medium
 
   * New upstream release
