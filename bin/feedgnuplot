@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.60';
+my $VERSION = '1.61';
 
 my %options;
 interpretCommandline();
@@ -115,11 +115,12 @@ sub interpretCommandline
 
              '3d!', 'colormap!', 'lines!', 'points!', 'circles',
              'legend=s{2}', 'autolegend!',
-             'xlabel=s', 'x2label=s', 'ylabel=s', 'y2label=s', 'zlabel=s',
+             'xlabel=s', 'x2label=s', 'ylabel=s', 'y2label=s', 'zlabel=s', 'cblabel=s',
              'title=s', 'xlen=f',
              'xmin=s', 'xmax=s', 'x2min=s', 'x2max=s',
              'ymin=f', 'ymax=f', 'y2min=f', 'y2max=f',
              'zmin=f', 'zmax=f',
+             'cbmin=f', 'cbmax=f',
              'x2=s@', 'y2=s@', 'x1y2=s@', 'x2y1=s@', 'x2y2=s@',
              'style=s{2}', 'curvestyle=s{2}', 'curvestyleall=s', 'styleall=s', 'with=s',
              'extracmds=s@', 'cmds=s@',
@@ -420,15 +421,6 @@ sub interpretCommandline
     {
       print STDERR "--timefmt makes sense only with --domain or --histogram\n";
       exit -1;
-    }
-
-    if(!$options{colormap})
-    {
-      if ( defined $options{zmin} || defined $options{zmax} || defined $options{zlabel} )
-      {
-        print STDERR "--zmin/zmax/zlabel only makes sense with --3d or --colormap\n";
-        exit -1;
-      }
     }
 
     if ( defined $options{square_xy} )
@@ -796,6 +788,7 @@ sub mainThread
     print(PIPE "set ylabel  \"$options{ylabel }\"\n") if defined $options{ylabel};
     print(PIPE "set y2label \"$options{y2label}\"\n") if defined $options{y2label};
     print(PIPE "set zlabel  \"$options{zlabel }\"\n") if defined $options{zlabel};
+    print(PIPE "set cblabel \"$options{cblabel}\"\n") if defined $options{cblabel};
     print(PIPE "set title   \"$options{title  }\"\n") if defined $options{title};
 
     if($options{square})
@@ -888,7 +881,15 @@ sub mainThread
     sendRangeCommand( "xrange",  $options{xmin}, $options{xmax} );
     sendRangeCommand( "yrange",  $options{ymin}, $options{ymax} );
     sendRangeCommand( "zrange",  $options{zmin}, $options{zmax} );
-    sendRangeCommand( "cbrange", $options{zmin}, $options{zmax} ) if($options{colormap});
+    if($options{colormap})
+    {
+        # legacy behavior. Nobody should really be using --colormap
+        sendRangeCommand( "cbrange", $options{zmin}, $options{zmax} );
+    }
+    else
+    {
+        sendRangeCommand( "cbrange", $options{cbmin},$options{cbmax});
+    }
 
     # add the extra global options
     print(PIPE "$_\n")       foreach (@{$options{extracmds}});
@@ -1176,9 +1177,10 @@ sub plotStoredData
   my @nonemptyCurves = grep { $_->{datastring} } @curves;
   my @extraopts = map {$_->{options}} @nonemptyCurves;
 
-  my $body = join('', map { "$_," } @{$options{equation}});
-  $body   .= join(', ' , map({ "'-' $_" } @extraopts) );
-  $body   .= join('', map { ",$_" } @{$options{'equation-above'}});
+  my @components = (@{$options{equation}},
+                    map({ "'-' $_" } @extraopts),
+                    @{$options{'equation-above'}});
+  my $body = join(',', @components);
 
   if($options{'3d'}) { print PIPE "splot $body\n"; }
   else               { print PIPE  "plot $body\n"; }
@@ -1924,9 +1926,16 @@ Interpret the X data as a time/date, parsed with the given format
 
 C<--colormap>
 
-Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
-used to set the extents of the colors. Automatically sets the
-C<--rangesize>/C<--tuplesize>.
+This is a legacy option used to who a colormapped xy plot. It does:
+
+- Adds C<palette> to C<--curvestyleall>
+
+- Adds 1 to the default C<--tuplesize> (if C<--tuplesizeall> is not given
+
+- Uses C<--zmin>, C<--zmax> to set the colorbar range
+
+It's clearer to set the relevant options explicitly, but C<--colormap> still
+exists for compatibility
 
 =item
 
@@ -2003,10 +2012,11 @@ instance C<--set 'xrange [20:10]'> to set the given inverted bounds.
 
 =item
 
-C<--xlabel/x2label/ylabel/y2label/zlabel xxx>
+C<--xlabel/x2label/ylabel/y2label/zlabel/cblabel xxx>
 
 Label the given axis. The x2/y2-axis labels do not apply to 3d plots while the
-z-axis label applies I<only> to 3d plots.
+z-axis label applies I<only> to 3d plots. The "cblabel" applies to the colorbar,
+if there is one.
 
 =item
 

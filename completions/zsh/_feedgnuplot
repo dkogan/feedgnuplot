@@ -14,6 +14,7 @@ _arguments -S                                                                   
     '--ylabel:Y-axis label:'                                                      \
     '--y2label:Y2-axis label:'                                                    \
     '--zlabel:Z-axis label:'                                                      \
+    '--cblabel:Colorbar label:'                                                      \
     '--title:Plot title:'                                                         \
     '--autolegend[Label each plot with its data ID]'                              \
     '(--3d)--xlen[the size of the x-window to plot]:window size:'                 \
