@@ -1,7 +1,7 @@
 Source: feedgnuplot
 Section: science
 Priority: optional
-Build-Depends: debhelper (>= 9), libstring-shellquote-perl, perl, gawk, gnuplot, libipc-run-perl, liblist-moreutils-perl, libvnlog-perl, vnlog
+Build-Depends: debhelper (>= 13~), libstring-shellquote-perl, perl, gawk, gnuplot, libipc-run-perl, liblist-moreutils-perl, libvnlog-perl, vnlog
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Dima Kogan <dkogan@debian.org>
 Standards-Version: 3.9.4
