@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.61';
+my $VERSION = '1.62';
 
 my %options;
 interpretCommandline();
@@ -779,6 +779,12 @@ sub mainThread
     {
       $options{curvestyleall} = "with circles $options{curvestyleall}";
     }
+
+    # Required to ignore all lines that have '-' values, such as may come from
+    # vnl-filter -p "dx=diff(x)" ... output. For instance, this plot is broken
+    # without this extra line:
+    #   (echo '# x'; seq 5)  | vnl-filter --noskipempty -p 'd=diff(x)' | ./feedgnuplot --lines
+    print PIPE "set datafile missing \"-\"\n";
 
     print PIPE "set style data $style\n" if $style;
     print PIPE "set grid\n";
