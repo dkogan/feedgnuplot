@@ -1,3 +1,10 @@
+feedgnuplot (1.62-1) unstable; urgency=medium
+
+  * New upstream release
+    explicitly ignore all lines that have '-' values
+
+ -- Dima Kogan <dkogan@debian.org>  Sat, 27 Jan 2024 17:03:28 -0800
+
 feedgnuplot (1.61-1) unstable; urgency=medium
 
   * New upstream release
