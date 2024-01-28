@@ -1,3 +1,14 @@
+feedgnuplot (1.62)
+
+  * I explicitly ignore all lines that have '-' values
+    These may come from vnl-filter -p "dx=diff(x)" ... output. For instance, this
+    plot is broken before this patch:
+
+      (echo '# x'; seq 5) | vnl-filter --noskipempty -p 'd=diff(x)' \
+      | feedgnuplot --lines
+
+ -- Dima Kogan <dkogan@debian.org>  Sat, 27 Jan 2024 17:01:18 -0800
+
 feedgnuplot (1.61)
 
   * #! line uses /usr/bin/env to work with nonstandard installations
