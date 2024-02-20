@@ -27,9 +27,7 @@ Simple plotting of piped data:
      --title "Test plot"     \
      --y2 1                  \
      --unset key             \
-     --unset grid            \
-     --terminal 'dumb 80,40' \
-     --exit
+     --unset grid
 
 =for html <p><img src="documentation-header-plot.svg">
 
@@ -50,9 +48,7 @@ network interface in bytes/second. This plot updates at 1Hz, and shows the last
        --ylabel 'Bytes/sec' \
        --xlabel seconds     \
        --unset key          \
-       --unset grid         \
-       --terminal 'dumb 80,40' \
-       --exit
+       --unset grid
 
 =for html <p><img src="documentation-header-network-throughput-plot.svg">
 

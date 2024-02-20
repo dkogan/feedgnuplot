@@ -1421,14 +1421,13 @@ Simple plotting of piped data:
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' |
    feedgnuplot               \
+     --terminal 'dumb 80,40' --exit \
      --lines                 \
      --points                \
      --title "Test plot"     \
      --y2 1                  \
      --unset key             \
-     --unset grid            \
-     --terminal 'dumb 80,40' \
-     --exit
+     --unset grid
 
                                   Test plot
   10 +-----------------------------------------------------------------+ 25
@@ -1478,6 +1477,7 @@ network interface in bytes/second. This plot updates at 1Hz, and shows the last
    done \
    | gawk '/wlan0/ {if(b) {print $2-b; N++; fflush()} b=$2} N==15 {exit}' \
    | feedgnuplot            \
+       --terminal 'dumb 80,40' --exit \
        --lines              \
        --title "wlan0 throughput" \
        --stream             \
@@ -1485,9 +1485,7 @@ network interface in bytes/second. This plot updates at 1Hz, and shows the last
        --ylabel 'Bytes/sec' \
        --xlabel seconds     \
        --unset key          \
-       --unset grid         \
-       --terminal 'dumb 80,40' \
-       --exit
+       --unset grid
 
                                     wlan0 throughput
      300000 +---------------------------------------------------------------+

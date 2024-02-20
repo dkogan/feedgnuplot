@@ -33,5 +33,5 @@ seq 5 | awk '{print 2*$1, $1*$1}' |
          next;                                                             \
        }                                                                   \
        /=head1/,0                                                          \
-       { print }' >> README.pod
+       { if(!/^ *--terminal .dumb 80,40. --exit/) { print } }' >> README.pod
 
