@@ -517,9 +517,16 @@ Interpret the X data as a time/date, parsed with the given format
 
 C<--colormap>
 
-Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
-used to set the extents of the colors. Automatically sets the
-C<--rangesize>/C<--tuplesize>.
+This is a legacy option used to who a colormapped xy plot. It does:
+
+- Adds C<palette> to C<--curvestyleall>
+
+- Adds 1 to the default C<--tuplesize> (if C<--tuplesizeall> is not given
+
+- Uses C<--zmin>, C<--zmax> to set the colorbar range
+
+It's clearer to set the relevant options explicitly, but C<--colormap> still
+exists for compatibility
 
 =item
 
@@ -596,10 +603,11 @@ instance C<--set 'xrange [20:10]'> to set the given inverted bounds.
 
 =item
 
-C<--xlabel/x2label/ylabel/y2label/zlabel xxx>
+C<--xlabel/x2label/ylabel/y2label/zlabel/cblabel xxx>
 
 Label the given axis. The x2/y2-axis labels do not apply to 3d plots while the
-z-axis label applies I<only> to 3d plots.
+z-axis label applies I<only> to 3d plots. The "cblabel" applies to the colorbar,
+if there is one.
 
 =item
 
