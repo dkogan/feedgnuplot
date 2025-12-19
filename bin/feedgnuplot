@@ -502,8 +502,7 @@ sub interpretCommandline
       # bottom-left, so given nothing else, I flip the y axis
       if( !defined $options{xmin} && !defined $options{xmax} &&
           !defined $options{ymin} && !defined $options{ymax} &&
-          ! any { /^ *xrange\b/ } @{$options{set}} &&
-          ! any { /^ *yrange\b/ } @{$options{set}} )
+          !any { /^ *[xy]range\b/ } @{$options{set}} )
       {
           push @{$options{set}}, "xrange [:] noextend";
           push @{$options{set}}, "yrange [:] reverse noextend";
