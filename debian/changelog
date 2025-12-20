@@ -1,3 +1,10 @@
+feedgnuplot (1.63-1) unstable; urgency=medium
+
+  * New upstream release
+    bug fix: --image doesn't touch xrange,yrange if those are given in --set
+
+ -- Dima Kogan <dkogan@debian.org>  Sat, 20 Dec 2025 12:11:05 -0800
+
 feedgnuplot (1.62-1) unstable; urgency=medium
 
   * New upstream release
