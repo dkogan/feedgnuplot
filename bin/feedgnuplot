@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.62';
+my $VERSION = '1.63';
 
 my %options;
 interpretCommandline();
@@ -502,8 +502,7 @@ sub interpretCommandline
       # bottom-left, so given nothing else, I flip the y axis
       if( !defined $options{xmin} && !defined $options{xmax} &&
           !defined $options{ymin} && !defined $options{ymax} &&
-          ! any { /^ *xrange\b/ } @{$options{set}} &&
-          ! any { /^ *yrange\b/ } @{$options{set}} )
+          !any { /^ *[xy]range\b/ } @{$options{set}} )
       {
           push @{$options{set}}, "xrange [:] noextend";
           push @{$options{set}}, "yrange [:] reverse noextend";
@@ -1420,56 +1419,110 @@ Simple plotting of piped data:
  10 25
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' |
-   feedgnuplot --lines --points --legend 0 "data 0" --title "Test plot" --y2 1
-               --unset grid --terminal 'dumb 80,40' --exit
+   feedgnuplot               \
+     --terminal 'dumb 80,40' --exit \
+     --lines                 \
+     --points                \
+     --title "Test plot"     \
+     --y2 1                  \
+     --unset key             \
+     --unset grid
 
                                   Test plot
-
   10 +-----------------------------------------------------------------+ 25
-     |       +        +       +       +       +        +       +    *##|
-     |                                                  data 0 ***A*#* |
-     |                                                          ** #   |
-   9 |-+                                                      ** ##    |
-     |                                                      **  #      |
-     |                                                    **   #       |
-     |                                                  **   ##      +-| 20
-   8 |-+                                               A    #          |
-     |                                               **    #           |
-     |                                             **    ##            |
-     |                                           **     #              |
-     |                                         **      B               |
-   7 |-+                                     **      ##                |
-     |                                     **      ##                +-| 15
-     |                                   **       #                    |
-     |                                 **       ##                     |
-   6 |-+                             *A       ##                       |
-     |                             **       ##                         |
-     |                           **        #                           |
-     |                         **        ##                          +-| 10
-   5 |-+                     **        ##                              |
-     |                     **        #B                                |
-     |                   **        ##                                  |
-     |                 **        ##                                    |
-   4 |-+              A       ###                                      |
-     |              **      ##                                         |
-     |            **      ##                                         +-| 5
-     |          **      ##                                             |
-     |        **    ##B#                                               |
-   3 |-+    **  ####                                                   |
-     |    **####                                                       |
-     |  ####                                                           |
+     |       +        +       +       +       +        +       +    ##*|
+     |                                                            ##*  |
+     |                                                          ## *   |
+   9 |-+                                                      ## **    |
+     |                                                      ##  *      |
+     |                                                    ##   *       |
+     |                                                  ##   **      +-| 20
+   8 |-+                                               B    *          |
+     |                                               ##    *           |
+     |                                             ##    **            |
+     |                                           ##     *              |
+     |                                         ##      A               |
+   7 |-+                                     ##      **                |
+     |                                     ##      **                +-| 15
+     |                                   ##       *                    |
+     |                                 ##       **                     |
+   6 |-+                             #B       **                       |
+     |                             ##       **                         |
+     |                           ##        *                           |
+     |                         ##        **                          +-| 10
+   5 |-+                     ##        **                              |
+     |                     ##        *A                                |
+     |                   ##        **                                  |
+     |                 ##        **                                    |
+   4 |-+              B       ***                                      |
+     |              ##      **                                         |
+     |            ##      **                                         +-| 5
+     |          ##      **                                             |
+     |        ##    **A*                                               |
+   3 |-+    ##  ****                                                   |
+     |    ##****                                                       |
+     |  ##**                                                           |
      |##     +        +       +       +       +        +       +       |
    2 +-----------------------------------------------------------------+ 0
      1      1.5       2      2.5      3      3.5       4      4.5      5
 
-Here we asked for ASCII plotting, which is useful for documentation.
-
 Simple real-time plotting example: plot how much data is received on the wlan0
-network interface in bytes/second (uses bash, awk and Linux):
+network interface in bytes/second. This plot updates at 1Hz, and shows the last
+10sec of history. The plot shown here is the final state of a sample run
 
- $ while true; do sleep 1; cat /proc/net/dev; done |
-   gawk '/wlan0/ {if(b) {print $2-b; fflush()} b=$2}' |
-   feedgnuplot --lines --stream --xlen 10 --ylabel 'Bytes/sec' --xlabel seconds
+ $ while true; do
+     sleep 1;
+     cat /proc/net/dev;
+   done \
+   | gawk '/wlan0/ {if(b) {print $2-b; N++; fflush()} b=$2} N==15 {exit}' \
+   | feedgnuplot            \
+       --terminal 'dumb 80,40' --exit \
+       --lines              \
+       --title "wlan0 throughput" \
+       --stream             \
+       --xlen 10            \
+       --ylabel 'Bytes/sec' \
+       --xlabel seconds     \
+       --unset key          \
+       --unset grid
+
+                                    wlan0 throughput
+     300000 +---------------------------------------------------------------+
+            |     +            +            +            +            +     |
+            |                                                               |
+            |                                                               |
+            |                                                         *     |
+     250000 |-+                                                       *   +-|
+            |                                                        **     |
+            |                                                        * *    |
+            |                                                        * *    |
+            |                                                        * *    |
+            |                                                       *  *    |
+     200000 |-+                                                     *   * +-|
+            |                                                       *   *   |
+            |                                                       *   *   |
+            |                                                      *    *   |
+            |                                                      *     *  |
+     150000 |-+                                                    *     *+-|
+            |                                                      *     *  |
+            |                                                     *      *  |
+            |                                                     *      *  |
+            |                                                     *       * |
+            |                                                    *        * |
+     100000 |-+                                                  *        *-|
+            |                                                    *        * |
+            |                                                    *         *|
+            |                 **                                *          *|
+            |              ***  *                               *          *|
+      50000 |-+         ***      *                    ****      *         +*|
+            |         **          **             *****    **    *           |
+            |       **              *         ***           ** *            |
+            |  *****                 *   *****                **            |
+            |**                       ***                                   |
+            |     +            +            +            +            +     |
+          0 +---------------------------------------------------------------+
+                  6            8            10           12           14
+                                         seconds
 
 =head1 DESCRIPTION
 

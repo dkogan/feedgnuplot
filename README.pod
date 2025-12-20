@@ -21,56 +21,36 @@ Simple plotting of piped data:
  10 25
 
  $ seq 5 | awk '{print 2*$1, $1*$1}' |
-   feedgnuplot --lines --points --legend 0 "data 0" --title "Test plot" --y2 1
-               --unset grid --terminal 'dumb 80,40' --exit
+   feedgnuplot               \
+     --lines                 \
+     --points                \
+     --title "Test plot"     \
+     --y2 1                  \
+     --unset key             \
+     --unset grid
 
-                                  Test plot
-
-  10 +-----------------------------------------------------------------+ 25
-     |       +        +       +       +       +        +       +    *##|
-     |                                                  data 0 ***A*#* |
-     |                                                          ** #   |
-   9 |-+                                                      ** ##    |
-     |                                                      **  #      |
-     |                                                    **   #       |
-     |                                                  **   ##      +-| 20
-   8 |-+                                               A    #          |
-     |                                               **    #           |
-     |                                             **    ##            |
-     |                                           **     #              |
-     |                                         **      B               |
-   7 |-+                                     **      ##                |
-     |                                     **      ##                +-| 15
-     |                                   **       #                    |
-     |                                 **       ##                     |
-   6 |-+                             *A       ##                       |
-     |                             **       ##                         |
-     |                           **        #                           |
-     |                         **        ##                          +-| 10
-   5 |-+                     **        ##                              |
-     |                     **        #B                                |
-     |                   **        ##                                  |
-     |                 **        ##                                    |
-   4 |-+              A       ###                                      |
-     |              **      ##                                         |
-     |            **      ##                                         +-| 5
-     |          **      ##                                             |
-     |        **    ##B#                                               |
-   3 |-+    **  ####                                                   |
-     |    **####                                                       |
-     |  ####                                                           |
-     |##     +        +       +       +       +        +       +       |
-   2 +-----------------------------------------------------------------+ 0
-     1      1.5       2      2.5      3      3.5       4      4.5      5
-
-Here we asked for ASCII plotting, which is useful for documentation.
+=for html <p><img src="documentation-header-plot.svg">
 
 Simple real-time plotting example: plot how much data is received on the wlan0
-network interface in bytes/second (uses bash, awk and Linux):
+network interface in bytes/second. This plot updates at 1Hz, and shows the last
+10sec of history. The plot shown here is the final state of a sample run
 
- $ while true; do sleep 1; cat /proc/net/dev; done |
-   gawk '/wlan0/ {if(b) {print $2-b; fflush()} b=$2}' |
-   feedgnuplot --lines --stream --xlen 10 --ylabel 'Bytes/sec' --xlabel seconds
+ $ while true; do
+     sleep 1;
+     cat /proc/net/dev;
+   done \
+   | gawk '/wlan0/ {if(b) {print $2-b; N++; fflush()} b=$2} N==15 {exit}' \
+   | feedgnuplot            \
+       --lines              \
+       --title "wlan0 throughput" \
+       --stream             \
+       --xlen 10            \
+       --ylabel 'Bytes/sec' \
+       --xlabel seconds     \
+       --unset key          \
+       --unset grid
+
+=for html <p><img src="documentation-header-network-throughput-plot.svg">
 
 =head1 DESCRIPTION
 
@@ -533,9 +513,16 @@ Interpret the X data as a time/date, parsed with the given format
 
 C<--colormap>
 
-Show a colormapped xy plot. Requires extra data for the color. zmin/zmax can be
-used to set the extents of the colors. Automatically sets the
-C<--rangesize>/C<--tuplesize>.
+This is a legacy option used to who a colormapped xy plot. It does:
+
+- Adds C<palette> to C<--curvestyleall>
+
+- Adds 1 to the default C<--tuplesize> (if C<--tuplesizeall> is not given
+
+- Uses C<--zmin>, C<--zmax> to set the colorbar range
+
+It's clearer to set the relevant options explicitly, but C<--colormap> still
+exists for compatibility
 
 =item
 
@@ -612,10 +599,11 @@ instance C<--set 'xrange [20:10]'> to set the given inverted bounds.
 
 =item
 
-C<--xlabel/x2label/ylabel/y2label/zlabel xxx>
+C<--xlabel/x2label/ylabel/y2label/zlabel/cblabel xxx>
 
 Label the given axis. The x2/y2-axis labels do not apply to 3d plots while the
-z-axis label applies I<only> to 3d plots.
+z-axis label applies I<only> to 3d plots. The "cblabel" applies to the colorbar,
+if there is one.
 
 =item
 
