@@ -16,7 +16,7 @@ use Pod::Usage;
 use Time::Piece;
 
 # Makefile.PL assumes this is in ''
-my $VERSION = '1.63';
+my $VERSION = '1.64';
 
 my %options;
 interpretCommandline();
@@ -1108,18 +1108,6 @@ sub mainThread
     if ( defined $options{hardcopy} && !gpterminal())
     {
       print PIPE "set output\n";
-
-      # sleep until the plot file exists, and it is closed. Sometimes the output
-      # is still being written at this point. If the output filename starts with
-      # '|', gnuplot pipes the output to that process, instead of writing to a
-      # file. In that case I don't make sure the file exists, since there IS no
-      # file
-      if( $options{hardcopy} !~ /^\|/ )
-      {
-        usleep(100_000) until -e $outputfile;
-        usleep(100_000) until(system("fuser -s \"$outputfile\""));
-      }
-
       print "Wrote output to $outputfile\n";
       return;
     }

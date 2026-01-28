@@ -1,3 +1,9 @@
+feedgnuplot (1.64)
+
+  * hardcopy plotting does NOT call fuser
+
+ -- Dima Kogan <dkogan@debian.org>  Wed, 28 Jan 2026 11:16:29 -0800
+
 feedgnuplot (1.63)
 
   * bug fix: --image doesn't touch xrange,yrange if those are given in --set
